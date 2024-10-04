@@ -99,6 +99,9 @@ func get[T directusPayloadData](c *Client, endpoint string) ([]T, error) {
 		return nil, err
 	}
 	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("status code: %s", res.Status)
+	}
 	return decodePayload[T](res.Body)
 }
 
