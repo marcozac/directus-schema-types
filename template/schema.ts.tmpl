@@ -1,0 +1,23 @@
+{{- block "collections" $.Collections }}
+{{- range $spec := . }}
+	{{- template "collection" $spec }}
+{{ end }}
+{{- end }}
+
+{{- block "schema" $.Collections }}
+// --- Schema ---
+
+export interface Schema {
+{{- range $ }}
+	{{ .Name }}: {{ ToPascalCase .Name }};
+{{- end }}
+}
+{{ end }}
+
+{{- block "relations" $.Collections }}
+// --- Relations ---
+
+export interface Relations {
+	// @TODO
+}
+{{- end }}

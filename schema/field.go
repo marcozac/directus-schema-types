@@ -82,6 +82,10 @@ type FieldSchema struct {
 // FieldType is the type of a field in Directus.
 type FieldType string
 
+func (ft FieldType) String() string {
+	return string(ft)
+}
+
 const (
 	FieldTypeAlias FieldType = "alias"
 

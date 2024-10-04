@@ -1,0 +1,20 @@
+{{- define "collection" }}
+{{- $pascalName := ToPascalCase $.Name }}
+// --- {{ $.Name }} ---
+
+export type {{ $pascalName }}PrimaryKeyField = "{{ $.PrimaryKeyField }}";
+export type {{ $pascalName }}PrimaryKey = {{ $.PrimaryKeyTsType.Type }};
+
+export interface {{ $pascalName }} {
+	{{- range $fieldName, $fieldSpec := $.Fields }}
+	{{ template "collection/field" $fieldSpec }}
+	{{- end }}
+}
+{{- end }}
+
+{{- define "collection/field" }}
+{{- if $.IsReadonly }}readonly {{ end -}}
+{{ $.Name }}
+{{- if not $.IsRequired }}?{{ end }}: {{ $.TsType.Type }}
+{{- if $.IsNullable }} | null{{ end }};
+{{- end }}
