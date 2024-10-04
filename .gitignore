@@ -1,0 +1,71 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.node
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+*.tmp
+
+# Cache
+.cache
+
+# Environment files
+.env*
+!.env.example
+
+# Certificates
+*.pem
+*.key
+*.crt
+
+# IDE
+.idea/
+.vscode/**
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+
+# Go
+*.test
+go.work
+
+# Go coverage
+cover.*
+*.out
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Node build output
+build/
+dist/
+lib/
+
+# Node coverage
+coverage/
+*.lcov
+
+# Turbo
+.turbo
+
+# Misc
+*~
+.DS_Store
+
+# Don't ignore example and test files
+!example/**
+!testing/**
+!testdata/**

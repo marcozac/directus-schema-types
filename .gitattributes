@@ -1,0 +1,97 @@
+* text=auto
+
+# Documents
+*.md            text diff=markdown
+*.mdx           text diff=markdown
+*.csv           text
+*.txt           text
+*.sql           text
+AUTHORS         text
+CHANGELOG       text
+CHANGES         text
+CONTRIBUTING    text
+LICENSE         text
+
+# Graphics
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.gif     binary
+*.tif     binary
+*.tiff    binary
+*.ico     binary
+*.svg     binary
+
+# Serialisation
+*.json    text
+*.toml    text
+*.xml     text
+*.yml     text
+*.yaml    text
+
+# Archives
+*.gz     binary
+*.tgz    binary
+*.zip    binary
+
+# Scripts
+*.sh    text eol=lf
+
+# Go
+# See https://github.com/golang/go/blob/master/.gitattributes
+*.go         -text diff=golang
+go.mod       linguist-generated
+go.sum       linguist-generated
+
+# Node & Web
+*.js                 text
+*.ts                 text
+*.tsx                text
+*.jsx                text
+*.cjs                text
+*.cts                text
+*.mjs                text
+*.mts                text
+*.html               text diff=html
+*.htm                text diff=html
+*.css                text diff=css
+*.scss               text diff=css
+*.sass               text
+*.lock               text -diff linguist-generated
+package.json         text eol=lf
+package-lock.json    text eol=lf -diff linguist-generated
+pnpm-lock.yaml       text eol=lf -diff linguist-generated
+
+# SQL
+*.sql    linguist-language=sql linguist-detectable=true
+
+# Docker
+Dockerfile    text
+
+# Templates
+*.tmpl    text
+*.tpl     text
+
+# Configs
+Makefile          text
+.editorconfig     text export-ignore
+.env              text export-ignore
+.env.*            text export-ignore
+.gitattributes    text export-ignore
+.gitconfig        text export-ignore
+
+# Not exported files
+.gitignore         text export-ignore
+.gitkeep           text export-ignore
+.eslintignore      text export-ignore
+.prettierignore    text export-ignore
+
+# Generated files
+wire_gen.go           linguist-generated
+ent/**                linguist-generated
+ent/schema/**         -linguist-generated
+ent/z_*.go            -linguist-generated
+
+# Vendored files
+# Keep as last to override all other rules
+vendor/**    -text linguist-vendored
