@@ -37,9 +37,7 @@ func TestGenerator(t *testing.T) {
 	s, err := client.GetSchema()
 	require.NoError(t, err, "GetSchema")
 
-	generator := NewGenerator(GeneratorOptions{
-		Schema: s,
-	})
+	generator := NewGenerator(s)
 
 	f, err := os.Create(filepath.Join("testdata", "schema.ts"))
 	require.NoError(t, err, "create file")
