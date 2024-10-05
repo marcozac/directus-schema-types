@@ -42,8 +42,9 @@ func NewGenerator(s *schema.Schema, opts ...Option) *Generator {
 					switch t {
 					case TsTypeDate:
 						return "new Date"
+					default:
+						panic(fmt.Sprintf("parserOf: unknown type %s", t))
 					}
-					panic(fmt.Sprintf("parserOf: unknown type %s", t))
 				},
 			}).
 			ParseFS(tmplFS, "template/*.tmpl"),

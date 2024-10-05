@@ -1,0 +1,43 @@
+run:
+  timeout: 5m
+  modules-download-mode: readonly
+
+linters:
+  disable-all: true
+  enable:
+    - dogsled
+    - dupl
+    - errcheck
+    - funlen
+    - gocritic
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - stylecheck
+    - unconvert
+    - unused
+    - whitespace
+
+linters-settings:
+  dupl:
+    threshold: 200
+  funlen:
+    lines: 115
+    statements: 115
+  stylecheck:
+    checks: ['all', '-ST1003']
+
+issues:
+  max-same-issues: 0
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - dupl
+        - funlen
+        - gosec
+        - gocritic
+    - text: 'Expect WriteFile permissions to be 0600 or less'
+      linters:
+        - gosec
