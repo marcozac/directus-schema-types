@@ -3,6 +3,7 @@ package dst
 import (
 	"slices"
 
+	"github.com/iancoleman/strcase"
 	"github.com/marcozac/directus-schema-types/schema"
 )
 
@@ -42,7 +43,7 @@ func SchemaToSpec(s *schema.Schema) *Spec {
 			fieldSpec.IsNullable = field.Schema.IsNullable
 			fieldSpec.IsUnique = field.Schema.IsUnique
 			if field.Schema.IsPrimaryKey {
-				spec.Collections[field.Collection].SetPrimaryKeyField(field.Field)
+				spec.Collections[field.Collection].setPrimaryKey(field.Field)
 			}
 		}
 		// collection existence not checked: it must exist
@@ -51,13 +52,13 @@ func SchemaToSpec(s *schema.Schema) *Spec {
 	for _, relation := range s.Relations {
 		spec.Collections[relation.Meta.ManyCollection].Relations[relation.Meta.ManyField] = &RelationSpec{
 			Field:             relation.Meta.ManyField,
-			RelatedCollection: relation.Meta.OneCollection,
+			RelatedCollection: spec.Collections[relation.Meta.OneCollection],
 		}
 		if relation.Meta.OneField != nil {
 			fieldName := *relation.Meta.OneField
 			relationSpec := &RelationSpec{
 				Field:             fieldName,
-				RelatedCollection: relation.Meta.ManyCollection,
+				RelatedCollection: spec.Collections[relation.Meta.ManyCollection],
 				Many:              true,
 			}
 			// mark the relation as unique if the related field is unique
@@ -74,12 +75,15 @@ type Spec struct {
 	Collections map[string]*CollectionSpec
 }
 
+const (
+	pkSuffix      = "PrimaryKey"
+	pkFieldSuffix = pkSuffix + "Field"
+	relSuffix     = "Relations"
+)
+
 type CollectionSpec struct {
 	// Name is the name of the collection.
 	Name string
-
-	// PrimaryKeyField is the name of the primary key field.
-	PrimaryKeyField string
 
 	// IsSingleton is whether the collection is a singleton.
 	IsSingleton bool
@@ -89,14 +93,52 @@ type CollectionSpec struct {
 
 	// Relations is the list of the relations in the collection.
 	Relations map[string]*RelationSpec
+
+	primaryKey *PrimaryKeySpec
 }
 
-func (c *CollectionSpec) SetPrimaryKeyField(name string) {
-	c.PrimaryKeyField = name
+// TypeName returns the name of the type for the collection.
+func (c *CollectionSpec) TypeName() string {
+	return toPascalCase(c.Name)
 }
 
-func (c *CollectionSpec) PrimaryKeyTsType() TsType {
-	return c.Fields[c.PrimaryKeyField].TsType()
+// RelationsTypeName returns the name of the type for the collection relations.
+func (c *CollectionSpec) RelationsTypeName() string {
+	return c.TypeName() + relSuffix
+}
+
+func (c *CollectionSpec) PrimaryKey() *PrimaryKeySpec {
+	// panic on access if not set: it's mandatory in Directus
+	return c.primaryKey
+}
+
+func (c *CollectionSpec) setPrimaryKey(field string) {
+	c.primaryKey = &PrimaryKeySpec{c: c, field: field}
+}
+
+type PrimaryKeySpec struct {
+	c     *CollectionSpec
+	field string
+}
+
+// TypeName returns the name of the type for the collection primary key.
+func (p PrimaryKeySpec) TypeName() string {
+	return p.c.TypeName() + pkSuffix
+}
+
+// Type returns the type of the collection primary key.
+func (p PrimaryKeySpec) Type() TsType {
+	return p.c.Fields[p.field].Type()
+}
+
+func (p PrimaryKeySpec) FieldTypeName() string {
+	return p.c.TypeName() + pkFieldSuffix
+}
+
+// FieldType returns the type of the collection primary key field.
+// It's a string literal of the field name.
+func (p PrimaryKeySpec) FieldType() string {
+	return p.field
 }
 
 type FieldSpec struct {
@@ -123,33 +165,26 @@ type FieldSpec struct {
 }
 
 // TsType returns the TypeScript type of the field.
-func (f *FieldSpec) TsType() TsType {
-	return TsType{
-		FieldSpec: f,
-		Type:      directusTypeToTsTypeBase(f.FieldType.String()),
-	}
+func (f *FieldSpec) Type() TsType {
+	return directusTypeToTs(f.FieldType.String())
 }
 
-// TsType is a representation of a TypeScript type.
-type TsType struct {
-	*FieldSpec
+type TsType string
 
-	// Type is the base type of the field.
-	Type TsTypeBase
+func (t TsType) String() string {
+	return string(t)
 }
-
-type TsTypeBase string
 
 const (
-	TsTypeNumber  TsTypeBase = "number"
-	TsTypeString  TsTypeBase = "string"
-	TsTypeBoolean TsTypeBase = "boolean"
-	TsTypeDate    TsTypeBase = "Date"
-	TsTypeObject  TsTypeBase = "object"
-	TsTypeAny     TsTypeBase = "any"
+	TsTypeNumber  TsType = "number"
+	TsTypeString  TsType = "string"
+	TsTypeBoolean TsType = "boolean"
+	TsTypeDate    TsType = "Date"
+	TsTypeObject  TsType = "object"
+	TsTypeAny     TsType = "any"
 )
 
-func directusTypeToTsTypeBase(directusType string) TsTypeBase {
+func directusTypeToTs(directusType string) TsType {
 	switch directusType {
 	case "integer", "bigInteger", "float", "decimal":
 		return TsTypeNumber
@@ -171,8 +206,8 @@ type RelationSpec struct {
 	// Field is the name of the field.
 	Field string
 
-	// RelatedCollection is the name of the collection that the relation points to.
-	RelatedCollection string
+	// RelatedCollection is the collection that the relation points to.
+	RelatedCollection *CollectionSpec
 
 	// Many is whether the relation is to-many entities of the related collection.
 	// It's the opposite of the [many|one]_[collection|field] in the relation meta.
@@ -194,4 +229,8 @@ type RelationSpec struct {
 	// @TODO
 	// Should we enforce the type with a tuple?
 	Unique bool
+}
+
+func toPascalCase(s string) string {
+	return strcase.ToCamel(s)
 }

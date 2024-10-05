@@ -1,17 +1,16 @@
 {{- define "collection" }}
-{{- $pascalName := ToPascalCase $.Name }}
 // --- {{ $.Name }} ---
 
-export type {{ $pascalName }}PrimaryKeyField = "{{ $.PrimaryKeyField }}";
-export type {{ $pascalName }}PrimaryKey = {{ $.PrimaryKeyTsType.Type }};
+export type {{ $.PrimaryKey.FieldTypeName }} = "{{ $.PrimaryKey.FieldType }}";
+export type {{ $.PrimaryKey.TypeName }} = {{ $.PrimaryKey.Type }};
 
-export interface {{ $pascalName }} {
+export interface {{ $.TypeName }} {
 	{{- range $spec := $.Fields }}
 	{{- template "collection/field" $spec }}
 	{{- end }}
 }
 
-export interface {{ $pascalName }}Relations {
+export interface {{ $.RelationsTypeName }} {
 	{{- range $spec := $.Relations }}
 	{{- template "collection/relation" $spec }}
 	{{- end }}
@@ -24,7 +23,7 @@ export interface {{ $pascalName }}Relations {
 	// Type: {{ $.FieldType }}
 	{{ if $.IsReadonly }}readonly {{ end }}
 	{{- $.Name }}
-	{{- if not $.IsRequired }}?{{ end }}: {{ $.TsType.Type }}
+	{{- if not $.IsRequired }}?{{ end }}: {{ $.Type }}
 	{{- if $.IsNullable }} | null{{ end }};
 {{ end }}
 
@@ -33,7 +32,7 @@ export interface {{ $pascalName }}Relations {
 {{- if $.Unique }}
 	/**
 	* NOTE
-	* The related field of {@link {{ ToPascalCase $.RelatedCollection }}} is marked as unique.
+	* The related field of {@link {{ $.RelatedCollection.TypeName }}} is marked as unique.
 	* The resulting array will contain only one element.
 	*/
 {{- end }}
@@ -46,5 +45,5 @@ export interface {{ $pascalName }}Relations {
 {{/* Collection Relation - Field Type */}}
 {{/* Is the single-element type of a relational field. */}}
 {{- define "collection/relation/fieldType" }}
-	{{- ToPascalCase $.RelatedCollection }}PrimaryKey | {{ ToPascalCase $.RelatedCollection }}
+	{{- $.RelatedCollection.PrimaryKey.TypeName }} | {{ $.RelatedCollection.TypeName }}
 {{- end }}

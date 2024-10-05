@@ -9,7 +9,7 @@
 
 export interface Schema {
 {{- range $ }}
-	{{ .Name }}: {{ ToPascalCase .Name }};
+	{{ .Name }}: {{ .TypeName }};
 {{- end }}
 }
 {{ end }}
@@ -19,7 +19,7 @@ export interface Schema {
 
 export interface Relations {
 {{- range $ }}
-	{{ .Name }}: {{ ToPascalCase .Name }}Relations;
+	{{ .Name }}: {{ .RelationsTypeName }};
 {{- end }}
 }
 {{- end }}
