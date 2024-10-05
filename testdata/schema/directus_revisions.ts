@@ -41,3 +41,14 @@ export interface DirectusRevisionsRelations {
 
     version: DirectusVersionsPrimaryKey | DirectusVersions;
 }
+
+// The payload is the same as the schema definition.
+export type DirectusRevisionsPayload = DirectusRevisions;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusRevisionsPayload(v: DirectusRevisionsPayload): DirectusRevisions {
+    return v;
+}

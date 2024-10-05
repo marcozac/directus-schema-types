@@ -54,3 +54,14 @@ export interface DirectusPresetsRelations {
 
     user: DirectusUsersPrimaryKey | DirectusUsers;
 }
+
+// The payload is the same as the schema definition.
+export type DirectusPresetsPayload = DirectusPresets;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusPresetsPayload(v: DirectusPresetsPayload): DirectusPresets {
+    return v;
+}

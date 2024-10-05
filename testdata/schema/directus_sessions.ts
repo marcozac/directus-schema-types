@@ -39,3 +39,20 @@ export interface DirectusSessionsRelations {
 
     user: DirectusUsersPrimaryKey | DirectusUsers;
 }
+
+export type DirectusSessionsPayload = Omit<DirectusSessions, 'expires'> & {
+    // Type: dateTime
+    expires?: string;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusSessions}.
+ */
+export function parseDirectusSessionsPayload(v: DirectusSessionsPayload): DirectusSessions {
+    const r: Record<string, unknown> = v;
+    if (v.expires) {
+        r.expires = new Date(v.expires);
+    }
+    return r as DirectusSessions;
+}

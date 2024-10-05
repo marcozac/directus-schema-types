@@ -60,3 +60,20 @@ export interface DirectusPanelsRelations {
 
     user_created: DirectusUsersPrimaryKey | DirectusUsers;
 }
+
+export type DirectusPanelsPayload = Omit<DirectusPanels, 'date_created'> & {
+    // Type: timestamp
+    date_created?: string | null;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusPanels}.
+ */
+export function parseDirectusPanelsPayload(v: DirectusPanelsPayload): DirectusPanels {
+    const r: Record<string, unknown> = v;
+    if (v.date_created) {
+        r.date_created = new Date(v.date_created);
+    }
+    return r as DirectusPanels;
+}

@@ -131,3 +131,14 @@ export interface DirectusSettingsRelations {
 
     storage_default_folder: DirectusFoldersPrimaryKey | DirectusFolders;
 }
+
+// The payload is the same as the schema definition.
+export type DirectusSettingsPayload = DirectusSettings;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusSettingsPayload(v: DirectusSettingsPayload): DirectusSettings {
+    return v;
+}

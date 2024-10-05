@@ -45,3 +45,20 @@ export interface DirectusActivityRelations {
 
     user: DirectusUsersPrimaryKey | DirectusUsers;
 }
+
+export type DirectusActivityPayload = Omit<DirectusActivity, 'timestamp'> & {
+    // Type: timestamp
+    timestamp?: string;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusActivity}.
+ */
+export function parseDirectusActivityPayload(v: DirectusActivityPayload): DirectusActivity {
+    const r: Record<string, unknown> = v;
+    if (v.timestamp) {
+        r.timestamp = new Date(v.timestamp);
+    }
+    return r as DirectusActivity;
+}

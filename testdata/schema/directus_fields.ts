@@ -71,3 +71,14 @@ export interface DirectusFieldsRelations {
 
     group: DirectusFieldsPrimaryKey | DirectusFields;
 }
+
+// The payload is the same as the schema definition.
+export type DirectusFieldsPayload = DirectusFields;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusFieldsPayload(v: DirectusFieldsPayload): DirectusFields {
+    return v;
+}

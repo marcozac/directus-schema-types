@@ -28,6 +28,23 @@ func NewGenerator(s *schema.Schema, opts ...Option) *Generator {
 				"join": func(slice []string) string {
 					return strings.Join(slice, ", ")
 				},
+				// unionType returns a string with the union of the slice elements.
+				// If quote is true, the elements are (single) quoted.
+				"unionType": func(slice []string, quote bool) string {
+					if quote {
+						for i, s := range slice {
+							slice[i] = fmt.Sprintf("'%s'", s)
+						}
+					}
+					return strings.Join(slice, "| ")
+				},
+				"parserOf": func(t TsType) string {
+					switch t {
+					case TsTypeDate:
+						return "new Date"
+					}
+					panic(fmt.Sprintf("parserOf: unknown type %s", t))
+				},
 			}).
 			ParseFS(tmplFS, "template/*.tmpl"),
 		),

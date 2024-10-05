@@ -96,3 +96,20 @@ export interface DirectusUsersRelations {
 
     role: DirectusRolesPrimaryKey | DirectusRoles;
 }
+
+export type DirectusUsersPayload = Omit<DirectusUsers, 'last_access'> & {
+    // Type: dateTime
+    readonly last_access?: string | null;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusUsers}.
+ */
+export function parseDirectusUsersPayload(v: DirectusUsersPayload): DirectusUsers {
+    const r: Record<string, unknown> = v;
+    if (v.last_access) {
+        r.last_access = new Date(v.last_access);
+    }
+    return r as DirectusUsers;
+}

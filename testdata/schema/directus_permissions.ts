@@ -36,3 +36,14 @@ export interface DirectusPermissions {
 export interface DirectusPermissionsRelations {
     policy: DirectusPoliciesPrimaryKey | DirectusPolicies;
 }
+
+// The payload is the same as the schema definition.
+export type DirectusPermissionsPayload = DirectusPermissions;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusPermissionsPayload(v: DirectusPermissionsPayload): DirectusPermissions {
+    return v;
+}

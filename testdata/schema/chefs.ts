@@ -18,3 +18,14 @@ export interface Chefs {
 export interface ChefsRelations {
     signature_dish: RecipesPrimaryKey | Recipes;
 }
+
+// The payload is the same as the schema definition.
+export type ChefsPayload = Chefs;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseChefsPayload(v: ChefsPayload): Chefs {
+    return v;
+}

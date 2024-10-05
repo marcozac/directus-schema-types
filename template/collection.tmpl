@@ -4,6 +4,13 @@
 {{ template "collection" $ }}
 {{- end }}
 
+{{/* collections is the definition of the all collection interfaces. */}}
+{{- define "collections" }}
+{{- range $ }}
+	{{- template "collection" . }}
+{{ end }}
+{{- end }}
+
 {{/* collection is a single collection definition. */}}
 {{- define "collection" }}
 // --- {{ $.Name }} ---
@@ -22,6 +29,8 @@ export interface {{ $.RelationsTypeName }} {
 	{{- template "collection/relation" . }}
 	{{- end }}
 }
+
+{{ template "collection/payload" $ }}
 {{- end }}
 
 {{/* Collection Field */}}
@@ -55,9 +64,42 @@ export interface {{ $.RelationsTypeName }} {
 	{{- $.RelatedCollection.PrimaryKey.TypeName }} | {{ $.RelatedCollection.TypeName }}
 {{- end }}
 
-{{/* collections is the definition of the all collection interfaces. */}}
-{{- define "collections" }}
-{{- range $ }}
-	{{- template "collection" . }}
-{{ end }}
+
+{{/* collection/payload is the definition of a collection payload and its parser. */}}
+{{- define "collection/payload" }}
+{{- $typeDecl := printf "export type %s =" $.PayloadTypeName }}
+{{- $funcDecl := printf "export function parse%s(v: %s): %s" $.PayloadTypeName $.PayloadTypeName $.TypeName }}
+{{- with $.PayloadFields }}
+{{ $typeDecl }} Omit<{{ $.TypeName }}, {{ unionType $.PayloadFields.Fields true }}> & {
+{{- range . }}
+	{{- template "collection/field" . }}
+{{- end }}
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link {{ $.TypeName }}}.
+ */
+{{ $funcDecl }} {
+	const r: Record<string, unknown> = v;
+	{{- range . }}
+	if (v.{{ .Name }}) {
+		r.{{ .Name }} = {{ parserOf .Spec.Type }}(v.{{ .Name }});
+	}
+	{{- end }}
+	return r as {{ $.TypeName }};
+}
+
+{{- else }}
+// The payload is the same as the schema definition.
+{{ $typeDecl }} {{ $.TypeName }};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+{{ $funcDecl }} {
+	return v;
+}
+{{- end }}
 {{- end }}

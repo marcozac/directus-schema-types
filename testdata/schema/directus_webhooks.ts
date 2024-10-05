@@ -45,3 +45,14 @@ export interface DirectusWebhooks {
 export interface DirectusWebhooksRelations {
     migrated_flow: DirectusFlowsPrimaryKey | DirectusFlows;
 }
+
+// The payload is the same as the schema definition.
+export type DirectusWebhooksPayload = DirectusWebhooks;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusWebhooksPayload(v: DirectusWebhooksPayload): DirectusWebhooks {
+    return v;
+}

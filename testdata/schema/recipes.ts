@@ -40,3 +40,26 @@ export interface RecipesRelations {
 
     user_updated: DirectusUsersPrimaryKey | DirectusUsers;
 }
+
+export type RecipesPayload = Omit<Recipes, 'date_updated' | 'date_created'> & {
+    // Type: timestamp
+    readonly date_created?: string | null;
+
+    // Type: timestamp
+    readonly date_updated?: string | null;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link Recipes}.
+ */
+export function parseRecipesPayload(v: RecipesPayload): Recipes {
+    const r: Record<string, unknown> = v;
+    if (v.date_created) {
+        r.date_created = new Date(v.date_created);
+    }
+    if (v.date_updated) {
+        r.date_updated = new Date(v.date_updated);
+    }
+    return r as Recipes;
+}

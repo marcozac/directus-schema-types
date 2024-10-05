@@ -35,3 +35,14 @@ export interface DirectusRolesRelations {
 
     users: (DirectusUsersPrimaryKey | DirectusUsers)[];
 }
+
+// The payload is the same as the schema definition.
+export type DirectusRolesPayload = DirectusRoles;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusRolesPayload(v: DirectusRolesPayload): DirectusRoles {
+    return v;
+}

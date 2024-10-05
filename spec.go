@@ -33,17 +33,18 @@ func SchemaToSpec(s *schema.Schema) *Spec {
 			continue
 		}
 		fieldSpec := &FieldSpec{
-			Name:       field.Field,
-			FieldType:  field.Type,
-			IsRequired: field.Meta.Required,
-			IsReadonly: field.Meta.Readonly,
-			Note:       field.Meta.Note,
+			collection: spec.Collections[field.Collection],
+			name:       field.Field,
+			fieldType:  field.Type,
+			isRequired: field.Meta.Required,
+			isReadonly: field.Meta.Readonly,
+			note:       field.Meta.Note,
 		}
 		if field.Schema != nil {
-			fieldSpec.IsNullable = field.Schema.IsNullable
-			fieldSpec.IsUnique = field.Schema.IsUnique
+			fieldSpec.isNullable = field.Schema.IsNullable
+			fieldSpec.isUnique = field.Schema.IsUnique
 			if field.Schema.IsPrimaryKey {
-				spec.Collections[field.Collection].setPrimaryKey(field.Field)
+				fieldSpec.Collection().setPrimaryKey(field.Field)
 			}
 		}
 		// collection existence not checked: it must exist
@@ -62,7 +63,7 @@ func SchemaToSpec(s *schema.Schema) *Spec {
 				Many:              true,
 			}
 			// mark the relation as unique if the related field is unique
-			if spec.Collections[relation.Meta.ManyCollection].Fields[relation.Meta.ManyField].IsUnique {
+			if spec.Collections[relation.Meta.ManyCollection].Fields[relation.Meta.ManyField].isUnique {
 				relationSpec.Unique = true
 			}
 			spec.Collections[relation.Meta.OneCollection].Relations[fieldName] = relationSpec
@@ -83,7 +84,10 @@ const (
 	pkSuffix      = "PrimaryKey"
 	pkFieldSuffix = pkSuffix + "Field"
 	relSuffix     = "Relations"
+	payloadSuffix = "Payload"
 )
+
+var _ TypeNamer = (*CollectionSpec)(nil)
 
 type CollectionSpec struct {
 	// Name is the name of the collection.
@@ -115,6 +119,27 @@ func (c *CollectionSpec) RelationsTypeName() string {
 	return c.TypeName() + relSuffix
 }
 
+// PayloadTypeName returns the name of the type for the collection payload.
+func (c *CollectionSpec) PayloadTypeName() string {
+	return c.TypeName() + payloadSuffix
+}
+
+// PayloadFields returns the list of fields in the collection payload different
+// than the schema ones.
+func (c *CollectionSpec) PayloadFields() PayloadFields {
+	fields := make(PayloadFields)
+	for _, f := range c.Fields {
+		t := directusPayloadType(f.FieldType().String())
+		if t != f.Type() {
+			fields[f.Name()] = &payloadField{FieldSpec: f, typ: t}
+		}
+	}
+	if len(fields) == 0 {
+		return nil
+	}
+	return fields
+}
+
 func (c *CollectionSpec) PrimaryKey() *PrimaryKeySpec {
 	// panic on access if not set: it's mandatory in Directus
 	return c.primaryKey
@@ -139,6 +164,7 @@ func (p PrimaryKeySpec) Type() TsType {
 	return p.c.Fields[p.field].Type()
 }
 
+// FieldTypeName returns the name of the type of the collection.
 func (p PrimaryKeySpec) FieldTypeName() string {
 	return p.c.TypeName() + pkFieldSuffix
 }
@@ -149,32 +175,76 @@ func (p PrimaryKeySpec) FieldType() string {
 	return p.field
 }
 
+var _ FieldTyper = (*FieldSpec)(nil)
+
 type FieldSpec struct {
-	// Name is the name of the field.
-	Name string
+	// collection is the collection that the field belongs to.
+	collection *CollectionSpec
+
+	// name is the name of the field.
+	name string
 
 	// FieldType is the type of the field in Directus.
-	FieldType schema.FieldType
+	fieldType schema.FieldType
 
 	// IsNullable is whether the field is nullable.
-	IsNullable bool
+	isNullable bool
 
 	// IsRequired is whether the field is required.
-	IsRequired bool
+	isRequired bool
 
 	// IsReadonly is whether the field is read-only.
-	IsReadonly bool
+	isReadonly bool
 
 	// IsUnique is whether the field is unique.
-	IsUnique bool
+	isUnique bool
 
 	// Note is an optional note about the field.
-	Note *string
+	note *string
+}
+
+func (f *FieldSpec) Collection() *CollectionSpec {
+	return f.collection
+}
+
+// Name returns the name of the field.
+func (f *FieldSpec) Name() string {
+	return f.name
+}
+
+// FieldType returns the type of the field in Directus.
+func (f *FieldSpec) FieldType() schema.FieldType {
+	return f.fieldType
 }
 
 // TsType returns the TypeScript type of the field.
 func (f *FieldSpec) Type() TsType {
-	return directusTypeToTs(f.FieldType.String())
+	return directusTypeToTs(f.FieldType().String())
+}
+
+// IsNullable returns whether the field is nullable.
+func (f *FieldSpec) IsNullable() bool {
+	return f.isNullable
+}
+
+// IsRequired returns whether the field is required.
+func (f *FieldSpec) IsRequired() bool {
+	return f.isRequired
+}
+
+// IsReadonly returns whether the field is read-only.
+func (f *FieldSpec) IsReadonly() bool {
+	return f.isReadonly
+}
+
+// IsUnique returns whether the field is unique.
+func (f *FieldSpec) IsUnique() bool {
+	return f.isUnique
+}
+
+// Note returns an optional note about the field.
+func (f *FieldSpec) Note() *string {
+	return f.note
 }
 
 type TsType string
@@ -208,6 +278,15 @@ func directusTypeToTs(directusType string) TsType {
 		// Default to 'any' if the type is unknown
 		return TsTypeAny
 	}
+}
+
+func directusPayloadType(directusType string) TsType {
+	switch directusType {
+	case "date", "dateTime", "timestamp":
+		// Directus API returns dates as strings
+		return TsTypeString
+	}
+	return directusTypeToTs(directusType)
 }
 
 type RelationSpec struct {
@@ -248,6 +327,86 @@ type RelationSpec struct {
 //	}
 type ImportsSpec map[string][]string
 
+// PayloadFields is a map of field names to their types.
+type PayloadFields map[string]PayloadFieldTyper
+
+// Fields returns the list of field names.
+func (p PayloadFields) Fields() []string {
+	fields := make([]string, 0, len(p))
+	for f := range p {
+		fields = append(fields, f)
+	}
+	return fields
+}
+
+var _ PayloadFieldTyper = (*payloadField)(nil)
+
+type payloadField struct {
+	*FieldSpec
+	typ TsType
+}
+
+func (f *payloadField) Spec() *FieldSpec {
+	return f.FieldSpec
+}
+
+func (f *payloadField) Type() TsType {
+	return f.typ
+}
+
 func toPascalCase(s string) string {
 	return strcase.ToCamel(s)
+}
+
+// TypeNamer is the interface implemented by types that have a name.
+type TypeNamer interface {
+	// TypeName returns the name of the type.
+	TypeName() string
+}
+
+// TypeTyper is the interface implemented by types that have a type.
+type TypeTyper interface {
+	// Type returns the typescript type.
+	Type() TsType
+}
+
+// Typer is the interface implemented by types that have a name and a type.
+type Typer interface {
+	TypeNamer
+	TypeTyper
+}
+
+// FieldTyper is the interface implemented by field types that have a name and a type.
+type FieldTyper interface {
+	TypeTyper
+
+	Collection() *CollectionSpec
+
+	// Name returns the name of the field.
+	Name() string
+
+	// FieldType is the type of the field in Directus.
+	FieldType() schema.FieldType
+
+	// IsNullable is whether the field is nullable.
+	IsNullable() bool
+
+	// IsRequired is whether the field is required.
+	IsRequired() bool
+
+	// IsReadonly is whether the field is read-only.
+	IsReadonly() bool
+
+	// IsUnique is whether the field is unique.
+	IsUnique() bool
+
+	// Note is an optional note about the field.
+	Note() *string
+}
+
+type PayloadFieldTyper interface {
+	FieldTyper
+
+	// Spec returns the parent field spec.
+	Spec() *FieldSpec
 }

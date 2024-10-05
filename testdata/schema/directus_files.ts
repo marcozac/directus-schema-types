@@ -95,3 +95,32 @@ export interface DirectusFilesRelations {
 
     uploaded_by: DirectusUsersPrimaryKey | DirectusUsers;
 }
+
+export type DirectusFilesPayload = Omit<DirectusFiles, 'created_on' | 'modified_on' | 'uploaded_on'> & {
+    // Type: dateTime
+    readonly created_on?: string;
+
+    // Type: dateTime
+    readonly modified_on?: string;
+
+    // Type: dateTime
+    uploaded_on?: string | null;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusFiles}.
+ */
+export function parseDirectusFilesPayload(v: DirectusFilesPayload): DirectusFiles {
+    const r: Record<string, unknown> = v;
+    if (v.created_on) {
+        r.created_on = new Date(v.created_on);
+    }
+    if (v.modified_on) {
+        r.modified_on = new Date(v.modified_on);
+    }
+    if (v.uploaded_on) {
+        r.uploaded_on = new Date(v.uploaded_on);
+    }
+    return r as DirectusFiles;
+}

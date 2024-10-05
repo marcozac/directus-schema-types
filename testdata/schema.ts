@@ -17,6 +17,17 @@ export interface ChefsRelations {
     signature_dish: RecipesPrimaryKey | Recipes;
 }
 
+// The payload is the same as the schema definition.
+export type ChefsPayload = Chefs;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseChefsPayload(v: ChefsPayload): Chefs {
+    return v;
+}
+
 // --- directus_access ---
 
 export type DirectusAccessPrimaryKeyField = 'id';
@@ -45,6 +56,17 @@ export interface DirectusAccessRelations {
     role: DirectusRolesPrimaryKey | DirectusRoles;
 
     user: DirectusUsersPrimaryKey | DirectusUsers;
+}
+
+// The payload is the same as the schema definition.
+export type DirectusAccessPayload = DirectusAccess;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusAccessPayload(v: DirectusAccessPayload): DirectusAccess {
+    return v;
 }
 
 // --- directus_activity ---
@@ -88,6 +110,23 @@ export interface DirectusActivityRelations {
     revisions: (DirectusRevisionsPrimaryKey | DirectusRevisions)[];
 
     user: DirectusUsersPrimaryKey | DirectusUsers;
+}
+
+export type DirectusActivityPayload = Omit<DirectusActivity, 'timestamp'> & {
+    // Type: timestamp
+    timestamp?: string;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusActivity}.
+ */
+export function parseDirectusActivityPayload(v: DirectusActivityPayload): DirectusActivity {
+    const r: Record<string, unknown> = v;
+    if (v.timestamp) {
+        r.timestamp = new Date(v.timestamp);
+    }
+    return r as DirectusActivity;
 }
 
 // --- directus_collections ---
@@ -163,6 +202,17 @@ export interface DirectusCollectionsRelations {
     group: DirectusCollectionsPrimaryKey | DirectusCollections;
 }
 
+// The payload is the same as the schema definition.
+export type DirectusCollectionsPayload = DirectusCollections;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusCollectionsPayload(v: DirectusCollectionsPayload): DirectusCollections {
+    return v;
+}
+
 // --- directus_dashboards ---
 
 export type DirectusDashboardsPrimaryKeyField = 'id';
@@ -197,6 +247,23 @@ export interface DirectusDashboardsRelations {
     user_created: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+export type DirectusDashboardsPayload = Omit<DirectusDashboards, 'date_created'> & {
+    // Type: timestamp
+    date_created?: string | null;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusDashboards}.
+ */
+export function parseDirectusDashboardsPayload(v: DirectusDashboardsPayload): DirectusDashboards {
+    const r: Record<string, unknown> = v;
+    if (v.date_created) {
+        r.date_created = new Date(v.date_created);
+    }
+    return r as DirectusDashboards;
+}
+
 // --- directus_extensions ---
 
 export type DirectusExtensionsPrimaryKeyField = 'id';
@@ -220,6 +287,17 @@ export interface DirectusExtensions {
 }
 
 export interface DirectusExtensionsRelations {}
+
+// The payload is the same as the schema definition.
+export type DirectusExtensionsPayload = DirectusExtensions;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusExtensionsPayload(v: DirectusExtensionsPayload): DirectusExtensions {
+    return v;
+}
 
 // --- directus_fields ---
 
@@ -289,6 +367,17 @@ export interface DirectusFieldsRelations {
     collection: DirectusCollectionsPrimaryKey | DirectusCollections;
 
     group: DirectusFieldsPrimaryKey | DirectusFields;
+}
+
+// The payload is the same as the schema definition.
+export type DirectusFieldsPayload = DirectusFields;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusFieldsPayload(v: DirectusFieldsPayload): DirectusFields {
+    return v;
 }
 
 // --- directus_files ---
@@ -384,6 +473,35 @@ export interface DirectusFilesRelations {
     uploaded_by: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+export type DirectusFilesPayload = Omit<DirectusFiles, 'created_on' | 'modified_on' | 'uploaded_on'> & {
+    // Type: dateTime
+    readonly created_on?: string;
+
+    // Type: dateTime
+    readonly modified_on?: string;
+
+    // Type: dateTime
+    uploaded_on?: string | null;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusFiles}.
+ */
+export function parseDirectusFilesPayload(v: DirectusFilesPayload): DirectusFiles {
+    const r: Record<string, unknown> = v;
+    if (v.created_on) {
+        r.created_on = new Date(v.created_on);
+    }
+    if (v.modified_on) {
+        r.modified_on = new Date(v.modified_on);
+    }
+    if (v.uploaded_on) {
+        r.uploaded_on = new Date(v.uploaded_on);
+    }
+    return r as DirectusFiles;
+}
+
 // --- directus_flows ---
 
 export type DirectusFlowsPrimaryKeyField = 'id';
@@ -435,6 +553,23 @@ export interface DirectusFlowsRelations {
     user_created: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+export type DirectusFlowsPayload = Omit<DirectusFlows, 'date_created'> & {
+    // Type: dateTime
+    date_created?: string | null;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusFlows}.
+ */
+export function parseDirectusFlowsPayload(v: DirectusFlowsPayload): DirectusFlows {
+    const r: Record<string, unknown> = v;
+    if (v.date_created) {
+        r.date_created = new Date(v.date_created);
+    }
+    return r as DirectusFlows;
+}
+
 // --- directus_folders ---
 
 export type DirectusFoldersPrimaryKeyField = 'id';
@@ -455,6 +590,17 @@ export interface DirectusFoldersRelations {
     parent: DirectusFoldersPrimaryKey | DirectusFolders;
 }
 
+// The payload is the same as the schema definition.
+export type DirectusFoldersPayload = DirectusFolders;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusFoldersPayload(v: DirectusFoldersPayload): DirectusFolders {
+    return v;
+}
+
 // --- directus_migrations ---
 
 export type DirectusMigrationsPrimaryKeyField = 'version';
@@ -472,6 +618,23 @@ export interface DirectusMigrations {
 }
 
 export interface DirectusMigrationsRelations {}
+
+export type DirectusMigrationsPayload = Omit<DirectusMigrations, 'timestamp'> & {
+    // Type: dateTime
+    timestamp?: string | null;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusMigrations}.
+ */
+export function parseDirectusMigrationsPayload(v: DirectusMigrationsPayload): DirectusMigrations {
+    const r: Record<string, unknown> = v;
+    if (v.timestamp) {
+        r.timestamp = new Date(v.timestamp);
+    }
+    return r as DirectusMigrations;
+}
 
 // --- directus_notifications ---
 
@@ -511,6 +674,23 @@ export interface DirectusNotificationsRelations {
     recipient: DirectusUsersPrimaryKey | DirectusUsers;
 
     sender: DirectusUsersPrimaryKey | DirectusUsers;
+}
+
+export type DirectusNotificationsPayload = Omit<DirectusNotifications, 'timestamp'> & {
+    // Type: timestamp
+    timestamp?: string | null;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusNotifications}.
+ */
+export function parseDirectusNotificationsPayload(v: DirectusNotificationsPayload): DirectusNotifications {
+    const r: Record<string, unknown> = v;
+    if (v.timestamp) {
+        r.timestamp = new Date(v.timestamp);
+    }
+    return r as DirectusNotifications;
 }
 
 // --- directus_operations ---
@@ -564,6 +744,23 @@ export interface DirectusOperationsRelations {
     resolve: DirectusOperationsPrimaryKey | DirectusOperations;
 
     user_created: DirectusUsersPrimaryKey | DirectusUsers;
+}
+
+export type DirectusOperationsPayload = Omit<DirectusOperations, 'date_created'> & {
+    // Type: dateTime
+    date_created?: string | null;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusOperations}.
+ */
+export function parseDirectusOperationsPayload(v: DirectusOperationsPayload): DirectusOperations {
+    const r: Record<string, unknown> = v;
+    if (v.date_created) {
+        r.date_created = new Date(v.date_created);
+    }
+    return r as DirectusOperations;
 }
 
 // --- directus_panels ---
@@ -624,6 +821,23 @@ export interface DirectusPanelsRelations {
     user_created: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+export type DirectusPanelsPayload = Omit<DirectusPanels, 'date_created'> & {
+    // Type: timestamp
+    date_created?: string | null;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusPanels}.
+ */
+export function parseDirectusPanelsPayload(v: DirectusPanelsPayload): DirectusPanels {
+    const r: Record<string, unknown> = v;
+    if (v.date_created) {
+        r.date_created = new Date(v.date_created);
+    }
+    return r as DirectusPanels;
+}
+
 // --- directus_permissions ---
 
 export type DirectusPermissionsPrimaryKeyField = 'id';
@@ -657,6 +871,17 @@ export interface DirectusPermissions {
 
 export interface DirectusPermissionsRelations {
     policy: DirectusPoliciesPrimaryKey | DirectusPolicies;
+}
+
+// The payload is the same as the schema definition.
+export type DirectusPermissionsPayload = DirectusPermissions;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusPermissionsPayload(v: DirectusPermissionsPayload): DirectusPermissions {
+    return v;
 }
 
 // --- directus_policies ---
@@ -697,6 +922,17 @@ export interface DirectusPoliciesRelations {
     roles: (DirectusAccessPrimaryKey | DirectusAccess)[];
 
     users: (DirectusAccessPrimaryKey | DirectusAccess)[];
+}
+
+// The payload is the same as the schema definition.
+export type DirectusPoliciesPayload = DirectusPolicies;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusPoliciesPayload(v: DirectusPoliciesPayload): DirectusPolicies {
+    return v;
 }
 
 // --- directus_presets ---
@@ -751,6 +987,17 @@ export interface DirectusPresetsRelations {
     user: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+// The payload is the same as the schema definition.
+export type DirectusPresetsPayload = DirectusPresets;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusPresetsPayload(v: DirectusPresetsPayload): DirectusPresets {
+    return v;
+}
+
 // --- directus_relations ---
 
 export type DirectusRelationsPrimaryKeyField = 'id';
@@ -789,6 +1036,17 @@ export interface DirectusRelations {
 }
 
 export interface DirectusRelationsRelations {}
+
+// The payload is the same as the schema definition.
+export type DirectusRelationsPayload = DirectusRelations;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusRelationsPayload(v: DirectusRelationsPayload): DirectusRelations {
+    return v;
+}
 
 // --- directus_revisions ---
 
@@ -829,6 +1087,17 @@ export interface DirectusRevisionsRelations {
     version: DirectusVersionsPrimaryKey | DirectusVersions;
 }
 
+// The payload is the same as the schema definition.
+export type DirectusRevisionsPayload = DirectusRevisions;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusRevisionsPayload(v: DirectusRevisionsPayload): DirectusRevisions {
+    return v;
+}
+
 // --- directus_roles ---
 
 export type DirectusRolesPrimaryKeyField = 'id';
@@ -860,6 +1129,17 @@ export interface DirectusRolesRelations {
     policies: (DirectusAccessPrimaryKey | DirectusAccess)[];
 
     users: (DirectusUsersPrimaryKey | DirectusUsers)[];
+}
+
+// The payload is the same as the schema definition.
+export type DirectusRolesPayload = DirectusRoles;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusRolesPayload(v: DirectusRolesPayload): DirectusRoles {
+    return v;
 }
 
 // --- directus_sessions ---
@@ -897,6 +1177,23 @@ export interface DirectusSessionsRelations {
     share: DirectusSharesPrimaryKey | DirectusShares;
 
     user: DirectusUsersPrimaryKey | DirectusUsers;
+}
+
+export type DirectusSessionsPayload = Omit<DirectusSessions, 'expires'> & {
+    // Type: dateTime
+    expires?: string;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusSessions}.
+ */
+export function parseDirectusSessionsPayload(v: DirectusSessionsPayload): DirectusSessions {
+    const r: Record<string, unknown> = v;
+    if (v.expires) {
+        r.expires = new Date(v.expires);
+    }
+    return r as DirectusSessions;
 }
 
 // --- directus_settings ---
@@ -1027,6 +1324,17 @@ export interface DirectusSettingsRelations {
     storage_default_folder: DirectusFoldersPrimaryKey | DirectusFolders;
 }
 
+// The payload is the same as the schema definition.
+export type DirectusSettingsPayload = DirectusSettings;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusSettingsPayload(v: DirectusSettingsPayload): DirectusSettings {
+    return v;
+}
+
 // --- directus_shares ---
 
 export type DirectusSharesPrimaryKeyField = 'id';
@@ -1082,6 +1390,37 @@ export interface DirectusSharesRelations {
     user_created: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+export type DirectusSharesPayload = Omit<DirectusShares, 'date_start' | 'date_end' | 'date_created'> & {
+    // Type: timestamp
+    readonly date_created?: string | null;
+
+    // $t:shared_leave_blank_for_unlimited
+    // Type: dateTime
+    date_end?: string | null;
+
+    // $t:shared_leave_blank_for_unlimited
+    // Type: dateTime
+    date_start?: string | null;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusShares}.
+ */
+export function parseDirectusSharesPayload(v: DirectusSharesPayload): DirectusShares {
+    const r: Record<string, unknown> = v;
+    if (v.date_created) {
+        r.date_created = new Date(v.date_created);
+    }
+    if (v.date_end) {
+        r.date_end = new Date(v.date_end);
+    }
+    if (v.date_start) {
+        r.date_start = new Date(v.date_start);
+    }
+    return r as DirectusShares;
+}
+
 // --- directus_translations ---
 
 export type DirectusTranslationsPrimaryKeyField = 'id';
@@ -1102,6 +1441,17 @@ export interface DirectusTranslations {
 }
 
 export interface DirectusTranslationsRelations {}
+
+// The payload is the same as the schema definition.
+export type DirectusTranslationsPayload = DirectusTranslations;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusTranslationsPayload(v: DirectusTranslationsPayload): DirectusTranslations {
+    return v;
+}
 
 // --- directus_users ---
 
@@ -1196,6 +1546,23 @@ export interface DirectusUsersRelations {
     role: DirectusRolesPrimaryKey | DirectusRoles;
 }
 
+export type DirectusUsersPayload = Omit<DirectusUsers, 'last_access'> & {
+    // Type: dateTime
+    readonly last_access?: string | null;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusUsers}.
+ */
+export function parseDirectusUsersPayload(v: DirectusUsersPayload): DirectusUsers {
+    const r: Record<string, unknown> = v;
+    if (v.last_access) {
+        r.last_access = new Date(v.last_access);
+    }
+    return r as DirectusUsers;
+}
+
 // --- directus_versions ---
 
 export type DirectusVersionsPrimaryKeyField = 'id';
@@ -1239,6 +1606,29 @@ export interface DirectusVersionsRelations {
     user_created: DirectusUsersPrimaryKey | DirectusUsers;
 
     user_updated: DirectusUsersPrimaryKey | DirectusUsers;
+}
+
+export type DirectusVersionsPayload = Omit<DirectusVersions, 'date_created' | 'date_updated'> & {
+    // Type: timestamp
+    date_created?: string | null;
+
+    // Type: timestamp
+    date_updated?: string | null;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusVersions}.
+ */
+export function parseDirectusVersionsPayload(v: DirectusVersionsPayload): DirectusVersions {
+    const r: Record<string, unknown> = v;
+    if (v.date_created) {
+        r.date_created = new Date(v.date_created);
+    }
+    if (v.date_updated) {
+        r.date_updated = new Date(v.date_updated);
+    }
+    return r as DirectusVersions;
 }
 
 // --- directus_webhooks ---
@@ -1285,6 +1675,17 @@ export interface DirectusWebhooksRelations {
     migrated_flow: DirectusFlowsPrimaryKey | DirectusFlows;
 }
 
+// The payload is the same as the schema definition.
+export type DirectusWebhooksPayload = DirectusWebhooks;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusWebhooksPayload(v: DirectusWebhooksPayload): DirectusWebhooks {
+    return v;
+}
+
 // --- ingredients ---
 
 export type IngredientsPrimaryKeyField = 'id';
@@ -1316,6 +1717,29 @@ export interface IngredientsRelations {
     user_created: DirectusUsersPrimaryKey | DirectusUsers;
 
     user_updated: DirectusUsersPrimaryKey | DirectusUsers;
+}
+
+export type IngredientsPayload = Omit<Ingredients, 'date_created' | 'date_updated'> & {
+    // Type: timestamp
+    readonly date_created?: string | null;
+
+    // Type: timestamp
+    readonly date_updated?: string | null;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link Ingredients}.
+ */
+export function parseIngredientsPayload(v: IngredientsPayload): Ingredients {
+    const r: Record<string, unknown> = v;
+    if (v.date_created) {
+        r.date_created = new Date(v.date_created);
+    }
+    if (v.date_updated) {
+        r.date_updated = new Date(v.date_updated);
+    }
+    return r as Ingredients;
 }
 
 // --- recipes ---
@@ -1355,6 +1779,29 @@ export interface RecipesRelations {
     user_updated: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+export type RecipesPayload = Omit<Recipes, 'date_created' | 'date_updated'> & {
+    // Type: timestamp
+    readonly date_created?: string | null;
+
+    // Type: timestamp
+    readonly date_updated?: string | null;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link Recipes}.
+ */
+export function parseRecipesPayload(v: RecipesPayload): Recipes {
+    const r: Record<string, unknown> = v;
+    if (v.date_created) {
+        r.date_created = new Date(v.date_created);
+    }
+    if (v.date_updated) {
+        r.date_updated = new Date(v.date_updated);
+    }
+    return r as Recipes;
+}
+
 // --- recipes_ingredients ---
 
 export type RecipesIngredientsPrimaryKeyField = 'id';
@@ -1375,6 +1822,17 @@ export interface RecipesIngredientsRelations {
     ingredients_id: IngredientsPrimaryKey | Ingredients;
 
     recipes_id: RecipesPrimaryKey | Recipes;
+}
+
+// The payload is the same as the schema definition.
+export type RecipesIngredientsPayload = RecipesIngredients;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseRecipesIngredientsPayload(v: RecipesIngredientsPayload): RecipesIngredients {
+    return v;
 }
 
 // --- Schema ---

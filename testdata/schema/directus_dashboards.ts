@@ -36,3 +36,20 @@ export interface DirectusDashboardsRelations {
 
     user_created: DirectusUsersPrimaryKey | DirectusUsers;
 }
+
+export type DirectusDashboardsPayload = Omit<DirectusDashboards, 'date_created'> & {
+    // Type: timestamp
+    date_created?: string | null;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusDashboards}.
+ */
+export function parseDirectusDashboardsPayload(v: DirectusDashboardsPayload): DirectusDashboards {
+    const r: Record<string, unknown> = v;
+    if (v.date_created) {
+        r.date_created = new Date(v.date_created);
+    }
+    return r as DirectusDashboards;
+}

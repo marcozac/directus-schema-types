@@ -41,3 +41,20 @@ export interface DirectusNotificationsRelations {
 
     sender: DirectusUsersPrimaryKey | DirectusUsers;
 }
+
+export type DirectusNotificationsPayload = Omit<DirectusNotifications, 'timestamp'> & {
+    // Type: timestamp
+    timestamp?: string | null;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusNotifications}.
+ */
+export function parseDirectusNotificationsPayload(v: DirectusNotificationsPayload): DirectusNotifications {
+    const r: Record<string, unknown> = v;
+    if (v.timestamp) {
+        r.timestamp = new Date(v.timestamp);
+    }
+    return r as DirectusNotifications;
+}

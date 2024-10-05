@@ -55,3 +55,20 @@ export interface DirectusOperationsRelations {
 
     user_created: DirectusUsersPrimaryKey | DirectusUsers;
 }
+
+export type DirectusOperationsPayload = Omit<DirectusOperations, 'date_created'> & {
+    // Type: dateTime
+    date_created?: string | null;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusOperations}.
+ */
+export function parseDirectusOperationsPayload(v: DirectusOperationsPayload): DirectusOperations {
+    const r: Record<string, unknown> = v;
+    if (v.date_created) {
+        r.date_created = new Date(v.date_created);
+    }
+    return r as DirectusOperations;
+}

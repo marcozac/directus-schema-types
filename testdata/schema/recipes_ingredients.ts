@@ -24,3 +24,14 @@ export interface RecipesIngredientsRelations {
 
     recipes_id: RecipesPrimaryKey | Recipes;
 }
+
+// The payload is the same as the schema definition.
+export type RecipesIngredientsPayload = RecipesIngredients;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseRecipesIngredientsPayload(v: RecipesIngredientsPayload): RecipesIngredients {
+    return v;
+}

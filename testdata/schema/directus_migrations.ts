@@ -17,3 +17,20 @@ export interface DirectusMigrations {
 }
 
 export interface DirectusMigrationsRelations {}
+
+export type DirectusMigrationsPayload = Omit<DirectusMigrations, 'timestamp'> & {
+    // Type: dateTime
+    timestamp?: string | null;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusMigrations}.
+ */
+export function parseDirectusMigrationsPayload(v: DirectusMigrationsPayload): DirectusMigrations {
+    const r: Record<string, unknown> = v;
+    if (v.timestamp) {
+        r.timestamp = new Date(v.timestamp);
+    }
+    return r as DirectusMigrations;
+}

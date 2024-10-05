@@ -38,3 +38,14 @@ export interface DirectusRelations {
 }
 
 export interface DirectusRelationsRelations {}
+
+// The payload is the same as the schema definition.
+export type DirectusRelationsPayload = DirectusRelations;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusRelationsPayload(v: DirectusRelationsPayload): DirectusRelations {
+    return v;
+}

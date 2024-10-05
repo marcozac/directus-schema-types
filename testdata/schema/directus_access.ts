@@ -33,3 +33,14 @@ export interface DirectusAccessRelations {
 
     user: DirectusUsersPrimaryKey | DirectusUsers;
 }
+
+// The payload is the same as the schema definition.
+export type DirectusAccessPayload = DirectusAccess;
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload as it is received: it is the same as the schema definition.
+ */
+export function parseDirectusAccessPayload(v: DirectusAccessPayload): DirectusAccess {
+    return v;
+}

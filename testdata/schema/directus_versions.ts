@@ -47,3 +47,26 @@ export interface DirectusVersionsRelations {
 
     user_updated: DirectusUsersPrimaryKey | DirectusUsers;
 }
+
+export type DirectusVersionsPayload = Omit<DirectusVersions, 'date_updated' | 'date_created'> & {
+    // Type: timestamp
+    date_created?: string | null;
+
+    // Type: timestamp
+    date_updated?: string | null;
+};
+
+/**
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link DirectusVersions}.
+ */
+export function parseDirectusVersionsPayload(v: DirectusVersionsPayload): DirectusVersions {
+    const r: Record<string, unknown> = v;
+    if (v.date_created) {
+        r.date_created = new Date(v.date_created);
+    }
+    if (v.date_updated) {
+        r.date_updated = new Date(v.date_updated);
+    }
+    return r as DirectusVersions;
+}
