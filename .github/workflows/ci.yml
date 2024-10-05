@@ -47,7 +47,7 @@ jobs:
           ADMIN_PASSWORD: 'myPassword1!'
           ADMIN_TOKEN: 'd225e134-8fa7-49fd-bf61-21ee933d55bb'
         options: >-
-          --health-cmd="wget -qO- http://localhost:8055"
+          --health-cmd="wget --no-verbose --tries=1 --spider http://127.0.0.1:8055/server/health || exit 1"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
