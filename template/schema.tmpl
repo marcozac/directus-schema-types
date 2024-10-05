@@ -1,0 +1,16 @@
+{{/* schema.ts is a block to generate the schema file. */}}
+{{- block "schema.ts" $ }}
+{{- template "header" $ }}
+{{ template "schema" $.Collections }}
+{{- end }}
+
+{{/* schema is the definition of the Schema interface. */}}
+{{- define "schema" }}
+// --- Schema ---
+
+export interface Schema {
+{{- range $.Values }}
+	{{ .Name }}: {{ .TypeName }};
+{{- end }}
+}
+{{ end }}

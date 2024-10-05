@@ -65,7 +65,14 @@ coverage/
 *~
 .DS_Store
 
+# Docker Compose
+compose.override.yml
+
 # Don't ignore example and test files
 !example/**
 !testing/**
 !testdata/**
+
+# Always ignored
+node_modules/
+*.tsbuildinfo

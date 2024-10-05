@@ -1,0 +1,14 @@
+{{/* index.ts is a block to generate the index file. */}}
+{{- block "index.ts" $ }}
+{{- template "header" $ }}
+{{ template "index" $.Collections }}
+{{- end }}
+
+{{- define "index" }}
+{{- range $.Values }}
+export * from './{{ .Name }}';
+{{- end }}
+
+export * from './schema';
+export * from './relations';
+{{- end }}

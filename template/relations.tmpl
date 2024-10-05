@@ -1,0 +1,16 @@
+{{/* relations.ts is a block to generate the relations file. */}}
+{{- block "relations.ts" $ }}
+{{- template "header" $ }}
+{{ template "relations" $.Collections }}
+{{- end }}
+
+{{/* relations is the definition of the Relations interface. */}}
+{{- define "relations" }}
+// --- Relations ---
+
+export interface Relations {
+{{- range $.Values }}
+	{{ .Name }}: {{ .RelationsTypeName }};
+{{- end }}
+}
+{{- end }}

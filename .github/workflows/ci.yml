@@ -1,0 +1,70 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/ci.yml
+      - 'go.mod'
+      - 'go.sum'
+      - '**.go'
+  pull_request:
+    paths:
+      - .github/workflows/ci.yml
+      - 'go.mod'
+      - 'go.sum'
+      - '**.go'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: latest
+
+  test:
+    runs-on: ubuntu-latest
+    services:
+      directus:
+        image: directus/directus:11
+        ports:
+          - 8055:8055
+        env:
+          SECRET: '335ce705-39de-46b3-8c37-daeb2f1e91da'
+          DB_CLIENT: 'sqlite3'
+          DB_FILENAME: '/directus/database/data.db'
+          RATE_LIMITER_ENABLED: 'false'
+          CACHE_ENABLED: 'false'
+          ADMIN_EMAIL: 'admin@example.com'
+          ADMIN_PASSWORD: 'myPassword1!'
+          ADMIN_TOKEN: 'd225e134-8fa7-49fd-bf61-21ee933d55bb'
+        options: >-
+          --health-cmd="wget --no-verbose --tries=1 --spider http://127.0.0.1:8055/server/health || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+      - name: Test
+        env:
+          DIRECTUS_BASE_URL: 'http://localhost:8055'
+          ADMIN_TOKEN: 'd225e134-8fa7-49fd-bf61-21ee933d55bb'
+        run: >-
+          go test -v -race
+          -covermode=atomic
+          -coverprofile=coverage.out
+          -coverpkg=./...
+          ./...
