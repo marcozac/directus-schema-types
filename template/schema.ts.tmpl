@@ -18,6 +18,8 @@ export interface Schema {
 // --- Relations ---
 
 export interface Relations {
-	// @TODO
+{{- range $ }}
+	{{ .Name }}: {{ ToPascalCase .Name }}Relations;
+{{- end }}
 }
 {{- end }}

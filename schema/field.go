@@ -34,13 +34,15 @@ type FieldMeta struct {
 	// Special is the special type of the field.
 	Special []FieldSpecial `json:"special"`
 
+	// Note is an optional note about the field.
+	Note *string `json:"note"`
+
 	// Conditions        []any   `json:"conditions"`
 	// Display           *any    `json:"display"`
 	// DisplayOptions    *any    `json:"display_options"`
 	// Group             *string `json:"group"`
 	// Hidden            bool    `json:"hidden"`
 	// Interface         *any    `json:"interface"`
-	// Note              *string `json:"note"`
 	// Options           *any    `json:"options"`
 	// Sort              int64   `json:"sort"`
 	// Translations      []any   `json:"translations"`
@@ -62,6 +64,9 @@ type FieldSchema struct {
 	// IsPrimaryKey is whether the field is a primary key.
 	IsPrimaryKey bool `json:"is_primary_key"`
 
+	// IsUnique is whether the field is unique.
+	IsUnique bool `json:"is_unique"`
+
 	// IsForeignKey is whether the field is a foreign key.
 	ForeignKeyTable *string `json:"foreign_key_table"`
 
@@ -73,7 +78,6 @@ type FieldSchema struct {
 	// MaxLength            *int64      `json:"max_length"`
 	// NumericPrecision     *int64      `json:"numeric_precision"`
 	// NumericScale         *int64      `json:"numeric_scale"`
-	// IsUnique             bool        `json:"is_unique"`
 	// IsGenerated          bool        `json:"is_generated"`
 	// GenerationExpression interface{} `json:"generation_expression"`
 	// HasAutoIncrement     bool        `json:"has_auto_increment"`

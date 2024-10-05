@@ -20,6 +20,9 @@ type CollectionMeta struct {
 	// Singleton is whether the collection is a singleton.
 	Singleton bool `json:"singleton"`
 
+	// System is whether the collection is a system collection.
+	System bool `json:"system"`
+
 	// Accountability        any     `json:"accountability"`
 	// ArchiveAppFilter      bool    `json:"archive_app_filter"`
 	// ArchiveField          any     `json:"archive_field"`

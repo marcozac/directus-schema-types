@@ -1,6 +1,7 @@
 package dst
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -72,23 +73,104 @@ func (c *Client) GetRelations() ([]schema.Relation, error) {
 	return get[schema.Relation](c, "/relations")
 }
 
-func (c *Client) get(endpoint string) (*http.Response, error) {
+func (c *Client) get(endpoint string, cbs ...requestCallback) (*http.Response, error) {
+	return c.do(http.MethodGet, endpoint, nil, cbs...)
+}
+
+func (c *Client) post(endpoint string, body io.Reader, cbs ...requestCallback) (*http.Response, error) {
+	return c.do(http.MethodPost, endpoint, body, cbs...)
+}
+
+type requestCallback func(*http.Request)
+
+// do performs an HTTP request with the given method to the Directus endpoint.
+// Optionally, it is possible to provide:
+//   - body: an io.Reader to be sent as the request body
+//   - cbs: a list of callbacks to modify the request before sending it
+//
+// If a callback is provided, it is called with the request. It is not required
+// to set the "Authorization" header, as it is automatically set with the
+// client's token and should be used for other purposes, like setting additional
+// headers
+func (c *Client) do(method, endpoint string, body io.Reader, cbs ...requestCallback) (*http.Response, error) {
 	u, err := url.JoinPath(c.options.BaseURL, endpoint)
 	if err != nil {
 		return nil, fmt.Errorf("join %s endpoint path: %w", endpoint, err)
 	}
 
-	req, err := http.NewRequest(http.MethodGet, u, nil)
+	req, err := http.NewRequest(method, u, body)
 	if err != nil {
 		return nil, fmt.Errorf("create request: %w", err)
 	}
 	req.Header.Set("Authorization", "Bearer "+c.options.Token)
+	for _, cb := range cbs {
+		cb(req)
+	}
 
 	res, err := c.client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("do request: %w", err)
 	}
 	return res, nil
+}
+
+// applyTestSchema applies a test schema to the Directus instance.
+// It creates collections, fields, and relations for testing purposes.
+//
+// To prevent accidental data loss or unexpected behavior, the connected
+// Directus instance must contain only system collections before applying
+// the test schema.
+func (c *Client) applyTestSchema(snapshot io.Reader) error {
+	// retrieve the schema diff
+	diffRes, err := c.post("/schema/diff", snapshot, setJsonHeader)
+	if err != nil {
+		return fmt.Errorf("post schema/diff: %w", err)
+	}
+	defer diffRes.Body.Close()
+
+	switch diffRes.StatusCode {
+	case http.StatusNoContent: // ok, no changes to apply
+		return nil
+	case http.StatusOK: // check later
+	default:
+		return fmt.Errorf("schema/diff status code: %s", diffRes.Status)
+	}
+
+	// check if the current collections are all system collections
+	collections, err := c.GetCollections()
+	if err != nil {
+		return fmt.Errorf("get current collections: %w", err)
+	}
+	for _, collection := range collections {
+		if !collection.Meta.System {
+			return fmt.Errorf(
+				"%s is not a system collection. use a clean instance to apply the test schema", collection.Collection,
+			)
+		}
+	}
+
+	// decode the schema diff
+	var diff struct {
+		// the schema diff is used only here, should not be necessary to
+		// define a type for it
+		Data json.RawMessage `json:"data"`
+	}
+	if err := json.NewDecoder(diffRes.Body).Decode(&diff); err != nil {
+		return fmt.Errorf("decode schema diff: %w", err)
+	}
+
+	// apply the schema diff
+	applyRes, err := c.post("/schema/apply", bytes.NewBuffer(diff.Data), setJsonHeader)
+	if err != nil {
+		return fmt.Errorf("post schema/apply: %w", err)
+	}
+	defer applyRes.Body.Close()
+	switch applyRes.StatusCode {
+	case http.StatusOK, http.StatusNoContent: // ok
+	default:
+		return fmt.Errorf("schema/apply status code: %s", applyRes.Status)
+	}
+	return nil
 }
 
 // get is a generic function that performs a GET request to a Directus
@@ -124,4 +206,10 @@ type directusPayload[T directusPayloadData] struct {
 // be decoded from a Directus payload.
 type directusPayloadData interface {
 	schema.Collection | schema.Field | schema.Relation
+}
+
+// setJsonHeader sets the "Content-Type" header of the given request to
+// "application/json".
+func setJsonHeader(req *http.Request) {
+	req.Header.Set("Content-Type", "application/json")
 }
