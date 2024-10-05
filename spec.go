@@ -73,6 +73,10 @@ func SchemaToSpec(s *schema.Schema) *Spec {
 
 type Spec struct {
 	Collections map[string]*CollectionSpec
+
+	// Imports is the list of imports.
+	// It's set by the generator in case of multiple files output.
+	Imports ImportsSpec
 }
 
 const (
@@ -93,6 +97,10 @@ type CollectionSpec struct {
 
 	// Relations is the list of the relations in the collection.
 	Relations map[string]*RelationSpec
+
+	// Imports is the list of imports for the collection.
+	// It's set by the generator in case of multiple files output.
+	Imports ImportsSpec
 
 	primaryKey *PrimaryKeySpec
 }
@@ -230,6 +238,15 @@ type RelationSpec struct {
 	// Should we enforce the type with a tuple?
 	Unique bool
 }
+
+// ImportsSpec is a map of package names to the list of symbols to import.
+//
+// Example:
+//
+//	imports := ImportSpec{
+//		"my_collection": {"MyCollection", "MyCollectionPrimaryKey"},
+//	}
+type ImportsSpec map[string][]string
 
 func toPascalCase(s string) string {
 	return strcase.ToCamel(s)

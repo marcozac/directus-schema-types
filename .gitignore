@@ -72,3 +72,7 @@ compose.override.yml
 !example/**
 !testing/**
 !testdata/**
+
+# Always ignored
+node_modules/
+*.tsbuildinfo

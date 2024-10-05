@@ -1,3 +1,10 @@
+{{/* collections.ts is a block to generate a collection file. */}}
+{{- block "collection.ts" $ }}
+{{- template "header" $ }}
+{{ template "collection" $ }}
+{{- end }}
+
+{{/* collection is a single collection definition. */}}
 {{- define "collection" }}
 // --- {{ $.Name }} ---
 
@@ -5,14 +12,14 @@ export type {{ $.PrimaryKey.FieldTypeName }} = "{{ $.PrimaryKey.FieldType }}";
 export type {{ $.PrimaryKey.TypeName }} = {{ $.PrimaryKey.Type }};
 
 export interface {{ $.TypeName }} {
-	{{- range $spec := $.Fields }}
-	{{- template "collection/field" $spec }}
+	{{- range $.Fields }}
+	{{- template "collection/field" . }}
 	{{- end }}
 }
 
 export interface {{ $.RelationsTypeName }} {
-	{{- range $spec := $.Relations }}
-	{{- template "collection/relation" $spec }}
+	{{- range $.Relations }}
+	{{- template "collection/relation" . }}
 	{{- end }}
 }
 {{- end }}
@@ -46,4 +53,11 @@ export interface {{ $.RelationsTypeName }} {
 {{/* Is the single-element type of a relational field. */}}
 {{- define "collection/relation/fieldType" }}
 	{{- $.RelatedCollection.PrimaryKey.TypeName }} | {{ $.RelatedCollection.TypeName }}
+{{- end }}
+
+{{/* collections is the definition of the all collection interfaces. */}}
+{{- define "collections" }}
+{{- range $ }}
+	{{- template "collection" . }}
+{{ end }}
 {{- end }}

@@ -37,11 +37,32 @@ func TestGenerator(t *testing.T) {
 	s, err := client.GetSchema()
 	require.NoError(t, err, "GetSchema")
 
-	generator := NewGenerator(s)
+	for _, tt := range []struct {
+		name    string
+		options []Option
+	}{
+		{
+			name:    "WithWriter",
+			options: []Option{WithWriter(NopWriter{})},
+		},
+		{
+			name:    "WithOutFile",
+			options: []Option{WithOutFile(filepath.Join("testdata", "schema.ts"))},
+		},
+		{
+			name:    "WithOutDir",
+			options: []Option{WithOutDir(filepath.Join("testdata", "schema"))},
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			generator := NewGenerator(s, tt.options...)
+			require.NoError(t, generator.Generate(), "generate")
+		})
+	}
+}
 
-	f, err := os.Create(filepath.Join("testdata", "schema.ts"))
-	require.NoError(t, err, "create file")
-	defer f.Close()
+type NopWriter struct{}
 
-	require.NoError(t, generator.Generate(f), "generate")
+func (NopWriter) Write(p []byte) (n int, err error) {
+	return len(p), nil
 }
