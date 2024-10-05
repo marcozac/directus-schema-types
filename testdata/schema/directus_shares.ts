@@ -59,7 +59,7 @@ export interface DirectusSharesRelations {
     user_created: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
-export type DirectusSharesPayload = Omit<DirectusShares, 'date_start' | 'date_created' | 'date_end'> & {
+export type DirectusSharesPayload = Omit<DirectusShares, 'date_created' | 'date_end' | 'date_start'> & {
     // Type: timestamp
     readonly date_created?: string | null;
 

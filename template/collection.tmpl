@@ -6,7 +6,7 @@
 
 {{/* collections is the definition of the all collection interfaces. */}}
 {{- define "collections" }}
-{{- range $ }}
+{{- range $.Values }}
 	{{- template "collection" . }}
 {{ end }}
 {{- end }}
@@ -19,13 +19,13 @@ export type {{ $.PrimaryKey.FieldTypeName }} = "{{ $.PrimaryKey.FieldType }}";
 export type {{ $.PrimaryKey.TypeName }} = {{ $.PrimaryKey.Type }};
 
 export interface {{ $.TypeName }} {
-	{{- range $.Fields }}
+	{{- range $.Fields.Values }}
 	{{- template "collection/field" . }}
 	{{- end }}
 }
 
 export interface {{ $.RelationsTypeName }} {
-	{{- range $.Relations }}
+	{{- range $.Relations.Values }}
 	{{- template "collection/relation" . }}
 	{{- end }}
 }
@@ -70,8 +70,8 @@ export interface {{ $.RelationsTypeName }} {
 {{- $typeDecl := printf "export type %s =" $.PayloadTypeName }}
 {{- $funcDecl := printf "export function parse%s(v: %s): %s" $.PayloadTypeName $.PayloadTypeName $.TypeName }}
 {{- with $.PayloadFields }}
-{{ $typeDecl }} Omit<{{ $.TypeName }}, {{ unionType $.PayloadFields.Fields true }}> & {
-{{- range . }}
+{{ $typeDecl }} Omit<{{ $.TypeName }}, {{ unionType .Keys true }}> & {
+{{- range .Values }}
 	{{- template "collection/field" . }}
 {{- end }}
 };
@@ -82,7 +82,7 @@ export interface {{ $.RelationsTypeName }} {
  */
 {{ $funcDecl }} {
 	const r: Record<string, unknown> = v;
-	{{- range . }}
+	{{- range .Values }}
 	if (v.{{ .Name }}) {
 		r.{{ .Name }} = {{ parserOf .Spec.Type }}(v.{{ .Name }});
 	}

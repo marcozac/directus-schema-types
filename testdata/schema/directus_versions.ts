@@ -48,7 +48,7 @@ export interface DirectusVersionsRelations {
     user_updated: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
-export type DirectusVersionsPayload = Omit<DirectusVersions, 'date_updated' | 'date_created'> & {
+export type DirectusVersionsPayload = Omit<DirectusVersions, 'date_created' | 'date_updated'> & {
     // Type: timestamp
     date_created?: string | null;
 

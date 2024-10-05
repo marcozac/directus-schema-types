@@ -41,7 +41,7 @@ export interface RecipesRelations {
     user_updated: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
-export type RecipesPayload = Omit<Recipes, 'date_updated' | 'date_created'> & {
+export type RecipesPayload = Omit<Recipes, 'date_created' | 'date_updated'> & {
     // Type: timestamp
     readonly date_created?: string | null;
 

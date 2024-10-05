@@ -9,7 +9,7 @@
 // --- Relations ---
 
 export interface Relations {
-{{- range $ }}
+{{- range $.Values }}
 	{{ .Name }}: {{ .RelationsTypeName }};
 {{- end }}
 }

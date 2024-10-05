@@ -73,7 +73,7 @@ func SchemaToSpec(s *schema.Schema) *Spec {
 }
 
 type Spec struct {
-	Collections map[string]*CollectionSpec
+	Collections SortableStringMap[*CollectionSpec]
 
 	// Imports is the list of imports.
 	// It's set by the generator in case of multiple files output.
@@ -97,10 +97,10 @@ type CollectionSpec struct {
 	IsSingleton bool
 
 	// Fields is the list of the fields in the collection.
-	Fields map[string]*FieldSpec
+	Fields SortableStringMap[*FieldSpec]
 
 	// Relations is the list of the relations in the collection.
-	Relations map[string]*RelationSpec
+	Relations SortableStringMap[*RelationSpec]
 
 	// Imports is the list of imports for the collection.
 	// It's set by the generator in case of multiple files output.
@@ -325,19 +325,10 @@ type RelationSpec struct {
 //	imports := ImportSpec{
 //		"my_collection": {"MyCollection", "MyCollectionPrimaryKey"},
 //	}
-type ImportsSpec map[string][]string
+type ImportsSpec SortableStringMap[[]string]
 
 // PayloadFields is a map of field names to their types.
-type PayloadFields map[string]PayloadFieldTyper
-
-// Fields returns the list of field names.
-func (p PayloadFields) Fields() []string {
-	fields := make([]string, 0, len(p))
-	for f := range p {
-		fields = append(fields, f)
-	}
-	return fields
-}
+type PayloadFields = SortableStringMap[PayloadFieldTyper]
 
 var _ PayloadFieldTyper = (*payloadField)(nil)
 

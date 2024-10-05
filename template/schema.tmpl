@@ -9,7 +9,7 @@
 // --- Schema ---
 
 export interface Schema {
-{{- range $ }}
+{{- range $.Values }}
 	{{ .Name }}: {{ .TypeName }};
 {{- end }}
 }

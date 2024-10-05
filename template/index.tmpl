@@ -5,7 +5,7 @@
 {{- end }}
 
 {{- define "index" }}
-{{- range $ }}
+{{- range $.Values }}
 export * from './{{ .Name }}';
 {{- end }}
 
