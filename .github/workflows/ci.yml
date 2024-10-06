@@ -61,7 +61,7 @@ jobs:
       - name: Test
         env:
           DIRECTUS_BASE_URL: 'http://localhost:8055'
-          ADMIN_TOKEN: 'd225e134-8fa7-49fd-bf61-21ee933d55bb'
+          DIRECTUS_TOKEN: 'd225e134-8fa7-49fd-bf61-21ee933d55bb'
         run: >-
           go test -v -race
           -covermode=atomic

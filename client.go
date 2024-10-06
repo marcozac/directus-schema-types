@@ -1,7 +1,6 @@
 package dst
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -134,65 +133,6 @@ func (c *Client) do(method, endpoint string, body io.Reader, cbs ...requestCallb
 		return nil, fmt.Errorf("do request: %w", err)
 	}
 	return res, nil
-}
-
-// applyTestSchema applies a test schema to the Directus instance.
-// It creates collections, fields, and relations for testing purposes.
-//
-// To prevent accidental data loss or unexpected behavior, the connected
-// Directus instance must contain only system collections before applying
-// the test schema.
-func (c *Client) applyTestSchema(snapshot io.Reader) error {
-	// retrieve the schema diff
-	diffRes, err := c.post("/schema/diff", snapshot, setJsonHeader)
-	if err != nil {
-		return fmt.Errorf("post schema/diff: %w", err)
-	}
-	defer diffRes.Body.Close()
-
-	switch diffRes.StatusCode {
-	case http.StatusNoContent: // ok, no changes to apply
-		return nil
-	case http.StatusOK: // check later
-	default:
-		return fmt.Errorf("schema/diff: %w", decodeDirectusErrors(diffRes.StatusCode, diffRes.Body))
-	}
-
-	// check if the current collections are all system collections
-	collections, err := c.GetCollections()
-	if err != nil {
-		return fmt.Errorf("get current collections: %w", err)
-	}
-	for _, collection := range collections {
-		if !collection.Meta.System {
-			return fmt.Errorf(
-				"%s is not a system collection. use a clean instance to apply the test schema", collection.Collection,
-			)
-		}
-	}
-
-	// decode the schema diff
-	var diff struct {
-		// the schema diff is used only here, should not be necessary to
-		// define a type for it
-		Data json.RawMessage `json:"data"`
-	}
-	if err := json.NewDecoder(diffRes.Body).Decode(&diff); err != nil {
-		return fmt.Errorf("decode schema diff: %w", err)
-	}
-
-	// apply the schema diff
-	applyRes, err := c.post("/schema/apply", bytes.NewBuffer(diff.Data), setJsonHeader)
-	if err != nil {
-		return fmt.Errorf("post schema/apply: %w", err)
-	}
-	defer applyRes.Body.Close()
-	switch applyRes.StatusCode {
-	case http.StatusOK, http.StatusNoContent: // ok
-	default:
-		return fmt.Errorf("schema/apply: %w", decodeDirectusErrors(applyRes.StatusCode, applyRes.Body))
-	}
-	return nil
 }
 
 // get is a generic function that performs a GET request to a Directus
