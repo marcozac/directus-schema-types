@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       directus:
-        image: directus/directus:11
+        image: directus/directus:11.1.0
         ports:
           - 8055:8055
         env:
@@ -61,10 +61,14 @@ jobs:
       - name: Test
         env:
           DIRECTUS_BASE_URL: 'http://localhost:8055'
-          ADMIN_TOKEN: 'd225e134-8fa7-49fd-bf61-21ee933d55bb'
+          DIRECTUS_TOKEN: 'd225e134-8fa7-49fd-bf61-21ee933d55bb'
         run: >-
           go test -v -race
           -covermode=atomic
           -coverprofile=coverage.out
           -coverpkg=./...
           ./...
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

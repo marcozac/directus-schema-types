@@ -1,7 +1,6 @@
 package dst
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -34,6 +33,28 @@ type ClientOptions struct {
 type Client struct {
 	client  *http.Client
 	options ClientOptions
+}
+
+// Snapshot writes a JSON representation of the Directus schema to the given
+// writer.
+func (c *Client) Snapshot(w io.Writer) error {
+	return c.snapshot(json.NewEncoder(w))
+}
+
+// SnapshotPretty writes a pretty-printed JSON representation of the Directus
+// schema to the given writer.
+func (c *Client) SnapshotPretty(w io.Writer) error {
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	return c.snapshot(enc)
+}
+
+func (c *Client) snapshot(enc *json.Encoder) error {
+	s, err := c.GetSchema()
+	if err != nil {
+		return fmt.Errorf("get schema: %w", err)
+	}
+	return enc.Encode(s)
 }
 
 // GetSchema returns the schema of the Directus instance.
@@ -114,65 +135,6 @@ func (c *Client) do(method, endpoint string, body io.Reader, cbs ...requestCallb
 	return res, nil
 }
 
-// applyTestSchema applies a test schema to the Directus instance.
-// It creates collections, fields, and relations for testing purposes.
-//
-// To prevent accidental data loss or unexpected behavior, the connected
-// Directus instance must contain only system collections before applying
-// the test schema.
-func (c *Client) applyTestSchema(snapshot io.Reader) error {
-	// retrieve the schema diff
-	diffRes, err := c.post("/schema/diff", snapshot, setJsonHeader)
-	if err != nil {
-		return fmt.Errorf("post schema/diff: %w", err)
-	}
-	defer diffRes.Body.Close()
-
-	switch diffRes.StatusCode {
-	case http.StatusNoContent: // ok, no changes to apply
-		return nil
-	case http.StatusOK: // check later
-	default:
-		return fmt.Errorf("schema/diff status code: %s", diffRes.Status)
-	}
-
-	// check if the current collections are all system collections
-	collections, err := c.GetCollections()
-	if err != nil {
-		return fmt.Errorf("get current collections: %w", err)
-	}
-	for _, collection := range collections {
-		if !collection.Meta.System {
-			return fmt.Errorf(
-				"%s is not a system collection. use a clean instance to apply the test schema", collection.Collection,
-			)
-		}
-	}
-
-	// decode the schema diff
-	var diff struct {
-		// the schema diff is used only here, should not be necessary to
-		// define a type for it
-		Data json.RawMessage `json:"data"`
-	}
-	if err := json.NewDecoder(diffRes.Body).Decode(&diff); err != nil {
-		return fmt.Errorf("decode schema diff: %w", err)
-	}
-
-	// apply the schema diff
-	applyRes, err := c.post("/schema/apply", bytes.NewBuffer(diff.Data), setJsonHeader)
-	if err != nil {
-		return fmt.Errorf("post schema/apply: %w", err)
-	}
-	defer applyRes.Body.Close()
-	switch applyRes.StatusCode {
-	case http.StatusOK, http.StatusNoContent: // ok
-	default:
-		return fmt.Errorf("schema/apply status code: %s", applyRes.Status)
-	}
-	return nil
-}
-
 // get is a generic function that performs a GET request to a Directus
 // endpoint and decodes the response payload into a slice of T.
 func get[T directusPayloadData](c *Client, endpoint string) ([]T, error) {
@@ -182,7 +144,7 @@ func get[T directusPayloadData](c *Client, endpoint string) ([]T, error) {
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("status code: %s", res.Status)
+		return nil, decodeDirectusErrors(res.StatusCode, res.Body)
 	}
 	return decodePayload[T](res.Body)
 }
