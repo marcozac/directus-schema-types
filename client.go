@@ -133,7 +133,7 @@ func (c *Client) applyTestSchema(snapshot io.Reader) error {
 		return nil
 	case http.StatusOK: // check later
 	default:
-		return fmt.Errorf("schema/diff status code: %s", diffRes.Status)
+		return fmt.Errorf("schema/diff: %w", decodeDirectusErrors(diffRes.StatusCode, diffRes.Body))
 	}
 
 	// check if the current collections are all system collections
@@ -168,7 +168,7 @@ func (c *Client) applyTestSchema(snapshot io.Reader) error {
 	switch applyRes.StatusCode {
 	case http.StatusOK, http.StatusNoContent: // ok
 	default:
-		return fmt.Errorf("schema/apply status code: %s", applyRes.Status)
+		return fmt.Errorf("schema/apply: %w", decodeDirectusErrors(applyRes.StatusCode, applyRes.Body))
 	}
 	return nil
 }
@@ -182,7 +182,7 @@ func get[T directusPayloadData](c *Client, endpoint string) ([]T, error) {
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("status code: %s", res.Status)
+		return nil, decodeDirectusErrors(res.StatusCode, res.Body)
 	}
 	return decodePayload[T](res.Body)
 }
