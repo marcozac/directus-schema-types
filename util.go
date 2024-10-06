@@ -6,7 +6,7 @@ import "sort"
 //
 // NOTE
 // Iterating over the map itself will not guarantee a sorted order.
-// This is a simple implementation not optimized for performance: it's
+// This is a simple implementation not optimized for performance: its
 // purpose is just to keep the fields in a stable order for version control.
 type SortableStringMap[V any] map[string]V
 

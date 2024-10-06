@@ -214,9 +214,9 @@ type options struct {
 type Option func(*options)
 
 // WithFormatOutput formats the output using prettier.
-func WithFormatOutput() Option {
+func WithFormatOutput(v bool) Option {
 	return func(o *options) {
-		o.formatOutput = true
+		o.formatOutput = v
 	}
 }
 
@@ -243,8 +243,8 @@ func WithOutDir(path string) Option {
 
 // WithClean removes the output file or directory before generating.
 // Setting a Writer, this option is ignored.
-func WithClean() Option {
+func WithClean(v bool) Option {
 	return func(o *options) {
-		o.clean = true
+		o.clean = v
 	}
 }
