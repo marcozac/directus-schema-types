@@ -87,10 +87,11 @@ Makefile          text
 .prettierignore    text export-ignore
 
 # Generated files
-wire_gen.go           linguist-generated
-ent/**                linguist-generated
-ent/schema/**         -linguist-generated
-ent/z_*.go            -linguist-generated
+testdata/schema/*                         -text linguist-generated
+testdata/directus-schema-snapshot.json    -text linguist-generated
+testdata/snapshot.json                    -text linguist-generated
+testdata/schema-from-snapshot.ts          -text linguist-generated
+testdata/schema.ts                        -text linguist-generated
 
 # Vendored files
 # Keep as last to override all other rules

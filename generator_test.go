@@ -12,8 +12,8 @@ import (
 	_ "embed"
 )
 
-//go:embed testdata/schema-snapshot.json
-var schemaSnapshot []byte
+//go:embed testdata/directus-schema-snapshot.json
+var directusSchemaSnapshot []byte
 
 func TestGenerator(t *testing.T) {
 	_ = godotenv.Load() // try to load .env file
@@ -30,7 +30,7 @@ func TestGenerator(t *testing.T) {
 	})
 
 	// apply the test schema
-	err := client.applyTestSchema(bytes.NewBuffer(schemaSnapshot))
+	err := client.applyTestSchema(bytes.NewBuffer(directusSchemaSnapshot))
 	require.NoError(t, err, "applyTestSchema")
 
 	// get the schema

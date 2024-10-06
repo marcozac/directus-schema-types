@@ -1,0 +1,19 @@
+tmp/
+*.tmp
+
+.cache
+
+cover.*
+*.out
+
+coverage/
+*.lcov
+
+dist/
+build/
+lib/
+
+# testdata files
+testdata/schema/
+testdata/snapshot.json
+testdata/schema.ts

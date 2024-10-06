@@ -36,6 +36,28 @@ type Client struct {
 	options ClientOptions
 }
 
+// Snapshot writes a JSON representation of the Directus schema to the given
+// writer.
+func (c *Client) Snapshot(w io.Writer) error {
+	return c.snapshot(json.NewEncoder(w))
+}
+
+// SnapshotPretty writes a pretty-printed JSON representation of the Directus
+// schema to the given writer.
+func (c *Client) SnapshotPretty(w io.Writer) error {
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	return c.snapshot(enc)
+}
+
+func (c *Client) snapshot(enc *json.Encoder) error {
+	s, err := c.GetSchema()
+	if err != nil {
+		return fmt.Errorf("get schema: %w", err)
+	}
+	return enc.Encode(s)
+}
+
 // GetSchema returns the schema of the Directus instance.
 // Under the hood, it calls GetCollections, GetFields, and GetRelations.
 func (c *Client) GetSchema() (*schema.Schema, error) {
