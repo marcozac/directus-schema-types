@@ -1,0 +1,23 @@
+{{- block "package.json" $.PackageJson }}
+{
+  "name": "{{ $.Name }}",
+  "private": true,
+  "version": "0.0.0",
+  "description": ""
+{{- with $.Scripts }},
+  "scripts": {
+    {{- template "json/mapToFields" . }}
+  }
+{{- end }}
+{{- with $.Dependencies }},
+  "dependencies": {
+    {{- template "json/mapToFields" . }}
+  }
+{{- end }}
+{{- with $.DevDependencies }},
+  "devDependencies": {
+    {{- template "json/mapToFields" . }}
+  }
+{{- end }}
+}
+{{- end }}

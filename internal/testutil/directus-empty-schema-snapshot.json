@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "directus": "${DIRECTUS_VERSION:-11.1.0}",
+  "vendor": "${DIRECTUS_DB_VENDOR:-sqlite}",
+  "collections": [],
+  "fields": [],
+  "relations": []
+}

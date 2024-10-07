@@ -8,24 +8,12 @@ import (
 	"net/http"
 	"slices"
 
-	_ "embed"
+	"github.com/marcozac/directus-schema-types/internal/testutil"
 )
 
 // This file does not contain tests: they are run by the suite in dst_test.go.
 // It includes the Client methods used only for testing purposes, that should
 // be not included in the package.
-
-//go:embed testdata/directus-schema-snapshot.json
-var testSchemaSnapshot []byte
-
-var emptySchemaSnapshot = []byte(`{
-  "version": 1,
-  "directus": "11.1.0",
-  "vendor": "sqlite",
-  "collections": [],
-  "fields": [],
-  "relations": []
-}`)
 
 // testCollections is a list of collections that are used for testing purposes.
 // They are included in the test schema snapshot.
@@ -34,12 +22,12 @@ var testCollections = []string{"chefs", "ingredients", "recipes", "recipes_ingre
 // applyTestSchema applies a test schema to the Directus instance.
 // It creates collections, fields, and relations for testing purposes.
 func (c *Client) applyTestSchema() error {
-	return c.applySchema(bytes.NewBuffer(testSchemaSnapshot))
+	return c.applySchema(testutil.DirectusSchemaSnapshot())
 }
 
 // resetSchema resets the schema of the Directus instance to an empty one.
 func (c *Client) resetSchema() error {
-	return c.applySchema(bytes.NewBuffer(emptySchemaSnapshot))
+	return c.applySchema(testutil.DirectusEmptySchemaSnapshot())
 }
 
 // applySchema applies the schema snapshot provided by the given reader to the

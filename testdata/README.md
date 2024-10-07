@@ -1,13 +1,5 @@
 # testdata
 
-## [directus-schema-snapshot.json](./directus-schema-snapshot.json)
-
-This file is a snapshot of a test `Directus` schema, obtained from `/schema/snapshot` endpoint.
-
-It's used to apply a default schema in tests.
-
-This is **NOT** the result of calling `snapshot` command in the CLI.
-
 ## [snapshot.json](./snapshot.json)
 
 This file is a snapshot of a test `Directus` schema, obtained running `snapshot` command in the CLI.

@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/joho/godotenv"
+	"github.com/marcozac/directus-schema-types/internal/testutil"
 	"github.com/marcozac/directus-schema-types/schema"
 	"github.com/stretchr/testify/suite"
 )
@@ -17,6 +18,8 @@ type Suite struct {
 
 	clientOptions ClientOptions
 	client        *Client
+
+	nodePkg *testutil.NodePackage
 }
 
 // setup the suite applying the test schema
@@ -37,6 +40,25 @@ func (suite *Suite) SetupSuite() {
 
 	// apply the test schema
 	suite.Require().NoError(suite.client.applyTestSchema(), "applyTestSchema")
+
+	// create a temp dir for the tests output
+	tempDir := suite.T().TempDir()
+	nodePkg, err := testutil.CreateNodePackage(tempDir, &testutil.NodePackageSpec{
+		PackageJson: &testutil.PackageJsonSpec{
+			Name: "test",
+			Scripts: map[string]string{
+				"typecheck": "tsc",
+			},
+			DevDependencies: map[string]string{
+				"typescript": "^5",
+			},
+		},
+	})
+	suite.Require().NoError(err, "CreateNodePackage")
+
+	outInstall, err := nodePkg.Install()
+	suite.Require().NoError(err, "NodePackage: Install: %s", string(outInstall))
+	suite.nodePkg = nodePkg // set the node package
 }
 
 func (suite *Suite) TearDownSuite() {
@@ -173,11 +195,14 @@ func (suite *Suite) TestGenerator() {
 		},
 		{
 			name:    "WithOutFile",
-			options: []Option{WithOutFile(filepath.Join("testdata", "schema.ts"))},
+			options: []Option{WithOutFile(filepath.Join(suite.nodePkg.Dir, "schema.ts"))},
 		},
 		{
-			name:    "WithOutDir",
-			options: []Option{WithOutDir(filepath.Join("testdata", "schema"))},
+			name: "WithOutDir",
+			options: []Option{
+				WithOutDir(filepath.Join(suite.nodePkg.Dir, "schema")),
+				WithFormatOutput(false), // very slower when enabled
+			},
 		},
 	} {
 		suite.Run(tt.name, func() {
@@ -185,6 +210,10 @@ func (suite *Suite) TestGenerator() {
 			suite.Require().NoError(generator.Generate(), "generate")
 		})
 	}
+
+	// run the typecheck script
+	out, err := suite.nodePkg.Run("typecheck")
+	suite.Require().NoError(err, "Run typecheck: %s", string(out))
 }
 
 func TestSuite(t *testing.T) {

@@ -31,10 +31,14 @@ jobs:
           version: latest
 
   test:
+    strategy:
+      matrix:
+        directusVersion: ['11.1.0']
+        os: [ubuntu-latest, windows-latest]
     runs-on: ubuntu-latest
     services:
       directus:
-        image: directus/directus:11.1.0
+        image: directus/directus:${{ matrix.directusVersion }}
         ports:
           - 8055:8055
         env:
@@ -60,6 +64,8 @@ jobs:
           go-version-file: 'go.mod'
       - name: Test
         env:
+          DIRECTUS_VERSION: ${{ matrix.directusVersion }}
+          DIRECTUS_DB_VENDOR: 'sqlite'
           DIRECTUS_BASE_URL: 'http://localhost:8055'
           DIRECTUS_TOKEN: 'd225e134-8fa7-49fd-bf61-21ee933d55bb'
         run: >-
