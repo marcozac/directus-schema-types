@@ -1,4 +1,4 @@
-package testutil
+package node
 
 import (
 	"path/filepath"
@@ -9,7 +9,7 @@ import (
 )
 
 func TestCreateNodePackage(t *testing.T) {
-	p, err := CreateNodePackage(filepath.Join("testdata", "1"), &NodePackageSpec{
+	p, err := Create(filepath.Join("testdata", "1"), &Spec{
 		PackageJson: &PackageJsonSpec{
 			Name:    "test1",
 			Version: "1.0.0",
@@ -74,7 +74,7 @@ func TestCreateNodePackage(t *testing.T) {
 	assert.NoError(t, err, "Install 1")
 	assert.NotEmpty(t, out, "Install Output 1")
 
-	p2, err := CreateNodePackage(filepath.Join("testdata", "2"), &NodePackageSpec{
+	p2, err := Create(filepath.Join("testdata", "2"), &Spec{
 		PackageJson: &PackageJsonSpec{
 			Name: "test2",
 			Scripts: map[string]string{

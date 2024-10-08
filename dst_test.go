@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/joho/godotenv"
-	"github.com/marcozac/directus-schema-types/internal/testutil"
+	"github.com/marcozac/directus-schema-types/internal/testutil/node"
 	"github.com/marcozac/directus-schema-types/schema"
 	"github.com/stretchr/testify/suite"
 )
@@ -19,7 +19,7 @@ type Suite struct {
 	clientOptions ClientOptions
 	client        *Client
 
-	nodePkg *testutil.NodePackage
+	nodePkg *node.Package
 }
 
 // setup the suite applying the test schema
@@ -43,8 +43,8 @@ func (suite *Suite) SetupSuite() {
 
 	// create a temp dir for the tests output
 	tempDir := suite.T().TempDir()
-	nodePkg, err := testutil.CreateNodePackage(tempDir, &testutil.NodePackageSpec{
-		PackageJson: &testutil.PackageJsonSpec{
+	nodePkg, err := node.Create(tempDir, &node.Spec{
+		PackageJson: &node.PackageJsonSpec{
 			Name: "test",
 			Scripts: map[string]string{
 				"typecheck": "tsc",
