@@ -1,9 +1,30 @@
-{{/* json/mapToFields converts the given map to json fields. */}}
-{{- define "json/mapToFields" }}
+{{/* json/mapToAny converts the given map to a json object. */}}
+{{- define "json/mapToAny" }}
 {{- $l := len . }}{{/* get map length */}}
 {{- range $k, $v := . }}
-{{- $l = sub $l 1 }}
+    {{- $l = sub $l 1 }}
+  "{{ $k }}": {{ json $v "  " "  " }}
+  {{- if gt $l 0 }},{{- end}}{{/* add "," if the element is not the last one */}}
+{{- end }}
+{{- end }}
+
+
+{{/* json/mapToFields converts the given map to json fields. */}}
+{{- define "json/mapToStringFields" }}
+{{- $l := len . }}{{/* get map length */}}
+{{- range $k, $v := . }}
+    {{- $l = sub $l 1 }}
     "{{ $k }}": "{{ $v }}"
-{{- if gt $l 0 }},{{- end}}{{/* add "," if the element is not the last one */}}
+    {{- if gt $l 0 }},{{- end}}{{/* add "," if the element is not the last one */}}
+{{- end }}
+{{- end }}
+
+{{/* json/sliceToStringElements converts the given slice to string elements. */}}
+{{- define "json/sliceToStringElements" }}
+{{- $l := len . }}{{/* get slice length */}}
+{{- range $e := . }}
+    {{- $l = sub $l 1 }}
+    "{{ $e }}"
+    {{- if gt $l 0 }},{{- end}}{{/* add "," if the element is not the last one */}}
 {{- end }}
 {{- end }}

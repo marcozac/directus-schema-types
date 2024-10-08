@@ -1,23 +1,46 @@
-{{- block "package.json" $.PackageJson }}
+{{- block "package.json" $.PackageJson -}}
 {
   "name": "{{ $.Name }}",
-  "private": true,
-  "version": "0.0.0",
-  "description": ""
+  "private": true
+
+{{- with $.Version }},
+  "version": "{{ . }}"
+{{- end }}
+
+{{- with $.Type }},
+  "type": "{{ . }}"
+{{- end }}
+
+{{- with $.Description }},
+  "description": "{{ . }}"
+{{- end }}
+
 {{- with $.Scripts }},
   "scripts": {
-    {{- template "json/mapToFields" . }}
+    {{- template "json/mapToStringFields" . }}
   }
 {{- end }}
+
 {{- with $.Dependencies }},
   "dependencies": {
-    {{- template "json/mapToFields" . }}
+    {{- template "json/mapToStringFields" . }}
   }
 {{- end }}
+
 {{- with $.DevDependencies }},
   "devDependencies": {
-    {{- template "json/mapToFields" . }}
+    {{- template "json/mapToStringFields" . }}
   }
+{{- end }}
+
+{{- with $.Files }},
+  "files": [
+    {{- template "json/sliceToStringElements" . }}
+  ]
+{{- end }}
+
+{{- with $.Options }},
+  {{- template "json/mapToAny" . }}
 {{- end }}
 }
 {{- end }}
