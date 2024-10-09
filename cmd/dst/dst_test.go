@@ -17,7 +17,7 @@ func TestSuite(t *testing.T) {
 
 type Suite struct {
 	suite.Suite
-	dt *directest.Directest
+	dt directest.Directest
 }
 
 // setup the suite applying the test schema

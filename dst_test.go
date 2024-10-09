@@ -28,7 +28,7 @@ type Suite struct {
 	client        *Client
 	clientOptions ClientOptions
 
-	dt  *directest.Directest
+	dt  directest.Directest
 	pkg *node.Package
 }
 
@@ -196,7 +196,7 @@ func (suite *Suite) TestGenerator() {
 }
 
 type resources struct {
-	dt  *directest.Directest
+	dt  directest.Directest
 	pkg *node.Package
 }
 
@@ -207,7 +207,7 @@ func setupSuiteResources(suite *Suite) (*resources, error) {
 	defer cancel()
 
 	errc := make(chan error, 2)
-	dtc := util.WrapChan(errc, func() (*directest.Directest, error) {
+	dtc := util.WrapChan(errc, func() (directest.Directest, error) {
 		dt, err := directest.New(testutil.DirectusVersion(), // use DIRECTUS_VERSION or default
 			directest.WithContext(ctx),
 			directest.WithLogWriter(testutil.NewPrefixLogWriter(suite.T(), "directest")),

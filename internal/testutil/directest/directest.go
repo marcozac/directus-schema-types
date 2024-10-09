@@ -1,19 +1,10 @@
 package directest
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
-	"net/http"
-	"net/url"
-
-	"github.com/ory/dockertest/v3"
-	"github.com/ory/dockertest/v3/docker"
-
-	"github.com/marcozac/directus-schema-types/directus"
-	"github.com/marcozac/directus-schema-types/internal/testutil"
 )
 
 const (
@@ -29,15 +20,10 @@ const (
 )
 
 // New runs a new Directus container with the specified version.
-func New(version string, opts ...Option) (*Directest, error) {
+func New(version string, opts ...Option) (dt Directest, err error) {
 	if version == "" {
 		return nil, fmt.Errorf("version is required")
 	}
-	pool, err := dockertest.NewPool("")
-	if err != nil {
-		return nil, fmt.Errorf("docker pool: %w", err)
-	}
-
 	o := &options{
 		ctx:       context.Background(),
 		userToken: DefaultUserToken,
@@ -46,121 +32,35 @@ func New(version string, opts ...Option) (*Directest, error) {
 	for _, opt := range opts {
 		opt(o)
 	}
-
-	// pull separately to enable context cancellation and logging
-	if err := pull(pool, version, o); err != nil {
-		return nil, fmt.Errorf("pull image: %w", err)
-	}
-	r, err := pool.RunWithOptions(&dockertest.RunOptions{
-		Repository: Repository,
-		Tag:        version,
-		Env: []string{
-			`ADMIN_EMAIL="admin@example.com"`,
-			`ADMIN_PASSWORD="myPassword1!"`,
-			fmt.Sprintf(`ADMIN_TOKEN="%s"`, o.userToken),
-		},
-	})
+	dt, err = newContainer(version, o)
 	if err != nil {
-		return nil, fmt.Errorf("run container: %w", err)
-	}
-
-	d := &Directest{
-		Resource: r,
-		pool:     pool,
-		client:   http.DefaultClient,
-		options:  o,
-	}
-	if o.applySchema {
-		if err := d.ApplySchema(); err != nil {
-			d.Close()
-			return nil, fmt.Errorf("apply schema: %w", err)
+		if errors.As(err, &asDockerError) {
+			// @TODO
+			// log and start the server
 		}
+		return nil, fmt.Errorf("new container: %w", err)
 	}
-	return d, nil
+	return
 }
 
-type Directest struct {
-	*dockertest.Resource
-	pool    *dockertest.Pool
-	client  *http.Client
-	options *options
-}
+type Directest interface {
+	// BaseURL returns the base URL for the instance.
+	BaseURL() string
 
-func (d *Directest) BaseURL() string {
-	return "http://localhost:" + d.GetPort("8055/tcp")
-}
+	// Endpoint returns the full URL for the given endpoint.
+	//
+	// Example:
+	//   u := d.Endpoint("/server/health") // http://localhost:8055/server/health
+	Endpoint(string) string
 
-func (d *Directest) Endpoint(e string) string {
-	u, _ := url.JoinPath(d.BaseURL(), e)
-	return u
-}
+	// Wait waits until the server is ready.
+	Wait() error
 
-// Wait waits until the Directus server is ready.
-func (d *Directest) Wait() error {
-	u := d.Endpoint("/server/health")
-	return d.pool.Retry(func() error {
-		_, _ = d.options.logWriter.Write([]byte("waiting for directus...\n"))
-		resp, err := d.client.Get(u)
-		if err != nil {
-			return err
-		}
-		defer resp.Body.Close()
-		if resp.StatusCode != http.StatusOK {
-			_, _ = d.options.logWriter.Write([]byte("directus not ready: " + resp.Status + "\n"))
-			return fmt.Errorf("not ready: status %d", resp.StatusCode)
-		}
-		_, _ = d.options.logWriter.Write([]byte("directus ready\n"))
-		return nil
-	})
-}
+	// ApplySchema applies the test schema snapshot to the instance.
+	ApplySchema() error
 
-// ApplySchema applies the test schema snapshot to the Directus instance.
-// It's not necessary to call Wait before calling this method.
-func (d *Directest) ApplySchema() error {
-	if err := d.Wait(); err != nil {
-		return fmt.Errorf("wait: %w", err)
-	}
-
-	dres, err := d.post("/schema/diff", testutil.DirectusSchemaSnapshot())
-	if err != nil {
-		return fmt.Errorf("diff: %w", err)
-	}
-	defer dres.Body.Close()
-
-	diff := &directus.Payload[json.RawMessage]{}
-	if err := json.NewDecoder(dres.Body).Decode(&diff); err != nil {
-		return fmt.Errorf("diff decode: %w", err)
-	}
-
-	ares, err := d.post("/schema/apply", bytes.NewBuffer(diff.Data))
-	if err != nil {
-		return fmt.Errorf("apply: %w", err)
-	}
-	defer ares.Body.Close()
-
-	return nil
-}
-
-func (d *Directest) post(endpoint string, body io.Reader) (*http.Response, error) {
-	u := d.Endpoint(endpoint)
-	req, err := http.NewRequest(http.MethodPost, u, body)
-	if err != nil {
-		return nil, fmt.Errorf("create request: %w", err)
-	}
-	req.Header.Add("Authorization", "Bearer "+d.options.userToken)
-	req.Header.Set("Content-Type", "application/json")
-	res, err := d.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("do request: %w", err)
-	}
-	if res.StatusCode == http.StatusOK || res.StatusCode == http.StatusNoContent {
-		return res, nil // ok
-	}
-	defer res.Body.Close()
-	if res.StatusCode >= 400 {
-		return nil, directus.DecodeResponseError(res.StatusCode, res.Body)
-	}
-	return nil, fmt.Errorf("unexpected status code %d", res.StatusCode)
+	// Close stops and removes all the resources associated with the instance.
+	Close() error
 }
 
 type options struct {
@@ -199,19 +99,4 @@ func WithLogWriter(w io.Writer) Option {
 	return func(o *options) {
 		o.logWriter = w
 	}
-}
-
-func pull(pool *dockertest.Pool, version string, opts *options) error {
-	if _, err := pool.Client.InspectImage(fmt.Sprintf("%s:%s", Repository, version)); err == nil {
-		return nil // already available
-	}
-	return pool.Client.PullImage(
-		docker.PullImageOptions{
-			Context:      opts.ctx,
-			Repository:   Repository,
-			Tag:          version,
-			OutputStream: opts.logWriter,
-		},
-		docker.AuthConfiguration{},
-	)
 }

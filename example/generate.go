@@ -71,14 +71,14 @@ func generate() error {
 }
 
 type resources struct {
-	dt  *directest.Directest
+	dt  directest.Directest
 	pkg *node.Package
 }
 
 // setup creates in parallel the resources required to generate the example schema types.
 func setup(ctx context.Context) (*resources, error) {
 	errc := make(chan error, 2)
-	dtc := util.WrapChan(errc, func() (*directest.Directest, error) {
+	dtc := util.WrapChan(errc, func() (directest.Directest, error) {
 		dt, err := directest.New(testutil.DirectusVersion(),
 			directest.WithContext(ctx),
 			directest.WithLogWriter(os.Stderr),
