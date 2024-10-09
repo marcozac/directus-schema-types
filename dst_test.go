@@ -15,6 +15,7 @@ import (
 	"github.com/marcozac/directus-schema-types/internal/testutil"
 	"github.com/marcozac/directus-schema-types/internal/testutil/directest"
 	"github.com/marcozac/directus-schema-types/internal/testutil/node"
+	"github.com/marcozac/directus-schema-types/util"
 )
 
 func TestSuite(t *testing.T) {
@@ -206,7 +207,7 @@ func setupSuiteResources(suite *Suite) (*resources, error) {
 	defer cancel()
 
 	errc := make(chan error, 2)
-	dtc := wrapc(errc, func() (*directest.Directest, error) {
+	dtc := util.WrapChan(errc, func() (*directest.Directest, error) {
 		dt, err := directest.New(testutil.DirectusVersion(), // use DIRECTUS_VERSION or default
 			directest.WithContext(ctx),
 			directest.WithLogWriter(testutil.NewPrefixLogWriter(suite.T(), "directest")),
@@ -217,7 +218,7 @@ func setupSuiteResources(suite *Suite) (*resources, error) {
 		}
 		return dt, nil
 	})
-	pkgc := wrapc(errc, func() (*node.Package, error) {
+	pkgc := util.WrapChan(errc, func() (*node.Package, error) {
 		// create a temp dir for the tests output
 		tempDir := suite.T().TempDir()
 		pkg, err := node.Create(tempDir,
@@ -268,19 +269,4 @@ func setupSuiteResources(suite *Suite) (*resources, error) {
 		}
 	}
 	return r, nil
-}
-
-// wrapc wraps a function returning a value and an error into a channel.
-// The error is sent to its channel only if it's not nil.
-// The value is sent to its channel only if there is no error.
-func wrapc[T any](errc chan error, fn func() (T, error)) chan T {
-	resc := make(chan T, 1)
-	go func(resc chan T, errc chan error) {
-		res, err := fn()
-		if err != nil {
-			errc <- err
-		}
-		resc <- res
-	}(resc, errc)
-	return resc
 }
