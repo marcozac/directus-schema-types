@@ -35,8 +35,9 @@ func New(version string, opts ...Option) (dt Directest, err error) {
 	dt, err = newContainer(version, o)
 	if err != nil {
 		if errors.As(err, &asDockerError) {
-			// @TODO
-			// log and start the server
+			_, _ = o.logWriter.Write([]byte("[WARNING]: docker not available: running as server\n"))
+			dt, err = newServer(o) // docker not available: run as server
+			return
 		}
 		return nil, fmt.Errorf("new container: %w", err)
 	}

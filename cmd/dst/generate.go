@@ -38,7 +38,7 @@ output.`,
 			var schema *directus.Schema
 			var err error
 			if viper.IsSet(fromSnap) {
-				schema, err = dst.SchemaFromSnapshotFile(viper.GetString(fromSnap))
+				schema, err = directus.SchemaFromSnapshotFile(viper.GetString(fromSnap))
 			} else {
 				client := newClient(viper)
 				schema, err = client.GetSchema()

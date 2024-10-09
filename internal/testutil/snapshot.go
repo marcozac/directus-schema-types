@@ -25,6 +25,12 @@ var directusSchemaSnapshot string
 //go:embed directus-empty-schema-snapshot.json
 var directusEmptySchemaSnapshot string
 
+// clientSchemaSnapshot is a snapshot obtained from the client snapshot method.
+// It'used in the test server that runs when Docker is not available.
+//
+//go:embed client-schema-snapshot.json
+var clientSchemaSnapshot []byte
+
 // DirectusSchemaSnapshot returns a reader for the Directus schema snapshot.
 // The environment variables in the snapshot are expanded.
 // It panics on variables expansion error.
@@ -41,4 +47,9 @@ func DirectusEmptySchemaSnapshot() io.Reader {
 	return bytes.NewBufferString(
 		expandEnv(directusEmptySchemaSnapshot),
 	)
+}
+
+// ClientSchemaSnapshot returns a reader for the client schema snapshot.
+func ClientSchemaSnapshot() io.Reader {
+	return bytes.NewReader(clientSchemaSnapshot)
 }
