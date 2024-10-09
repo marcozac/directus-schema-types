@@ -1,6 +1,7 @@
 package tmpl
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/fs"
@@ -24,6 +25,27 @@ func (t *Template) CreateExecute(path string, tmplName string, data any) error {
 		return fmt.Errorf("execute template: %w", err)
 	}
 	return nil
+}
+
+// ExecuteTemplateBuffer executes the template with the given name and data
+// and returns the result as a buffer.
+func (t *Template) ExecuteTemplateBuffer(tmplName string, data any) (*bytes.Buffer, error) {
+	buf := &bytes.Buffer{}
+	if err := t.ExecuteTemplate(buf, tmplName, data); err != nil {
+		return nil, fmt.Errorf("execute template: %w", err)
+	}
+	return buf, nil
+}
+
+// ExecuteTemplateBytes executes the template with the given name and data
+// and returns the result as a byte slice.
+// Under the hood, it uses ExecuteTemplateBuffer.
+func (t *Template) ExecuteTemplateBytes(tmplName string, data any) ([]byte, error) {
+	buf, err := t.ExecuteTemplateBuffer(tmplName, data)
+	if err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
 }
 
 // FromFS returns a new template from the given file system and patterns.

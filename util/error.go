@@ -1,4 +1,4 @@
-package dst
+package util
 
 import (
 	"encoding/json"
@@ -40,9 +40,9 @@ type DirectusErrorExtensions struct {
 	Code   string `json:"code"`
 }
 
-// decodeDirectusErrors decodes the Directus errors from the given reader.
+// DecodeDirectusError decodes the Directus errors from the given reader.
 // It returns a DirectusErrors or panics if the decoding fails.
-func decodeDirectusErrors(statusCode int, r io.Reader) *DirectusErrors {
+func DecodeDirectusError(statusCode int, r io.Reader) *DirectusErrors {
 	errs := &DirectusErrors{statusCode: statusCode}
 	if err := json.NewDecoder(r).Decode(errs); err != nil {
 		panic(fmt.Errorf("decode directus errors: %w", err))

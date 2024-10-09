@@ -28,6 +28,13 @@ var directusSchemaSnapshot string
 //go:embed directus-empty-schema-snapshot.json
 var directusEmptySchemaSnapshot string
 
+// DirectusVersion returns the Directus version.
+// It uses the DIRECTUS_VERSION environment variable if set, otherwise it
+// returns the default version.
+func DirectusVersion() string {
+	return expandEnv("${DIRECTUS_VERSION:-11.1.0}")
+}
+
 // DirectusSchemaSnapshot returns a reader for the Directus schema snapshot.
 // The environment variables in the snapshot are expanded.
 // It panics on variables expansion error.

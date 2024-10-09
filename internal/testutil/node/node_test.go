@@ -1,6 +1,8 @@
 package node
 
 import (
+	"bytes"
+	"io"
 	"path/filepath"
 	"testing"
 
@@ -67,12 +69,17 @@ func TestCreateNodePackage(t *testing.T) {
 				"lib":    []string{"es6", "dom"},
 			},
 		},
+		Content: map[string]io.Reader{
+			"src/index.ts":               bytes.NewBuffer([]byte("console.log('Hello, world!');")),
+			"src/my-module/index.ts":     bytes.NewBuffer([]byte("export const foo = 'bar';")),
+			"src/my-module/sub/index.ts": bytes.NewBuffer([]byte("export const bar = 'baz';")),
+			"example.txt":                bytes.NewBuffer([]byte("Hello, world!")),
+		},
 	})
 	require.NoError(t, err, "CreateNodePackage 1")
 
-	out, err := p.Install()
-	assert.NoError(t, err, "Install 1")
-	assert.NotEmpty(t, out, "Install Output 1")
+	// install package dependencies
+	assert.NoError(t, p.Install(), "Install 1")
 
 	p2, err := Create(filepath.Join("testdata", "2"), &Spec{
 		PackageJson: &PackageJsonSpec{

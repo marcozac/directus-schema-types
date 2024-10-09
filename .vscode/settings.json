@@ -1,3 +1,6 @@
 {
+  "files.associations": {
+    "*.ts.tmpl": "gots"
+  },
   "yaml.customTags": ["!override sequence"]
 }
