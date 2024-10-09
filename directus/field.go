@@ -1,4 +1,4 @@
-package schema
+package directus
 
 type Field struct {
 	// Collection is the name of the collection the field belongs to.

@@ -3,10 +3,11 @@ package main
 import (
 	"fmt"
 
-	dst "github.com/marcozac/directus-schema-types"
-	"github.com/marcozac/directus-schema-types/schema"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	dst "github.com/marcozac/directus-schema-types"
+	"github.com/marcozac/directus-schema-types/directus"
 )
 
 func NewGenerateCmd(viper *viper.Viper) *cobra.Command {
@@ -34,7 +35,7 @@ instead, without connecting to the Directus instance.
 The output can be saved to a file or directory, or printed to the standard
 output.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			var schema *schema.Schema
+			var schema *directus.Schema
 			var err error
 			if viper.IsSet(fromSnap) {
 				schema, err = dst.SchemaFromSnapshotFile(viper.GetString(fromSnap))

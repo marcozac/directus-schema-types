@@ -13,14 +13,14 @@ import (
 	"sync"
 	"text/template"
 
-	"github.com/marcozac/directus-schema-types/schema"
+	"github.com/marcozac/directus-schema-types/directus"
 )
 
 //go:embed template/*
 var tmplFS embed.FS
 
 // NewGenerator creates a new generator.
-func NewGenerator(s *schema.Schema, opts ...Option) *Generator {
+func NewGenerator(s *directus.Schema, opts ...Option) *Generator {
 	g := &Generator{
 		spec: SchemaToSpec(s),
 		tmpl: template.Must(template.New("").

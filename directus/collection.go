@@ -1,4 +1,4 @@
-package schema
+package directus
 
 // Collection is a representation of a collection in the schema.
 type Collection struct {

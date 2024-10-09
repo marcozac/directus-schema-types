@@ -7,8 +7,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/marcozac/directus-schema-types/schema"
-	"github.com/marcozac/directus-schema-types/util"
+	"github.com/marcozac/directus-schema-types/directus"
 )
 
 // NewClient creates a new Directus client.
@@ -38,6 +37,8 @@ type Client struct {
 
 // Snapshot writes a JSON representation of the Directus schema to the given
 // writer.
+// It is not a replacement for 'schema/snapshot' endpoint. The result is similar
+// but is not compatible with the 'schema/diff' and 'schema/apply' endpoints.
 func (c *Client) Snapshot(w io.Writer) error {
 	return c.snapshot(json.NewEncoder(w))
 }
@@ -60,7 +61,7 @@ func (c *Client) snapshot(enc *json.Encoder) error {
 
 // GetSchema returns the schema of the Directus instance.
 // Under the hood, it calls GetCollections, GetFields, and GetRelations.
-func (c *Client) GetSchema() (*schema.Schema, error) {
+func (c *Client) GetSchema() (*directus.Schema, error) {
 	collections, err := c.GetCollections()
 	if err != nil {
 		return nil, fmt.Errorf("get collections: %w", err)
@@ -73,7 +74,7 @@ func (c *Client) GetSchema() (*schema.Schema, error) {
 	if err != nil {
 		return nil, fmt.Errorf("get relations: %w", err)
 	}
-	return &schema.Schema{
+	return &directus.Schema{
 		Collections: collections,
 		Fields:      fields,
 		Relations:   relations,
@@ -81,18 +82,18 @@ func (c *Client) GetSchema() (*schema.Schema, error) {
 }
 
 // GetCollections returns the list of collections in the Directus instance.
-func (c *Client) GetCollections() ([]schema.Collection, error) {
-	return get[schema.Collection](c, "/collections")
+func (c *Client) GetCollections() ([]directus.Collection, error) {
+	return get[[]directus.Collection](c, "/collections")
 }
 
 // GetFields returns the list of fields in the Directus instance.
-func (c *Client) GetFields() ([]schema.Field, error) {
-	return get[schema.Field](c, "/fields")
+func (c *Client) GetFields() ([]directus.Field, error) {
+	return get[[]directus.Field](c, "/fields")
 }
 
 // GetRelations returns the list of relations in the Directus instance.
-func (c *Client) GetRelations() ([]schema.Relation, error) {
-	return get[schema.Relation](c, "/relations")
+func (c *Client) GetRelations() ([]directus.Relation, error) {
+	return get[[]directus.Relation](c, "/relations")
 }
 
 func (c *Client) get(endpoint string, cbs ...requestCallback) (*http.Response, error) {
@@ -134,35 +135,14 @@ func (c *Client) do(method, endpoint string, body io.Reader, cbs ...requestCallb
 
 // get is a generic function that performs a GET request to a Directus
 // endpoint and decodes the response payload into a slice of T.
-func get[T directusPayloadData](c *Client, endpoint string) ([]T, error) {
+func get[T directus.PayloadData](c *Client, endpoint string) (T, error) {
 	res, err := c.get(endpoint)
 	if err != nil {
 		return nil, err
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-		return nil, util.DecodeDirectusError(res.StatusCode, res.Body)
+		return nil, directus.DecodeResponseError(res.StatusCode, res.Body)
 	}
-	return decodePayload[T](res.Body)
-}
-
-// decodePayload is a generic function that decodes a Directus payload
-// from an io.Reader (e.g. an HTTP response body).
-func decodePayload[T directusPayloadData](r io.Reader) ([]T, error) {
-	p := &directusPayload[T]{}
-	if err := json.NewDecoder(r).Decode(p); err != nil {
-		return nil, fmt.Errorf("decode payload: %w", err)
-	}
-	return p.Data, nil
-}
-
-// directusPayload is a generic representation of a Directus payload.
-type directusPayload[T directusPayloadData] struct {
-	Data []T `json:"data"`
-}
-
-// directusPayloadData is an interface that represents the types that can
-// be decoded from a Directus payload.
-type directusPayloadData interface {
-	schema.Collection | schema.Field | schema.Relation
+	return directus.DecodePayload[T](res.Body)
 }

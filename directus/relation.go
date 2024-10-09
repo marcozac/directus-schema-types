@@ -1,4 +1,4 @@
-package schema
+package directus
 
 type Relation struct {
 	// Collection is the name of the collection the relation field belongs to.

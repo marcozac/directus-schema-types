@@ -9,11 +9,12 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/stretchr/testify/suite"
+
+	"github.com/marcozac/directus-schema-types/directus"
 	"github.com/marcozac/directus-schema-types/internal/testutil"
 	"github.com/marcozac/directus-schema-types/internal/testutil/directest"
 	"github.com/marcozac/directus-schema-types/internal/testutil/node"
-	"github.com/marcozac/directus-schema-types/schema"
-	"github.com/stretchr/testify/suite"
 )
 
 func TestSuite(t *testing.T) {
@@ -67,7 +68,7 @@ func (suite *Suite) TestClient() {
 				suite.Require().NoError(err, "Snapshot")
 
 				// check the snapshot
-				s := &schema.Schema{}
+				s := &directus.Schema{}
 				suite.Require().NoError(json.NewDecoder(buf).Decode(s), "decode")
 				suite.Require().NotEmpty(s.Collections, "collections")
 
@@ -90,7 +91,7 @@ func (suite *Suite) TestClient() {
 				suite.Require().NoError(err, "SnapshotPretty")
 
 				// check the snapshot
-				s := &schema.Schema{}
+				s := &directus.Schema{}
 				suite.Require().NoError(json.NewDecoder(buf).Decode(s), "decode")
 				suite.Assert().NotEmpty(s.Collections, "collections")
 			},
