@@ -1,7 +1,6 @@
 {{- block "package.json" $.PackageJson -}}
 {
-  "name": "{{ $.Name }}",
-  "private": true
+  "name": "{{ $.Name }}"
 
 {{- with $.Version }},
   "version": "{{ . }}"
@@ -9,6 +8,10 @@
 
 {{- with $.Type }},
   "type": "{{ . }}"
+{{- end }}
+
+{{- with $.Private }},
+  "private": {{ . }}
 {{- end }}
 
 {{- with $.Description }},

@@ -12,8 +12,8 @@ import (
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
 
+	"github.com/marcozac/directus-schema-types/directus"
 	"github.com/marcozac/directus-schema-types/internal/testutil"
-	"github.com/marcozac/directus-schema-types/util"
 )
 
 const (
@@ -114,12 +114,6 @@ func (d *Directest) Wait() error {
 	})
 }
 
-type Diff struct {
-	// the schema diff is used only here, should not be necessary to
-	// define a type for it
-	Data json.RawMessage `json:"data"`
-}
-
 // ApplySchema applies the test schema snapshot to the Directus instance.
 // It's not necessary to call Wait before calling this method.
 func (d *Directest) ApplySchema() error {
@@ -133,7 +127,7 @@ func (d *Directest) ApplySchema() error {
 	}
 	defer dres.Body.Close()
 
-	diff := &Diff{}
+	diff := &directus.Payload[json.RawMessage]{}
 	if err := json.NewDecoder(dres.Body).Decode(&diff); err != nil {
 		return fmt.Errorf("diff decode: %w", err)
 	}
@@ -164,7 +158,7 @@ func (d *Directest) post(endpoint string, body io.Reader) (*http.Response, error
 	}
 	defer res.Body.Close()
 	if res.StatusCode >= 400 {
-		return nil, util.DecodeDirectusError(res.StatusCode, res.Body)
+		return nil, directus.DecodeResponseError(res.StatusCode, res.Body)
 	}
 	return nil, fmt.Errorf("unexpected status code %d", res.StatusCode)
 }

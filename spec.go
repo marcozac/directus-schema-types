@@ -4,11 +4,11 @@ import (
 	"slices"
 
 	"github.com/iancoleman/strcase"
-	"github.com/marcozac/directus-schema-types/schema"
+	"github.com/marcozac/directus-schema-types/directus"
 	"github.com/marcozac/directus-schema-types/util"
 )
 
-func SchemaToSpec(s *schema.Schema) *Spec {
+func SchemaToSpec(s *directus.Schema) *Spec {
 	spec := &Spec{
 		Collections: make(map[string]*CollectionSpec, len(s.Collections)),
 	}
@@ -25,10 +25,10 @@ func SchemaToSpec(s *schema.Schema) *Spec {
 		}
 	}
 	for _, field := range s.Fields {
-		skip := field.Type == schema.FieldTypeAlias || // skip alias fields. relations are handled separately
-			slices.ContainsFunc(field.Meta.Special, func(s schema.FieldSpecial) bool {
+		skip := field.Type == directus.FieldTypeAlias || // skip alias fields. relations are handled separately
+			slices.ContainsFunc(field.Meta.Special, func(s directus.FieldSpecial) bool {
 				// skip fields with no data. e.g. groups, dividers, etc.
-				return s == schema.FieldSpecialNoData
+				return s == directus.FieldSpecialNoData
 			})
 		if skip {
 			continue
@@ -186,7 +186,7 @@ type FieldSpec struct {
 	name string
 
 	// FieldType is the type of the field in Directus.
-	fieldType schema.FieldType
+	fieldType directus.FieldType
 
 	// IsNullable is whether the field is nullable.
 	isNullable bool
@@ -214,7 +214,7 @@ func (f *FieldSpec) Name() string {
 }
 
 // FieldType returns the type of the field in Directus.
-func (f *FieldSpec) FieldType() schema.FieldType {
+func (f *FieldSpec) FieldType() directus.FieldType {
 	return f.fieldType
 }
 
@@ -378,7 +378,7 @@ type FieldTyper interface {
 	Name() string
 
 	// FieldType is the type of the field in Directus.
-	FieldType() schema.FieldType
+	FieldType() directus.FieldType
 
 	// IsNullable is whether the field is nullable.
 	IsNullable() bool

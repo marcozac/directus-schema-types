@@ -1,4 +1,4 @@
-package schema
+package directus
 
 // Schema represents the schema of the Directus instance.
 type Schema struct {
