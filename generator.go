@@ -73,21 +73,28 @@ func (g *Generator) Generate() error {
 	case g.writer != nil:
 		return g.generateAll(g.writer)
 	case g.outFile != "":
-		_ = g.clean(g.outFile) // the method checks the clean option
-		f, err := os.Create(g.outFile)
-		if err != nil {
-			return fmt.Errorf("create file: %w", err)
-		}
-		defer f.Close()
-		return g.generateAll(f)
+		return g.generateFile()
 	case g.outDir != "":
-		_ = g.clean(g.outDir) // the method checks the clean option
 		return g.generateDir()
 	}
 	return errors.New("no output specified")
 }
 
+func (g *Generator) generateFile() error {
+	_ = g.clean(g.outFile) // the method checks the clean option
+	if err := os.MkdirAll(filepath.Dir(g.outFile), 0o755); err != nil {
+		return fmt.Errorf("create directory: %w", err)
+	}
+	f, err := os.Create(g.outFile)
+	if err != nil {
+		return fmt.Errorf("create file: %w", err)
+	}
+	defer f.Close()
+	return g.generateAll(f)
+}
+
 func (g *Generator) generateDir() error {
+	_ = g.clean(g.outDir) // the method checks the clean option
 	if err := os.MkdirAll(g.outDir, 0o755); err != nil {
 		return fmt.Errorf("create directory: %w", err)
 	}

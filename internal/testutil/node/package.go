@@ -7,11 +7,14 @@ type PackageJsonSpec struct {
 	// Version is the version of the package.
 	Version string
 
-	// Description is the description of the package.
-	Description string
-
 	// Type is the type of the package.
 	Type PackageJsonType
+
+	// Private is a flag to mark the package as private.
+	Private *bool
+
+	// Description is the description of the package.
+	Description string
 
 	// Scripts is a map of scripts.
 	Scripts map[string]string
