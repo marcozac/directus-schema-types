@@ -2,46 +2,50 @@ package dst
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
-	"os"
+	"fmt"
+	"io"
 	"path/filepath"
 	"testing"
 
-	"github.com/joho/godotenv"
+	"github.com/marcozac/directus-schema-types/internal/testutil"
+	"github.com/marcozac/directus-schema-types/internal/testutil/directest"
+	"github.com/marcozac/directus-schema-types/internal/testutil/node"
 	"github.com/marcozac/directus-schema-types/schema"
 	"github.com/stretchr/testify/suite"
 )
 
+func TestSuite(t *testing.T) {
+	suite.Run(t, &Suite{})
+}
+
 type Suite struct {
 	suite.Suite
 
-	clientOptions ClientOptions
 	client        *Client
+	clientOptions ClientOptions
+
+	dt  *directest.Directest
+	pkg *node.Package
 }
 
 // setup the suite applying the test schema
 func (suite *Suite) SetupSuite() {
-	_ = godotenv.Load() // try to load .env file
-	baseURL := os.Getenv("DIRECTUS_BASE_URL")
-	if baseURL == "" {
-		baseURL = "http://localhost:8055"
-	}
-	token := os.Getenv("DIRECTUS_TOKEN")
-	suite.Require().NotEmpty(token, "DIRECTUS_TOKEN is required")
+	r, err := setupSuiteResources(suite)
+	suite.Require().NoError(err, "setupSuiteResources")
+	suite.dt = r.dt
+	suite.pkg = r.pkg
 
 	suite.clientOptions = ClientOptions{
-		BaseURL: baseURL,
-		Token:   token,
+		BaseURL: suite.dt.BaseURL(),
+		Token:   directest.DefaultUserToken,
 	}
 	suite.client = NewClient(suite.clientOptions) // reset before each test
-
-	// apply the test schema
-	suite.Require().NoError(suite.client.applyTestSchema(), "applyTestSchema")
 }
 
 func (suite *Suite) TearDownSuite() {
-	// reset the schema
-	suite.Require().NoError(suite.client.resetSchema(), "teardown")
+	suite.Assert().NoError(suite.dt.Close(), "Close Directest")
 }
 
 // setup before each test
@@ -105,13 +109,6 @@ func (suite *Suite) TestClientError() {
 		test func()
 	}{
 		{
-			name: "applyTestSchema",
-			test: func() {
-				err := suite.client.applyTestSchema()
-				suite.Assert().Error(err, "applyTestSchema")
-			},
-		},
-		{
 			name: "GetSchema",
 			test: func() {
 				_, err := suite.client.GetSchema()
@@ -142,14 +139,14 @@ func (suite *Suite) TestClientError() {
 		{
 			name: "Snapshot",
 			test: func() {
-				err := suite.client.Snapshot(NopWriter{})
+				err := suite.client.Snapshot(io.Discard)
 				suite.Assert().Error(err, "Snapshot")
 			},
 		},
 		{
 			name: "SnapshotPretty",
 			test: func() {
-				err := suite.client.SnapshotPretty(NopWriter{})
+				err := suite.client.SnapshotPretty(io.Discard)
 				suite.Assert().Error(err, "SnapshotPretty")
 			},
 		},
@@ -159,6 +156,9 @@ func (suite *Suite) TestClientError() {
 }
 
 func (suite *Suite) TestGenerator() {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	// get the schema
 	s, err := suite.client.GetSchema()
 	suite.Require().NoError(err, "GetSchema")
@@ -169,15 +169,18 @@ func (suite *Suite) TestGenerator() {
 	}{
 		{
 			name:    "WithWriter",
-			options: []Option{WithWriter(NopWriter{})},
+			options: []Option{WithWriter(io.Discard)},
 		},
 		{
 			name:    "WithOutFile",
-			options: []Option{WithOutFile(filepath.Join("testdata", "schema.ts"))},
+			options: []Option{WithOutFile(filepath.Join(suite.pkg.Dir, "schema.ts"))},
 		},
 		{
-			name:    "WithOutDir",
-			options: []Option{WithOutDir(filepath.Join("testdata", "schema"))},
+			name: "WithOutDir",
+			options: []Option{
+				WithOutDir(filepath.Join(suite.pkg.Dir, "schema")),
+				WithFormatOutput(false), // very slower when enabled
+			},
 		},
 	} {
 		suite.Run(tt.name, func() {
@@ -185,14 +188,98 @@ func (suite *Suite) TestGenerator() {
 			suite.Require().NoError(generator.Generate(), "generate")
 		})
 	}
+
+	// run the typecheck script
+	suite.Require().NoError(suite.pkg.RunContext(ctx, "typecheck"), "Run typecheck")
 }
 
-func TestSuite(t *testing.T) {
-	suite.Run(t, &Suite{})
+type resources struct {
+	dt  *directest.Directest
+	pkg *node.Package
 }
 
-type NopWriter struct{}
+// setupSuiteResources creates in parallel the resources required by the test
+// suite and waits for the results.
+func setupSuiteResources(suite *Suite) (*resources, error) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
-func (NopWriter) Write(p []byte) (n int, err error) {
-	return len(p), nil
+	errc := make(chan error, 2)
+	dtc := wrapc(errc, func() (*directest.Directest, error) {
+		dt, err := directest.New(testutil.DirectusVersion(), // use DIRECTUS_VERSION or default
+			directest.WithContext(ctx),
+			directest.WithLogWriter(testutil.NewPrefixLogWriter(suite.T(), "directest")),
+			directest.WithApplySchema(true),
+		)
+		if err != nil {
+			return nil, fmt.Errorf("directest: %w", err)
+		}
+		return dt, nil
+	})
+	pkgc := wrapc(errc, func() (*node.Package, error) {
+		// create a temp dir for the tests output
+		tempDir := suite.T().TempDir()
+		pkg, err := node.Create(tempDir,
+			&node.Spec{
+				PackageJson: &node.PackageJsonSpec{
+					Name: "test",
+					Scripts: map[string]string{
+						"typecheck": "tsc --build --verbose",
+					},
+					DevDependencies: map[string]string{
+						"typescript": "^5",
+					},
+				},
+				TSConfig: &node.TSConfigSpec{
+					CompilerOptions: map[string]any{
+						"noEmit":        true,
+						"noImplicitAny": true,
+					},
+					Include: []string{"**/*.ts"},
+				},
+			},
+			node.WithLogWriter(testutil.NewPrefixLogWriter(suite.T(), "node")),
+		)
+		if err != nil {
+			return nil, fmt.Errorf("node: create: %w", err)
+		}
+		if err := pkg.InstallContext(ctx); err != nil {
+			return nil, fmt.Errorf("node: install: %w", err)
+		}
+		return pkg, nil
+	})
+
+	// wait for the results
+	r := &resources{}
+	for {
+		select {
+		case err := <-errc:
+			// return the first error
+			// the ctx cancelation will cause the other goroutines to return
+			return nil, err
+		case dt := <-dtc:
+			r.dt = dt
+		case pkg := <-pkgc:
+			r.pkg = pkg
+		}
+		if r.dt != nil && r.pkg != nil {
+			break
+		}
+	}
+	return r, nil
+}
+
+// wrapc wraps a function returning a value and an error into a channel.
+// The error is sent to its channel only if it's not nil.
+// The value is sent to its channel only if there is no error.
+func wrapc[T any](errc chan error, fn func() (T, error)) chan T {
+	resc := make(chan T, 1)
+	go func(resc chan T, errc chan error) {
+		res, err := fn()
+		if err != nil {
+			errc <- err
+		}
+		resc <- res
+	}(resc, errc)
+	return resc
 }

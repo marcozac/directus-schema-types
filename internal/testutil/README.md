@@ -1,0 +1,18 @@
+# testdata
+
+## [directus-schema-snapshot.json](./directus-schema-snapshot.json)
+
+This file is a snapshot of a test `Directus` schema, obtained from `/schema/snapshot` endpoint.
+It's used to apply a default schema in tests.
+
+This is **NOT** the result of calling `snapshot` command in the CLI.
+
+The file includes the following environment variables, which are expanded at runtime:
+
+-   `DIRECTUS_VERSION`: The version of the testing `Directus` instance.
+-   `DIRECTUS_DB_VENDOR`: The database vendor of the testing `Directus` instance.
+
+## [directus-empty-schema-snapshot.json](./directus-empty-schema-snapshot.json)
+
+As the file described above, but with an empty schema.
+It's used to reset the schema in tests and includes the same environment variables.

@@ -1,4 +1,0 @@
-services:
-  directus:
-    ports: !override
-      - 8056:8055

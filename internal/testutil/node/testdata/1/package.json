@@ -1,0 +1,44 @@
+{
+  "name": "test1",
+  "private": true,
+  "version": "1.0.0",
+  "type": "commonjs",
+  "scripts": {
+    "bar": "echo bar",
+    "foo": "echo foo"
+  },
+  "dependencies": {
+    "@types/node": "*",
+    "typescript": "*"
+  },
+  "devDependencies": {
+    "@types/node": "*",
+    "typescript": "*"
+  },
+  "files": [
+    "foo",
+    "bar"
+  ],
+  "example_1": {
+    "foo_1": "foo",
+    "Bar": {
+      "hello": "world"
+    },
+    "baz": [
+      "a",
+      "b",
+      "c"
+    ]
+  },
+  "example_2": {
+    "foo_1": "foo",
+    "Bar": {
+      "hello": "world"
+    },
+    "baz": [
+      "a",
+      "b",
+      "c"
+    ]
+  }
+}

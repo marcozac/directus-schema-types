@@ -1,0 +1,8 @@
+name: dst-devcontainer
+
+services:
+  devcontainer:
+    image: mcr.microsoft.com/devcontainers/go:1
+    volumes:
+      - ..:/workspaces/dst:cached
+    command: sleep infinity

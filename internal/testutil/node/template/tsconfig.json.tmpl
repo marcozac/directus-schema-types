@@ -1,0 +1,25 @@
+{{- block "tsconfig.json" $.TSConfig -}}
+{{- with $ }}{{/* check tsconfig spec is not nil */}}
+{
+  "$schema": "https://json.schemastore.org/tsconfig"
+
+{{- with $.CompilerOptions }},
+  "compilerOptions": {
+    {{- template "json/mapToAny" . }}
+  }
+{{- end }}
+
+{{- with $.Include }},
+  "include": [
+    {{- template "json/sliceToStringElements" . }}
+  ]
+{{- end }}
+
+{{- with $.Exclude }},
+  "exclude": [
+    {{- template "json/sliceToStringElements" . }}
+  ]
+{{- end }}
+}
+{{- end }}
+{{- end }}
