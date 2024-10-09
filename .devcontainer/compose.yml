@@ -3,15 +3,6 @@ name: dst-devcontainer
 services:
   devcontainer:
     image: mcr.microsoft.com/devcontainers/go:1
-    environment:
-      DIRECTUS_VERSION: '11.1.0'
-    env_file:
-      - .env.devcontainer
     volumes:
       - ..:/workspaces/dst:cached
     command: sleep infinity
-
-  directus:
-    image: directus/directus:${DIRECTUS_VERSION}
-    env_file:
-      - .env.directus

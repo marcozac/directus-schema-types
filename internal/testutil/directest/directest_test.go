@@ -3,15 +3,14 @@ package directest
 import (
 	"testing"
 
+	"github.com/marcozac/directus-schema-types/internal/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-const directusTestVersion = "11.1.0"
-
 func TestDirectest(t *testing.T) {
 	t.Log("New Directest...")
-	d, err := New(directusTestVersion)
+	d, err := New(testutil.DirectusVersion())
 	require.NoError(t, err, "New")
 	defer d.Close()
 
