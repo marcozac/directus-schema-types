@@ -1,6 +1,5 @@
 {
   "name": "test2",
-  "private": true,
   "scripts": {
     "bar": "echo bar",
     "foo": "echo foo"
