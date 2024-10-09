@@ -2,9 +2,10 @@ package main
 
 import (
 	"github.com/joho/godotenv"
-	dst "github.com/marcozac/directus-schema-types"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	dst "github.com/marcozac/directus-schema-types"
 )
 
 const (
