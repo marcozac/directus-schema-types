@@ -16,6 +16,10 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
+func TestSuite(t *testing.T) {
+	suite.Run(t, &Suite{})
+}
+
 type Suite struct {
 	suite.Suite
 
@@ -187,10 +191,6 @@ func (suite *Suite) TestGenerator() {
 
 	// run the typecheck script
 	suite.Require().NoError(suite.pkg.RunContext(ctx, "typecheck"), "Run typecheck")
-}
-
-func TestSuite(t *testing.T) {
-	suite.Run(t, &Suite{})
 }
 
 type resources struct {

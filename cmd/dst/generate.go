@@ -6,41 +6,22 @@ import (
 	dst "github.com/marcozac/directus-schema-types"
 	"github.com/marcozac/directus-schema-types/schema"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
-const (
-	// --- [generate] config keys ---
+func NewGenerateCmd(viper *viper.Viper) *cobra.Command {
+	const (
+		file     = "gen_out_file"
+		dir      = "gen_out_dir"
+		fromSnap = "gen_from_snapshot"
+		format   = "gen_format"
+		clean    = "gen_clean"
+	)
 
-	genOutFile  = "gen_out_file"
-	genOutDir   = "gen_out_dir"
-	genFromSnap = "gen_from_snapshot"
-	genFormat   = "gen_format"
-	genClean    = "gen_clean"
-)
-
-func init() {
-	// --- [generate] flags ---
-
-	generateCmd.PersistentFlags().StringP("file", "f", "", "output file")
-	_ = viper.BindPFlag(genOutFile, generateCmd.PersistentFlags().Lookup("file"))
-
-	generateCmd.PersistentFlags().StringP("dir", "d", "", "output directory")
-	_ = viper.BindPFlag(genOutDir, generateCmd.PersistentFlags().Lookup("dir"))
-
-	generateCmd.PersistentFlags().String("from-snapshot", "", "use a snapshot file as schema source")
-	_ = viper.BindPFlag(genFromSnap, generateCmd.PersistentFlags().Lookup("from-snapshot"))
-
-	generateCmd.PersistentFlags().Bool("format", true, "format the output")
-	_ = viper.BindPFlag(genFormat, generateCmd.PersistentFlags().Lookup("format"))
-
-	generateCmd.PersistentFlags().Bool("clean", false, "clean the output file or directory before generating")
-	_ = viper.BindPFlag(genClean, generateCmd.PersistentFlags().Lookup("clean"))
-}
-
-var generateCmd = &cobra.Command{
-	Use:   "generate",
-	Short: "Generates Typescript types from the Directus schema",
-	Long: `
+	cmd := &cobra.Command{
+		Use:   "generate",
+		Short: "Generates Typescript types from the Directus schema",
+		Long: `
 Generates Typescript types from the Directus schema including all collections,
 fields, and relations.
 
@@ -52,37 +33,55 @@ instead, without connecting to the Directus instance.
 
 The output can be saved to a file or directory, or printed to the standard
 output.`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		schema, err := getGenSchema()
-		if err != nil {
-			return fmt.Errorf("schema: %w", err)
-		}
-		opts := []dst.Option{
-			dst.WithFormatOutput(viper.GetBool(genFormat)),
-			dst.WithClean(viper.GetBool(genClean)),
-		}
-		switch {
-		case viper.IsSet(genOutFile):
-			opts = append(opts, dst.WithOutFile(viper.GetString(genOutFile)))
-		case viper.IsSet(genOutDir):
-			opts = append(opts, dst.WithOutDir(viper.GetString(genOutDir)))
-		default:
-			opts = append(opts, dst.WithWriter(cmd.OutOrStdout()))
-		}
-		generator := dst.NewGenerator(schema, opts...)
-		if err := generator.Generate(); err != nil {
-			return fmt.Errorf("generate: %w", err)
-		}
-		return nil
-	},
-}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			var schema *schema.Schema
+			var err error
+			if viper.IsSet(fromSnap) {
+				schema, err = dst.SchemaFromSnapshotFile(viper.GetString(fromSnap))
+			} else {
+				client := newClient(viper)
+				schema, err = client.GetSchema()
+			}
 
-// getGenSchema returns the schema for the generate command from the Directus
-// instance or from a snapshot file if the flag is set.
-func getGenSchema() (*schema.Schema, error) {
-	if viper.IsSet(genFromSnap) {
-		return dst.SchemaFromSnapshotFile(viper.GetString(genFromSnap))
+			if err != nil {
+				return fmt.Errorf("schema: %w", err)
+			}
+			opts := []dst.Option{
+				dst.WithFormatOutput(viper.GetBool(format)),
+				dst.WithClean(viper.GetBool(clean)),
+			}
+			switch {
+			case viper.IsSet(file):
+				opts = append(opts, dst.WithOutFile(viper.GetString(file)))
+			case viper.IsSet(dir):
+				opts = append(opts, dst.WithOutDir(viper.GetString(dir)))
+			default:
+				opts = append(opts, dst.WithWriter(cmd.OutOrStdout()))
+			}
+			generator := dst.NewGenerator(schema, opts...)
+			if err := generator.Generate(); err != nil {
+				return fmt.Errorf("generate: %w", err)
+			}
+			return nil
+		},
 	}
-	client := newClient()
-	return client.GetSchema()
+
+	// --- [generate] flags ---
+
+	cmd.PersistentFlags().StringP("file", "f", "", "output file")
+	_ = viper.BindPFlag(file, cmd.PersistentFlags().Lookup("file"))
+
+	cmd.PersistentFlags().StringP("dir", "d", "", "output directory")
+	_ = viper.BindPFlag(dir, cmd.PersistentFlags().Lookup("dir"))
+
+	cmd.PersistentFlags().String("from-snapshot", "", "use a snapshot file as schema source")
+	_ = viper.BindPFlag(fromSnap, cmd.PersistentFlags().Lookup("from-snapshot"))
+
+	cmd.PersistentFlags().Bool("format", true, "format the output")
+	_ = viper.BindPFlag(format, cmd.PersistentFlags().Lookup("format"))
+
+	cmd.PersistentFlags().Bool("clean", false, "clean the output file or directory before generating")
+	_ = viper.BindPFlag(clean, cmd.PersistentFlags().Lookup("clean"))
+
+	return cmd
 }
