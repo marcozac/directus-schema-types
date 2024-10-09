@@ -74,7 +74,15 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: 'go.mod'
+      - name: Test Windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        env:
+          DIRECTUS_VERSION: ${{ matrix.directusVersion }}
+          DIRECTUS_DB_VENDOR: 'sqlite'
+          DIRECTEST_USE_SERVER: 'true'
+        run: go test -v -race
       - name: Test
+        if: ${{ matrix.os != 'windows-latest' }}
         env:
           DIRECTUS_VERSION: ${{ matrix.directusVersion }}
           DIRECTUS_DB_VENDOR: 'sqlite'
@@ -86,6 +94,8 @@ jobs:
           ./...
       # Check the generated files in 'testdata' are up-to-date.
       - name: Check generated files
+        # Run only once, when coverage is enabled.
+        if: ${{ matrix.coverage }}
         run: |
           STATUS=$(git status --porcelain)
           if [ -n "$STATUS" ]; then

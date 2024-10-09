@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
 )
 
 const (
@@ -20,7 +21,7 @@ const (
 )
 
 // New runs a new Directus container with the specified version.
-func New(version string, opts ...Option) (dt Directest, err error) {
+func New(version string, opts ...Option) (Directest, error) {
 	if version == "" {
 		return nil, fmt.Errorf("version is required")
 	}
@@ -32,16 +33,19 @@ func New(version string, opts ...Option) (dt Directest, err error) {
 	for _, opt := range opts {
 		opt(o)
 	}
-	dt, err = newContainer(version, o)
+	// check if the server should be used
+	if os.Getenv("DIRECTEST_USE_SERVER") == "true" {
+		return newServer(o)
+	}
+	dt, err := newContainer(version, o)
 	if err != nil {
 		if errors.As(err, &asDockerError) {
 			_, _ = o.logWriter.Write([]byte("[WARNING]: docker not available: running as server\n"))
-			dt, err = newServer(o) // docker not available: run as server
-			return
+			return newServer(o) // docker not available: run as server
 		}
 		return nil, fmt.Errorf("new container: %w", err)
 	}
-	return
+	return dt, nil
 }
 
 type Directest interface {
