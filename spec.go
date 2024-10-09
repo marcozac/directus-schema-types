@@ -5,6 +5,7 @@ import (
 
 	"github.com/iancoleman/strcase"
 	"github.com/marcozac/directus-schema-types/schema"
+	"github.com/marcozac/directus-schema-types/util"
 )
 
 func SchemaToSpec(s *schema.Schema) *Spec {
@@ -73,7 +74,7 @@ func SchemaToSpec(s *schema.Schema) *Spec {
 }
 
 type Spec struct {
-	Collections SortableStringMap[*CollectionSpec]
+	Collections util.SortableStringMap[*CollectionSpec]
 
 	// Imports is the list of imports.
 	// It's set by the generator in case of multiple files output.
@@ -97,10 +98,10 @@ type CollectionSpec struct {
 	IsSingleton bool
 
 	// Fields is the list of the fields in the collection.
-	Fields SortableStringMap[*FieldSpec]
+	Fields util.SortableStringMap[*FieldSpec]
 
 	// Relations is the list of the relations in the collection.
-	Relations SortableStringMap[*RelationSpec]
+	Relations util.SortableStringMap[*RelationSpec]
 
 	// Imports is the list of imports for the collection.
 	// It's set by the generator in case of multiple files output.
@@ -325,10 +326,10 @@ type RelationSpec struct {
 //	imports := ImportSpec{
 //		"my_collection": {"MyCollection", "MyCollectionPrimaryKey"},
 //	}
-type ImportsSpec SortableStringMap[[]string]
+type ImportsSpec util.SortableStringMap[[]string]
 
 // PayloadFields is a map of field names to their types.
-type PayloadFields = SortableStringMap[PayloadFieldTyper]
+type PayloadFields = util.SortableStringMap[PayloadFieldTyper]
 
 var _ PayloadFieldTyper = (*payloadField)(nil)
 

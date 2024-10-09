@@ -1,34 +1,31 @@
 package testutil
 
 import (
-	"embed"
 	"fmt"
 	"os"
-	"text/template"
+
+	"mvdan.cc/sh/v3/shell"
 )
 
-//go:embed template/*
-var tmplFS embed.FS
+// DirectusDefaultVersion is the default Directus version used in the tests
+// and to generate the snapshots.
+const DirectusDefaultVersion = "11.1.0"
 
-var tmpl = template.Must(template.New("").
-	Funcs(template.FuncMap{
-		"sub": func(a, b int) int {
-			return a - b
-		},
-	}).
-	ParseFS(tmplFS, "template/*.tmpl"),
-)
+var directusVersionEnv = fmt.Sprintf("${DIRECTUS_VERSION:-%s}", DirectusDefaultVersion)
 
-// CreateAndExecute creates a file at the given path and executes the template
-// with the given name and data.
-func CreateAndExecute(path string, tmplName string, data any) error {
-	f, err := os.Create(path)
+// DirectusVersion returns the Directus version used in the tests.
+// It uses the DIRECTUS_VERSION environment variable if set, otherwise it
+// returns the default version.
+func DirectusVersion() string {
+	return expandEnv(directusVersionEnv)
+}
+
+// expandEnv expands the environment variables in the given string.
+// It panics on variables expansion error.
+func expandEnv(s string) string {
+	v, err := shell.Expand(s, os.Getenv)
 	if err != nil {
-		return fmt.Errorf("create file: %w", err)
+		panic(err)
 	}
-	defer f.Close()
-	if err := tmpl.ExecuteTemplate(f, tmplName, data); err != nil {
-		return fmt.Errorf("execute template: %w", err)
-	}
-	return nil
+	return v
 }

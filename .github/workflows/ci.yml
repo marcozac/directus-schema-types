@@ -8,12 +8,14 @@ on:
       - 'go.mod'
       - 'go.sum'
       - '**.go'
+      - '**.tmpl'
   pull_request:
     paths:
       - .github/workflows/ci.yml
       - 'go.mod'
       - 'go.sum'
       - '**.go'
+      - '**.tmpl'
 
 jobs:
   lint:
@@ -33,28 +35,19 @@ jobs:
   test:
     strategy:
       matrix:
+        # @TODO
+        # Test with different os.
+        # Currently not possible because docker is available only on Linux.
+        os: ['ubuntu-latest']
+        # @TODO
+        # Test with different Directus versions.
         directusVersion: ['11.1.0']
-        os: [ubuntu-latest, windows-latest]
-    runs-on: ubuntu-latest
-    services:
-      directus:
-        image: directus/directus:${{ matrix.directusVersion }}
-        ports:
-          - 8055:8055
-        env:
-          SECRET: '335ce705-39de-46b3-8c37-daeb2f1e91da'
-          DB_CLIENT: 'sqlite3'
-          DB_FILENAME: '/directus/database/data.db'
-          RATE_LIMITER_ENABLED: 'false'
-          CACHE_ENABLED: 'false'
-          ADMIN_EMAIL: 'admin@example.com'
-          ADMIN_PASSWORD: 'myPassword1!'
-          ADMIN_TOKEN: 'd225e134-8fa7-49fd-bf61-21ee933d55bb'
-        options: >-
-          --health-cmd="wget --no-verbose --tries=1 --spider http://127.0.0.1:8055/server/health || exit 1"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+        include:
+          - # enable coverage for the default os and Directus version.
+            coverage: true
+            os: 'ubuntu-latest'
+            directusVersion: '11.1.0'
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -66,8 +59,6 @@ jobs:
         env:
           DIRECTUS_VERSION: ${{ matrix.directusVersion }}
           DIRECTUS_DB_VENDOR: 'sqlite'
-          DIRECTUS_BASE_URL: 'http://localhost:8055'
-          DIRECTUS_TOKEN: 'd225e134-8fa7-49fd-bf61-21ee933d55bb'
         run: >-
           go test -v -race
           -covermode=atomic
@@ -75,6 +66,7 @@ jobs:
           -coverpkg=./...
           ./...
       - name: Upload coverage reports to Codecov
+        if: ${{ matrix.coverage }}
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

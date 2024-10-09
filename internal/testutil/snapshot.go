@@ -3,9 +3,6 @@ package testutil
 import (
 	"bytes"
 	"io"
-	"os"
-
-	"mvdan.cc/sh/v3/shell"
 
 	_ "embed"
 )
@@ -44,14 +41,4 @@ func DirectusEmptySchemaSnapshot() io.Reader {
 	return bytes.NewBufferString(
 		expandEnv(directusEmptySchemaSnapshot),
 	)
-}
-
-// expandEnv expands the environment variables in the given string.
-// It panics on variables expansion error.
-func expandEnv(s string) string {
-	v, err := shell.Expand(s, os.Getenv)
-	if err != nil {
-		panic(err)
-	}
-	return v
 }

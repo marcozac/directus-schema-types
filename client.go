@@ -8,6 +8,7 @@ import (
 	"net/url"
 
 	"github.com/marcozac/directus-schema-types/schema"
+	"github.com/marcozac/directus-schema-types/util"
 )
 
 // NewClient creates a new Directus client.
@@ -98,10 +99,6 @@ func (c *Client) get(endpoint string, cbs ...requestCallback) (*http.Response, e
 	return c.do(http.MethodGet, endpoint, nil, cbs...)
 }
 
-func (c *Client) post(endpoint string, body io.Reader, cbs ...requestCallback) (*http.Response, error) {
-	return c.do(http.MethodPost, endpoint, body, cbs...)
-}
-
 type requestCallback func(*http.Request)
 
 // do performs an HTTP request with the given method to the Directus endpoint.
@@ -144,7 +141,7 @@ func get[T directusPayloadData](c *Client, endpoint string) ([]T, error) {
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-		return nil, decodeDirectusErrors(res.StatusCode, res.Body)
+		return nil, util.DecodeDirectusError(res.StatusCode, res.Body)
 	}
 	return decodePayload[T](res.Body)
 }
@@ -168,10 +165,4 @@ type directusPayload[T directusPayloadData] struct {
 // be decoded from a Directus payload.
 type directusPayloadData interface {
 	schema.Collection | schema.Field | schema.Relation
-}
-
-// setJsonHeader sets the "Content-Type" header of the given request to
-// "application/json".
-func setJsonHeader(req *http.Request) {
-	req.Header.Set("Content-Type", "application/json")
 }
