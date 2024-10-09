@@ -57,10 +57,7 @@ jobs:
   test:
     strategy:
       matrix:
-        # @TODO
-        # Test with different os.
-        # Currently not possible because docker is available only on Linux.
-        os: ['ubuntu-latest']
+        os: ['ubuntu-latest', 'windows-latest', 'macos-latest']
         # @TODO
         # Test with different Directus versions.
         directusVersion: ['11.1.0']
