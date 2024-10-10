@@ -4,6 +4,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/marcozac/directus-schema-types/directus"
 	"github.com/marcozac/directus-schema-types/internal/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -18,7 +19,7 @@ func TestSchemaFromSnapshot(t *testing.T) {
 		{
 			name: "OK",
 			test: func(t *testing.T) {
-				s, err := SchemaFromSnapshot(testutil.DirectusSchemaSnapshot())
+				s, err := directus.SchemaFromSnapshot(testutil.DirectusSchemaSnapshot())
 				require.NoError(t, err, "schema from snapshot")
 				var hasChefs bool
 				for _, c := range s.Collections {
@@ -35,7 +36,7 @@ func TestSchemaFromSnapshot(t *testing.T) {
 			test: func(t *testing.T) {
 				r := testutil.DirectusSchemaSnapshot()
 				_, _ = r.Read(make([]byte, 2))
-				_, err := SchemaFromSnapshot(r)
+				_, err := directus.SchemaFromSnapshot(r)
 				assert.Error(t, err)
 			},
 		},
@@ -49,7 +50,7 @@ func TestSchemaFromSnapshot(t *testing.T) {
 				_, err = f.ReadFrom(testutil.DirectusSchemaSnapshot())
 				require.NoError(t, err, "write snapshot to temp file")
 
-				s, err := SchemaFromSnapshotFile(f.Name())
+				s, err := directus.SchemaFromSnapshotFile(f.Name())
 				require.NoError(t, err, "schema from snapshot file")
 				var hasChefs bool
 				for _, c := range s.Collections {
@@ -64,7 +65,7 @@ func TestSchemaFromSnapshot(t *testing.T) {
 		{
 			name: "FileError",
 			test: func(t *testing.T) {
-				_, err := SchemaFromSnapshotFile("nonexistent")
+				_, err := directus.SchemaFromSnapshotFile("nonexistent")
 				assert.Error(t, err)
 			},
 		},

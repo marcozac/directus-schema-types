@@ -87,11 +87,11 @@ Makefile          text
 .prettierignore    text export-ignore
 
 # Generated files
-testdata/schema/*                         -text linguist-generated
-testdata/directus-schema-snapshot.json    -text linguist-generated
-testdata/snapshot.json                    -text linguist-generated
-testdata/schema-from-snapshot.ts          -text linguist-generated
-testdata/schema.ts                        -text linguist-generated
+example/src/*                -text linguist-generated
+example/dist/*               -text linguist-generated
+example/package.json         -text linguist-generated
+example/package-lock.json    -text linguist-generated
+example/tsconfig.json        -text linguist-generated
 
 # Vendored files
 # Keep as last to override all other rules

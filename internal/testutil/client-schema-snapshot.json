@@ -407,9 +407,7 @@
         "field": "id",
         "readonly": false,
         "required": false,
-        "special": [
-          "uuid"
-        ],
+        "special": ["uuid"],
         "note": null
       },
       "schema": {
@@ -607,9 +605,7 @@
         "field": "one_allowed_collections",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-csv"
-        ],
+        "special": ["cast-csv"],
         "note": null
       },
       "schema": {
@@ -697,9 +693,7 @@
         "field": "id",
         "readonly": false,
         "required": false,
-        "special": [
-          "uuid"
-        ],
+        "special": ["uuid"],
         "note": null
       },
       "schema": {
@@ -831,9 +825,7 @@
         "field": "folder",
         "readonly": true,
         "required": false,
-        "special": [
-          "m2o"
-        ],
+        "special": ["m2o"],
         "note": null
       },
       "schema": {
@@ -855,9 +847,7 @@
         "field": "uploaded_by",
         "readonly": false,
         "required": false,
-        "special": [
-          "user-created"
-        ],
+        "special": ["user-created"],
         "note": null
       },
       "schema": {
@@ -879,9 +869,7 @@
         "field": "created_on",
         "readonly": true,
         "required": false,
-        "special": [
-          "date-created"
-        ],
+        "special": ["date-created"],
         "note": null
       },
       "schema": {
@@ -903,9 +891,7 @@
         "field": "modified_by",
         "readonly": true,
         "required": false,
-        "special": [
-          "user-updated"
-        ],
+        "special": ["user-updated"],
         "note": null
       },
       "schema": {
@@ -927,9 +913,7 @@
         "field": "modified_on",
         "readonly": true,
         "required": false,
-        "special": [
-          "date-updated"
-        ],
+        "special": ["date-updated"],
         "note": null
       },
       "schema": {
@@ -1127,9 +1111,7 @@
         "field": "tags",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -1151,9 +1133,7 @@
         "field": "metadata",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -1241,9 +1221,7 @@
         "field": "tus_data",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -1353,9 +1331,7 @@
         "field": "special",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-csv"
-        ],
+        "special": ["cast-csv"],
         "note": null
       },
       "schema": {
@@ -1399,9 +1375,7 @@
         "field": "options",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -1445,9 +1419,7 @@
         "field": "display_options",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -1469,9 +1441,7 @@
         "field": "readonly",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-boolean"
-        ],
+        "special": ["cast-boolean"],
         "note": null
       },
       "schema": {
@@ -1493,9 +1463,7 @@
         "field": "hidden",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-boolean"
-        ],
+        "special": ["cast-boolean"],
         "note": null
       },
       "schema": {
@@ -1561,9 +1529,7 @@
         "field": "translations",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -1607,9 +1573,7 @@
         "field": "conditions",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -1631,9 +1595,7 @@
         "field": "required",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-boolean"
-        ],
+        "special": ["cast-boolean"],
         "note": null
       },
       "schema": {
@@ -1677,9 +1639,7 @@
         "field": "validation",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -1723,9 +1683,7 @@
         "field": "id",
         "readonly": false,
         "required": false,
-        "special": [
-          "uuid"
-        ],
+        "special": ["uuid"],
         "note": null
       },
       "schema": {
@@ -1857,9 +1815,7 @@
         "field": "options",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -1947,9 +1903,7 @@
         "field": "date_created",
         "readonly": false,
         "required": false,
-        "special": [
-          "date-created"
-        ],
+        "special": ["date-created"],
         "note": null
       },
       "schema": {
@@ -1971,9 +1925,7 @@
         "field": "user_created",
         "readonly": false,
         "required": false,
-        "special": [
-          "user-created"
-        ],
+        "special": ["user-created"],
         "note": null
       },
       "schema": {
@@ -2017,10 +1969,7 @@
         "field": "timestamp",
         "readonly": false,
         "required": false,
-        "special": [
-          "date-created",
-          "cast-timestamp"
-        ],
+        "special": ["date-created", "cast-timestamp"],
         "note": null
       },
       "schema": {
@@ -2196,9 +2145,7 @@
         "field": "id",
         "readonly": false,
         "required": false,
-        "special": [
-          "uuid"
-        ],
+        "special": ["uuid"],
         "note": null
       },
       "schema": {
@@ -2286,9 +2233,7 @@
         "field": "id",
         "readonly": true,
         "required": false,
-        "special": [
-          "uuid"
-        ],
+        "special": ["uuid"],
         "note": null
       },
       "schema": {
@@ -2398,10 +2343,7 @@
         "field": "password",
         "readonly": false,
         "required": false,
-        "special": [
-          "hash",
-          "conceal"
-        ],
+        "special": ["hash", "conceal"],
         "note": "$t:shared_leave_blank_for_passwordless_access"
       },
       "schema": {
@@ -2423,9 +2365,7 @@
         "field": "user_created",
         "readonly": true,
         "required": false,
-        "special": [
-          "user-created"
-        ],
+        "special": ["user-created"],
         "note": null
       },
       "schema": {
@@ -2447,10 +2387,7 @@
         "field": "date_created",
         "readonly": true,
         "required": false,
-        "special": [
-          "date-created",
-          "cast-timestamp"
-        ],
+        "special": ["date-created", "cast-timestamp"],
         "note": null
       },
       "schema": {
@@ -2560,9 +2497,7 @@
         "field": "id",
         "readonly": true,
         "required": false,
-        "special": [
-          "uuid"
-        ],
+        "special": ["uuid"],
         "note": null
       },
       "schema": {
@@ -2694,10 +2629,7 @@
         "field": "date_created",
         "readonly": false,
         "required": false,
-        "special": [
-          "date-created",
-          "cast-timestamp"
-        ],
+        "special": ["date-created", "cast-timestamp"],
         "note": null
       },
       "schema": {
@@ -2719,10 +2651,7 @@
         "field": "date_updated",
         "readonly": false,
         "required": false,
-        "special": [
-          "date-updated",
-          "cast-timestamp"
-        ],
+        "special": ["date-updated", "cast-timestamp"],
         "note": null
       },
       "schema": {
@@ -2744,9 +2673,7 @@
         "field": "user_created",
         "readonly": false,
         "required": false,
-        "special": [
-          "user-created"
-        ],
+        "special": ["user-created"],
         "note": null
       },
       "schema": {
@@ -2768,9 +2695,7 @@
         "field": "user_updated",
         "readonly": false,
         "required": false,
-        "special": [
-          "user-updated"
-        ],
+        "special": ["user-updated"],
         "note": null
       },
       "schema": {
@@ -2880,9 +2805,7 @@
         "field": "data",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -2904,9 +2827,7 @@
         "field": "delta",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -2972,9 +2893,7 @@
         "field": "id",
         "readonly": false,
         "required": false,
-        "special": [
-          "uuid"
-        ],
+        "special": ["uuid"],
         "note": null
       },
       "schema": {
@@ -3062,10 +2981,7 @@
         "field": "password",
         "readonly": false,
         "required": false,
-        "special": [
-          "hash",
-          "conceal"
-        ],
+        "special": ["hash", "conceal"],
         "note": null
       },
       "schema": {
@@ -3153,9 +3069,7 @@
         "field": "tags",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -3221,9 +3135,7 @@
         "field": "tfa_secret",
         "readonly": false,
         "required": false,
-        "special": [
-          "conceal"
-        ],
+        "special": ["conceal"],
         "note": null
       },
       "schema": {
@@ -3267,9 +3179,7 @@
         "field": "role",
         "readonly": false,
         "required": false,
-        "special": [
-          "m2o"
-        ],
+        "special": ["m2o"],
         "note": null
       },
       "schema": {
@@ -3291,9 +3201,7 @@
         "field": "token",
         "readonly": false,
         "required": false,
-        "special": [
-          "conceal"
-        ],
+        "special": ["conceal"],
         "note": null
       },
       "schema": {
@@ -3425,9 +3333,7 @@
         "field": "email_notifications",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-boolean"
-        ],
+        "special": ["cast-boolean"],
         "note": null
       },
       "schema": {
@@ -3515,9 +3421,7 @@
         "field": "theme_light_overrides",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -3539,9 +3443,7 @@
         "field": "theme_dark_overrides",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -3563,9 +3465,7 @@
         "field": "enabled",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-boolean"
-        ],
+        "special": ["cast-boolean"],
         "note": null
       },
       "schema": {
@@ -3587,9 +3487,7 @@
         "field": "id",
         "readonly": false,
         "required": false,
-        "special": [
-          "uuid"
-        ],
+        "special": ["uuid"],
         "note": null
       },
       "schema": {
@@ -3743,10 +3641,7 @@
         "field": "timestamp",
         "readonly": false,
         "required": false,
-        "special": [
-          "date-created",
-          "cast-timestamp"
-        ],
+        "special": ["date-created", "cast-timestamp"],
         "note": null
       },
       "schema": {
@@ -4186,9 +4081,7 @@
         "field": "data",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-boolean"
-        ],
+        "special": ["cast-boolean"],
         "note": null
       },
       "schema": {
@@ -4210,9 +4103,7 @@
         "field": "actions",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-csv"
-        ],
+        "special": ["cast-csv"],
         "note": null
       },
       "schema": {
@@ -4234,9 +4125,7 @@
         "field": "collections",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-csv"
-        ],
+        "special": ["cast-csv"],
         "note": null
       },
       "schema": {
@@ -4258,9 +4147,7 @@
         "field": "headers",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -4568,9 +4455,7 @@
         "field": "storage_asset_presets",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -4636,9 +4521,7 @@
         "field": "basemaps",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -4682,9 +4565,7 @@
         "field": "module_bar",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -4750,9 +4631,7 @@
         "field": "custom_aspect_ratios",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -4840,9 +4719,7 @@
         "field": "theme_light_overrides",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -4886,9 +4763,7 @@
         "field": "theme_dark_overrides",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -4976,9 +4851,7 @@
         "field": "public_registration",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-boolean"
-        ],
+        "special": ["cast-boolean"],
         "note": "$t:fields.directus_settings.public_registration_note"
       },
       "schema": {
@@ -5000,9 +4873,7 @@
         "field": "public_registration_verify_email",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-boolean"
-        ],
+        "special": ["cast-boolean"],
         "note": "$t:fields.directus_settings.public_registration_verify_email_note"
       },
       "schema": {
@@ -5024,9 +4895,7 @@
         "field": "public_registration_role",
         "readonly": false,
         "required": false,
-        "special": [
-          "m2o"
-        ],
+        "special": ["m2o"],
         "note": "$t:fields.directus_settings.public_registration_role_note"
       },
       "schema": {
@@ -5048,9 +4917,7 @@
         "field": "public_registration_email_filter",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": "$t:fields.directus_settings.public_registration_email_filter_note"
       },
       "schema": {
@@ -5072,9 +4939,7 @@
         "field": "id",
         "readonly": false,
         "required": false,
-        "special": [
-          "uuid"
-        ],
+        "special": ["uuid"],
         "note": null
       },
       "schema": {
@@ -5162,9 +5027,7 @@
         "field": "ip_access",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-csv"
-        ],
+        "special": ["cast-csv"],
         "note": null
       },
       "schema": {
@@ -5186,9 +5049,7 @@
         "field": "enforce_tfa",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-boolean"
-        ],
+        "special": ["cast-boolean"],
         "note": "$t:field_options.directus_policies.enforce_tfa"
       },
       "schema": {
@@ -5210,9 +5071,7 @@
         "field": "admin_access",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-boolean"
-        ],
+        "special": ["cast-boolean"],
         "note": null
       },
       "schema": {
@@ -5234,9 +5093,7 @@
         "field": "app_access",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-boolean"
-        ],
+        "special": ["cast-boolean"],
         "note": null
       },
       "schema": {
@@ -5324,9 +5181,7 @@
         "field": "permissions",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -5348,9 +5203,7 @@
         "field": "validation",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -5372,9 +5225,7 @@
         "field": "presets",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -5396,9 +5247,7 @@
         "field": "fields",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-csv"
-        ],
+        "special": ["cast-csv"],
         "note": null
       },
       "schema": {
@@ -5420,9 +5269,7 @@
         "field": "policy",
         "readonly": false,
         "required": false,
-        "special": [
-          "m2o"
-        ],
+        "special": ["m2o"],
         "note": null
       },
       "schema": {
@@ -5444,9 +5291,7 @@
         "field": "id",
         "readonly": false,
         "required": false,
-        "special": [
-          "uuid"
-        ],
+        "special": ["uuid"],
         "note": null
       },
       "schema": {
@@ -5468,9 +5313,7 @@
         "field": "role",
         "readonly": false,
         "required": false,
-        "special": [
-          "m2o"
-        ],
+        "special": ["m2o"],
         "note": null
       },
       "schema": {
@@ -5492,9 +5335,7 @@
         "field": "user",
         "readonly": false,
         "required": false,
-        "special": [
-          "m2o"
-        ],
+        "special": ["m2o"],
         "note": null
       },
       "schema": {
@@ -5516,9 +5357,7 @@
         "field": "policy",
         "readonly": false,
         "required": false,
-        "special": [
-          "m2o"
-        ],
+        "special": ["m2o"],
         "note": null
       },
       "schema": {
@@ -5650,9 +5489,7 @@
         "field": "hidden",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-boolean"
-        ],
+        "special": ["cast-boolean"],
         "note": null
       },
       "schema": {
@@ -5674,9 +5511,7 @@
         "field": "singleton",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-boolean"
-        ],
+        "special": ["cast-boolean"],
         "note": null
       },
       "schema": {
@@ -5698,9 +5533,7 @@
         "field": "translations",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -5744,9 +5577,7 @@
         "field": "archive_app_filter",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-boolean"
-        ],
+        "special": ["cast-boolean"],
         "note": null
       },
       "schema": {
@@ -5878,9 +5709,7 @@
         "field": "item_duplication_fields",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -5990,9 +5819,7 @@
         "field": "versioning",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-boolean"
-        ],
+        "special": ["cast-boolean"],
         "note": null
       },
       "schema": {
@@ -6014,9 +5841,7 @@
         "field": "id",
         "readonly": false,
         "required": false,
-        "special": [
-          "uuid"
-        ],
+        "special": ["uuid"],
         "note": null
       },
       "schema": {
@@ -6104,10 +5929,7 @@
         "field": "date_created",
         "readonly": false,
         "required": false,
-        "special": [
-          "date-created",
-          "cast-timestamp"
-        ],
+        "special": ["date-created", "cast-timestamp"],
         "note": null
       },
       "schema": {
@@ -6129,9 +5951,7 @@
         "field": "user_created",
         "readonly": false,
         "required": false,
-        "special": [
-          "user-created"
-        ],
+        "special": ["user-created"],
         "note": null
       },
       "schema": {
@@ -6175,9 +5995,7 @@
         "field": "id",
         "readonly": false,
         "required": false,
-        "special": [
-          "uuid"
-        ],
+        "special": ["uuid"],
         "note": null
       },
       "schema": {
@@ -6353,9 +6171,7 @@
         "field": "options",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -6399,9 +6215,7 @@
         "field": "date_created",
         "readonly": false,
         "required": false,
-        "special": [
-          "date-created"
-        ],
+        "special": ["date-created"],
         "note": null
       },
       "schema": {
@@ -6423,9 +6237,7 @@
         "field": "user_created",
         "readonly": false,
         "required": false,
-        "special": [
-          "user-created"
-        ],
+        "special": ["user-created"],
         "note": null
       },
       "schema": {
@@ -6447,9 +6259,7 @@
         "field": "id",
         "readonly": false,
         "required": false,
-        "special": [
-          "uuid"
-        ],
+        "special": ["uuid"],
         "note": null
       },
       "schema": {
@@ -6559,9 +6369,7 @@
         "field": "show_header",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-boolean"
-        ],
+        "special": ["cast-boolean"],
         "note": null
       },
       "schema": {
@@ -6715,9 +6523,7 @@
         "field": "options",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -6739,10 +6545,7 @@
         "field": "date_created",
         "readonly": false,
         "required": false,
-        "special": [
-          "date-created",
-          "cast-timestamp"
-        ],
+        "special": ["date-created", "cast-timestamp"],
         "note": null
       },
       "schema": {
@@ -6764,9 +6567,7 @@
         "field": "user_created",
         "readonly": false,
         "required": false,
-        "special": [
-          "user-created"
-        ],
+        "special": ["user-created"],
         "note": null
       },
       "schema": {
@@ -6832,9 +6633,7 @@
         "field": "user",
         "readonly": false,
         "required": false,
-        "special": [
-          "m2o"
-        ],
+        "special": ["m2o"],
         "note": null
       },
       "schema": {
@@ -6856,9 +6655,7 @@
         "field": "role",
         "readonly": false,
         "required": false,
-        "special": [
-          "m2o"
-        ],
+        "special": ["m2o"],
         "note": null
       },
       "schema": {
@@ -6946,9 +6743,7 @@
         "field": "layout_query",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -6970,9 +6765,7 @@
         "field": "layout_options",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -7016,9 +6809,7 @@
         "field": "filter",
         "readonly": false,
         "required": false,
-        "special": [
-          "cast-json"
-        ],
+        "special": ["cast-json"],
         "note": null
       },
       "schema": {
@@ -7084,9 +6875,7 @@
         "field": "id",
         "readonly": false,
         "required": false,
-        "special": [
-          "uuid"
-        ],
+        "special": ["uuid"],
         "note": null
       },
       "schema": {
@@ -7174,9 +6963,7 @@
         "field": "parent",
         "readonly": false,
         "required": false,
-        "special": [
-          "m2o"
-        ],
+        "special": ["m2o"],
         "note": "$t:field_options.directus_roles.parent_note"
       },
       "schema": {
@@ -7220,9 +7007,7 @@
         "field": "signature_dish",
         "readonly": false,
         "required": false,
-        "special": [
-          "m2o"
-        ],
+        "special": ["m2o"],
         "note": null
       },
       "schema": {
@@ -7266,9 +7051,7 @@
         "field": "user_created",
         "readonly": true,
         "required": false,
-        "special": [
-          "user-created"
-        ],
+        "special": ["user-created"],
         "note": null
       },
       "schema": {
@@ -7290,10 +7073,7 @@
         "field": "date_created",
         "readonly": true,
         "required": false,
-        "special": [
-          "cast-timestamp",
-          "date-created"
-        ],
+        "special": ["cast-timestamp", "date-created"],
         "note": null
       },
       "schema": {
@@ -7315,9 +7095,7 @@
         "field": "user_updated",
         "readonly": true,
         "required": false,
-        "special": [
-          "user-updated"
-        ],
+        "special": ["user-updated"],
         "note": null
       },
       "schema": {
@@ -7339,10 +7117,7 @@
         "field": "date_updated",
         "readonly": true,
         "required": false,
-        "special": [
-          "cast-timestamp",
-          "date-updated"
-        ],
+        "special": ["cast-timestamp", "date-updated"],
         "note": null
       },
       "schema": {
@@ -7408,9 +7183,7 @@
         "field": "user_created",
         "readonly": true,
         "required": false,
-        "special": [
-          "user-created"
-        ],
+        "special": ["user-created"],
         "note": null
       },
       "schema": {
@@ -7432,10 +7205,7 @@
         "field": "date_created",
         "readonly": true,
         "required": false,
-        "special": [
-          "cast-timestamp",
-          "date-created"
-        ],
+        "special": ["cast-timestamp", "date-created"],
         "note": null
       },
       "schema": {
@@ -7457,9 +7227,7 @@
         "field": "user_updated",
         "readonly": true,
         "required": false,
-        "special": [
-          "user-updated"
-        ],
+        "special": ["user-updated"],
         "note": null
       },
       "schema": {
@@ -7481,10 +7249,7 @@
         "field": "date_updated",
         "readonly": true,
         "required": false,
-        "special": [
-          "cast-timestamp",
-          "date-updated"
-        ],
+        "special": ["cast-timestamp", "date-updated"],
         "note": null
       },
       "schema": {
@@ -7572,9 +7337,7 @@
         "field": "recipes",
         "readonly": false,
         "required": false,
-        "special": [
-          "m2m"
-        ],
+        "special": ["m2m"],
         "note": null
       }
     },
@@ -7587,9 +7350,7 @@
         "field": "ingredients",
         "readonly": false,
         "required": true,
-        "special": [
-          "m2m"
-        ],
+        "special": ["m2m"],
         "note": null
       }
     },
@@ -7602,9 +7363,7 @@
         "field": "chefs_signature_dish",
         "readonly": false,
         "required": false,
-        "special": [
-          "o2m"
-        ],
+        "special": ["o2m"],
         "note": null
       }
     },
@@ -7617,9 +7376,7 @@
         "field": "revisions",
         "readonly": false,
         "required": false,
-        "special": [
-          "o2m"
-        ],
+        "special": ["o2m"],
         "note": null
       }
     },
@@ -7632,10 +7389,7 @@
         "field": "collection_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -7648,10 +7402,7 @@
         "field": "preview_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -7664,10 +7415,7 @@
         "field": "content_versioning_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -7680,10 +7428,7 @@
         "field": "archive_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -7696,10 +7441,7 @@
         "field": "sort_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -7712,10 +7454,7 @@
         "field": "accountability_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -7728,10 +7467,7 @@
         "field": "duplication_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -7744,9 +7480,7 @@
         "field": "panels",
         "readonly": false,
         "required": false,
-        "special": [
-          "o2m"
-        ],
+        "special": ["o2m"],
         "note": null
       }
     },
@@ -7759,10 +7493,7 @@
         "field": "focal_point_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -7775,10 +7506,7 @@
         "field": "storage_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -7791,9 +7519,7 @@
         "field": "operations",
         "readonly": false,
         "required": false,
-        "special": [
-          "o2m"
-        ],
+        "special": ["o2m"],
         "note": null
       }
     },
@@ -7806,9 +7532,7 @@
         "field": "permissions",
         "readonly": false,
         "required": false,
-        "special": [
-          "o2m"
-        ],
+        "special": ["o2m"],
         "note": null
       }
     },
@@ -7821,10 +7545,7 @@
         "field": "assigned_to_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -7837,9 +7558,7 @@
         "field": "users",
         "readonly": false,
         "required": false,
-        "special": [
-          "m2m"
-        ],
+        "special": ["m2m"],
         "note": null
       }
     },
@@ -7852,9 +7571,7 @@
         "field": "roles",
         "readonly": false,
         "required": false,
-        "special": [
-          "m2m"
-        ],
+        "special": ["m2m"],
         "note": null
       }
     },
@@ -7867,9 +7584,7 @@
         "field": "children",
         "readonly": false,
         "required": false,
-        "special": [
-          "o2m"
-        ],
+        "special": ["o2m"],
         "note": "$t:field_options.directus_roles.children_note"
       }
     },
@@ -7882,9 +7597,7 @@
         "field": "policies",
         "readonly": false,
         "required": false,
-        "special": [
-          "m2m"
-        ],
+        "special": ["m2m"],
         "note": null
       }
     },
@@ -7897,11 +7610,7 @@
         "field": "users_group",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data",
-          "group"
-        ],
+        "special": ["alias", "no-data", "group"],
         "note": null
       }
     },
@@ -7914,10 +7623,7 @@
         "field": "users_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -7930,9 +7636,7 @@
         "field": "users",
         "readonly": false,
         "required": false,
-        "special": [
-          "o2m"
-        ],
+        "special": ["o2m"],
         "note": null
       }
     },
@@ -7945,11 +7649,7 @@
         "field": "theming_group",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data",
-          "group"
-        ],
+        "special": ["alias", "no-data", "group"],
         "note": null
       }
     },
@@ -7962,10 +7662,7 @@
         "field": "branding_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -7978,10 +7675,7 @@
         "field": "theming_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -7994,10 +7688,7 @@
         "field": "modules_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -8010,10 +7701,7 @@
         "field": "security_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -8026,10 +7714,7 @@
         "field": "public_registration_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -8042,10 +7727,7 @@
         "field": "files_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -8058,10 +7740,7 @@
         "field": "reporting_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -8074,10 +7753,7 @@
         "field": "map_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -8090,10 +7766,7 @@
         "field": "image_editor",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -8106,10 +7779,7 @@
         "field": "preferences_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -8122,10 +7792,7 @@
         "field": "theming_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -8138,10 +7805,7 @@
         "field": "admin_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     },
@@ -8154,9 +7818,7 @@
         "field": "policies",
         "readonly": false,
         "required": false,
-        "special": [
-          "m2m"
-        ],
+        "special": ["m2m"],
         "note": null
       }
     },
@@ -8169,10 +7831,7 @@
         "field": "triggers_divider",
         "readonly": false,
         "required": false,
-        "special": [
-          "alias",
-          "no-data"
-        ],
+        "special": ["alias", "no-data"],
         "note": null
       }
     }
