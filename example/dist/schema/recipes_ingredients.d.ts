@@ -11,6 +11,14 @@ export interface RecipesIngredientsRelations {
     ingredients_id: IngredientsPrimaryKey | Ingredients;
     recipes_id: RecipesPrimaryKey | Recipes;
 }
+/**
+ * RecipesIngredientsRelatedCollections maps the {@link RecipesIngredientsRelations}
+ * fields to the name of the related collection.
+ */
+export interface RecipesIngredientsRelatedCollections {
+    ingredients_id: 'ingredients';
+    recipes_id: 'recipes';
+}
 export type RecipesIngredientsPayload = RecipesIngredients;
 /**
  * @param v The payload to parse.

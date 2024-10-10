@@ -14,6 +14,12 @@ export interface DirectusRelations {
 }
 export interface DirectusRelationsRelations {
 }
+/**
+ * DirectusRelationsRelatedCollections maps the {@link DirectusRelationsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusRelationsRelatedCollections {
+}
 export type DirectusRelationsPayload = DirectusRelations;
 /**
  * @param v The payload to parse.

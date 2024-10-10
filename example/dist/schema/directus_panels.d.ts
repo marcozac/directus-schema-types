@@ -23,6 +23,14 @@ export interface DirectusPanelsRelations {
     dashboard: DirectusDashboardsPrimaryKey | DirectusDashboards;
     user_created: DirectusUsersPrimaryKey | DirectusUsers;
 }
+/**
+ * DirectusPanelsRelatedCollections maps the {@link DirectusPanelsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusPanelsRelatedCollections {
+    dashboard: 'directus_dashboards';
+    user_created: 'directus_users';
+}
 export type DirectusPanelsPayload = Omit<DirectusPanels, 'date_created'> & {
     date_created?: string | null;
 };

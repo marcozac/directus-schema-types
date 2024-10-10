@@ -46,6 +46,15 @@ export interface DirectusActivityRelations {
     user: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+/**
+ * DirectusActivityRelatedCollections maps the {@link DirectusActivityRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusActivityRelatedCollections {
+    revisions: 'directus_revisions';
+    user: 'directus_users';
+}
+
 export type DirectusActivityPayload = Omit<DirectusActivity, 'timestamp'> & {
     // Type: timestamp
     timestamp?: string;

@@ -8,6 +8,13 @@ export interface DirectusFolders {
 export interface DirectusFoldersRelations {
     parent: DirectusFoldersPrimaryKey | DirectusFolders;
 }
+/**
+ * DirectusFoldersRelatedCollections maps the {@link DirectusFoldersRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusFoldersRelatedCollections {
+    parent: 'directus_folders';
+}
 export type DirectusFoldersPayload = DirectusFolders;
 /**
  * @param v The payload to parse.

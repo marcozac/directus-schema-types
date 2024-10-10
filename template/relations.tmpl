@@ -13,4 +13,17 @@ export interface Relations {
 	{{ .Name }}: {{ .RelationsTypeName }};
 {{- end }}
 }
+
+{{ template "relatedCollections" $ }}
+{{- end }}
+
+{{/* relatedCollections defines the interface of all the related collections. */}}
+{{- define "relatedCollections" }}
+// --- Related Collections ---
+
+export interface RelatedCollections {
+{{- range $.Values }}
+	{{ .Name }}: {{ .RelatedCollectionsTypeName }};
+{{- end }}
+}
 {{- end }}

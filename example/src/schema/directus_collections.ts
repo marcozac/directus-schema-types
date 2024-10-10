@@ -75,6 +75,15 @@ export interface DirectusCollectionsRelations {
     group: DirectusCollectionsPrimaryKey | DirectusCollections;
 }
 
+/**
+ * DirectusCollectionsRelatedCollections maps the {@link DirectusCollectionsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusCollectionsRelatedCollections {
+    fields: 'directus_fields';
+    group: 'directus_collections';
+}
+
 // The payload is the same as the schema definition.
 export type DirectusCollectionsPayload = DirectusCollections;
 

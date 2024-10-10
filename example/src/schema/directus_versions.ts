@@ -48,6 +48,16 @@ export interface DirectusVersionsRelations {
     user_updated: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+/**
+ * DirectusVersionsRelatedCollections maps the {@link DirectusVersionsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusVersionsRelatedCollections {
+    collection: 'directus_collections';
+    user_created: 'directus_users';
+    user_updated: 'directus_users';
+}
+
 export type DirectusVersionsPayload = Omit<DirectusVersions, 'date_created' | 'date_updated'> & {
     // Type: timestamp
     date_created?: string | null;

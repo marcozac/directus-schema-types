@@ -30,6 +30,16 @@ export interface {{ $.RelationsTypeName }} {
 	{{- end }}
 }
 
+/**
+ * {{ $.RelatedCollectionsTypeName }} maps the {@link {{ $.RelationsTypeName }}}
+ * fields to the name of the related collection.
+ */
+export interface {{ $.RelatedCollectionsTypeName }} {
+	{{- range $.Relations.Values }}
+	{{- template "collection/relatedCollection" . }}
+	{{- end }}
+}
+
 {{ template "collection/payload" $ }}
 {{- end }}
 
@@ -64,6 +74,10 @@ export interface {{ $.RelationsTypeName }} {
 	{{- $.RelatedCollection.PrimaryKey.TypeName }} | {{ $.RelatedCollection.TypeName }}
 {{- end }}
 
+{{/* collection/relatedCollection is the definition of a collection related collection. */}}
+{{- define "collection/relatedCollection" }}
+	{{ $.Field }}: '{{ $.RelatedCollection.Name }}';
+{{- end }}
 
 {{/* collection/payload is the definition of a collection payload and its parser. */}}
 {{- define "collection/payload" }}

@@ -17,6 +17,13 @@ export interface DirectusWebhooks {
 export interface DirectusWebhooksRelations {
     migrated_flow: DirectusFlowsPrimaryKey | DirectusFlows;
 }
+/**
+ * DirectusWebhooksRelatedCollections maps the {@link DirectusWebhooksRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusWebhooksRelatedCollections {
+    migrated_flow: 'directus_flows';
+}
 export type DirectusWebhooksPayload = DirectusWebhooks;
 /**
  * @param v The payload to parse.

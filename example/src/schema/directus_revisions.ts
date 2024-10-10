@@ -42,6 +42,16 @@ export interface DirectusRevisionsRelations {
     version: DirectusVersionsPrimaryKey | DirectusVersions;
 }
 
+/**
+ * DirectusRevisionsRelatedCollections maps the {@link DirectusRevisionsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusRevisionsRelatedCollections {
+    activity: 'directus_activity';
+    parent: 'directus_revisions';
+    version: 'directus_versions';
+}
+
 // The payload is the same as the schema definition.
 export type DirectusRevisionsPayload = DirectusRevisions;
 

@@ -7,6 +7,12 @@ export interface DirectusMigrations {
 }
 export interface DirectusMigrationsRelations {
 }
+/**
+ * DirectusMigrationsRelatedCollections maps the {@link DirectusMigrationsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusMigrationsRelatedCollections {
+}
 export type DirectusMigrationsPayload = Omit<DirectusMigrations, 'timestamp'> & {
     timestamp?: string | null;
 };
