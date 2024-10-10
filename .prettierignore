@@ -13,7 +13,6 @@ dist/
 build/
 lib/
 
-# testdata files
-testdata/schema/
-testdata/snapshot.json
-testdata/schema.ts
+# generated files
+testdata/
+example/
