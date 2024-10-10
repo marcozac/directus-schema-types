@@ -46,6 +46,14 @@ export interface DirectusWebhooksRelations {
     migrated_flow: DirectusFlowsPrimaryKey | DirectusFlows;
 }
 
+/**
+ * DirectusWebhooksRelatedCollections maps the {@link DirectusWebhooksRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusWebhooksRelatedCollections {
+    migrated_flow: 'directus_flows';
+}
+
 // The payload is the same as the schema definition.
 export type DirectusWebhooksPayload = DirectusWebhooks;
 

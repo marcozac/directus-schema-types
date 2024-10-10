@@ -42,6 +42,16 @@ export interface IngredientsRelations {
     user_updated: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+/**
+ * IngredientsRelatedCollections maps the {@link IngredientsRelations}
+ * fields to the name of the related collection.
+ */
+export interface IngredientsRelatedCollections {
+    recipes: 'recipes_ingredients';
+    user_created: 'directus_users';
+    user_updated: 'directus_users';
+}
+
 export type IngredientsPayload = Omit<Ingredients, 'date_created' | 'date_updated'> & {
     // Type: timestamp
     readonly date_created?: string | null;

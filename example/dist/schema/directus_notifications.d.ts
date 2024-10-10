@@ -16,6 +16,14 @@ export interface DirectusNotificationsRelations {
     recipient: DirectusUsersPrimaryKey | DirectusUsers;
     sender: DirectusUsersPrimaryKey | DirectusUsers;
 }
+/**
+ * DirectusNotificationsRelatedCollections maps the {@link DirectusNotificationsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusNotificationsRelatedCollections {
+    recipient: 'directus_users';
+    sender: 'directus_users';
+}
 export type DirectusNotificationsPayload = Omit<DirectusNotifications, 'timestamp'> & {
     timestamp?: string | null;
 };

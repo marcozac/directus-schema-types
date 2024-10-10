@@ -96,6 +96,16 @@ export interface DirectusFilesRelations {
     uploaded_by: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+/**
+ * DirectusFilesRelatedCollections maps the {@link DirectusFilesRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusFilesRelatedCollections {
+    folder: 'directus_folders';
+    modified_by: 'directus_users';
+    uploaded_by: 'directus_users';
+}
+
 export type DirectusFilesPayload = Omit<DirectusFiles, 'created_on' | 'modified_on' | 'uploaded_on'> & {
     // Type: dateTime
     readonly created_on?: string;

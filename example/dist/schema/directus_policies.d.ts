@@ -17,6 +17,15 @@ export interface DirectusPoliciesRelations {
     roles: (DirectusAccessPrimaryKey | DirectusAccess)[];
     users: (DirectusAccessPrimaryKey | DirectusAccess)[];
 }
+/**
+ * DirectusPoliciesRelatedCollections maps the {@link DirectusPoliciesRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusPoliciesRelatedCollections {
+    permissions: 'directus_permissions';
+    roles: 'directus_access';
+    users: 'directus_access';
+}
 export type DirectusPoliciesPayload = DirectusPolicies;
 /**
  * @param v The payload to parse.

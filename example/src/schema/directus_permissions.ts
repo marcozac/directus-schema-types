@@ -37,6 +37,14 @@ export interface DirectusPermissionsRelations {
     policy: DirectusPoliciesPrimaryKey | DirectusPolicies;
 }
 
+/**
+ * DirectusPermissionsRelatedCollections maps the {@link DirectusPermissionsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusPermissionsRelatedCollections {
+    policy: 'directus_policies';
+}
+
 // The payload is the same as the schema definition.
 export type DirectusPermissionsPayload = DirectusPermissions;
 

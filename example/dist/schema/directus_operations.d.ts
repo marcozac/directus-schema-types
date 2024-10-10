@@ -22,6 +22,16 @@ export interface DirectusOperationsRelations {
     resolve: DirectusOperationsPrimaryKey | DirectusOperations;
     user_created: DirectusUsersPrimaryKey | DirectusUsers;
 }
+/**
+ * DirectusOperationsRelatedCollections maps the {@link DirectusOperationsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusOperationsRelatedCollections {
+    flow: 'directus_flows';
+    reject: 'directus_operations';
+    resolve: 'directus_operations';
+    user_created: 'directus_users';
+}
 export type DirectusOperationsPayload = Omit<DirectusOperations, 'date_created'> & {
     date_created?: string | null;
 };

@@ -103,7 +103,10 @@ func (g *Generator) generateDir() error {
 	relationsImports := make(ImportsSpec, len(g.spec.Collections))
 	for _, collection := range g.spec.Collections {
 		schemaImports[collection.Name] = []string{collection.TypeName()}
-		relationsImports[collection.Name] = []string{collection.RelationsTypeName()}
+		relationsImports[collection.Name] = []string{
+			collection.RelationsTypeName(),
+			collection.RelatedCollectionsTypeName(),
+		}
 	}
 
 	type E struct {

@@ -17,6 +17,14 @@ export interface ChefsRelations {
     signature_dish: RecipesPrimaryKey | Recipes;
 }
 
+/**
+ * ChefsRelatedCollections maps the {@link ChefsRelations}
+ * fields to the name of the related collection.
+ */
+export interface ChefsRelatedCollections {
+    signature_dish: 'recipes';
+}
+
 // The payload is the same as the schema definition.
 export type ChefsPayload = Chefs;
 
@@ -56,6 +64,16 @@ export interface DirectusAccessRelations {
     role: DirectusRolesPrimaryKey | DirectusRoles;
 
     user: DirectusUsersPrimaryKey | DirectusUsers;
+}
+
+/**
+ * DirectusAccessRelatedCollections maps the {@link DirectusAccessRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusAccessRelatedCollections {
+    policy: 'directus_policies';
+    role: 'directus_roles';
+    user: 'directus_users';
 }
 
 // The payload is the same as the schema definition.
@@ -110,6 +128,15 @@ export interface DirectusActivityRelations {
     revisions: (DirectusRevisionsPrimaryKey | DirectusRevisions)[];
 
     user: DirectusUsersPrimaryKey | DirectusUsers;
+}
+
+/**
+ * DirectusActivityRelatedCollections maps the {@link DirectusActivityRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusActivityRelatedCollections {
+    revisions: 'directus_revisions';
+    user: 'directus_users';
 }
 
 export type DirectusActivityPayload = Omit<DirectusActivity, 'timestamp'> & {
@@ -202,6 +229,15 @@ export interface DirectusCollectionsRelations {
     group: DirectusCollectionsPrimaryKey | DirectusCollections;
 }
 
+/**
+ * DirectusCollectionsRelatedCollections maps the {@link DirectusCollectionsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusCollectionsRelatedCollections {
+    fields: 'directus_fields';
+    group: 'directus_collections';
+}
+
 // The payload is the same as the schema definition.
 export type DirectusCollectionsPayload = DirectusCollections;
 
@@ -247,6 +283,15 @@ export interface DirectusDashboardsRelations {
     user_created: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+/**
+ * DirectusDashboardsRelatedCollections maps the {@link DirectusDashboardsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusDashboardsRelatedCollections {
+    panels: 'directus_panels';
+    user_created: 'directus_users';
+}
+
 export type DirectusDashboardsPayload = Omit<DirectusDashboards, 'date_created'> & {
     // Type: timestamp
     date_created?: string | null;
@@ -287,6 +332,12 @@ export interface DirectusExtensions {
 }
 
 export interface DirectusExtensionsRelations {}
+
+/**
+ * DirectusExtensionsRelatedCollections maps the {@link DirectusExtensionsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusExtensionsRelatedCollections {}
 
 // The payload is the same as the schema definition.
 export type DirectusExtensionsPayload = DirectusExtensions;
@@ -367,6 +418,15 @@ export interface DirectusFieldsRelations {
     collection: DirectusCollectionsPrimaryKey | DirectusCollections;
 
     group: DirectusFieldsPrimaryKey | DirectusFields;
+}
+
+/**
+ * DirectusFieldsRelatedCollections maps the {@link DirectusFieldsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusFieldsRelatedCollections {
+    collection: 'directus_collections';
+    group: 'directus_fields';
 }
 
 // The payload is the same as the schema definition.
@@ -473,6 +533,16 @@ export interface DirectusFilesRelations {
     uploaded_by: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+/**
+ * DirectusFilesRelatedCollections maps the {@link DirectusFilesRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusFilesRelatedCollections {
+    folder: 'directus_folders';
+    modified_by: 'directus_users';
+    uploaded_by: 'directus_users';
+}
+
 export type DirectusFilesPayload = Omit<DirectusFiles, 'created_on' | 'modified_on' | 'uploaded_on'> & {
     // Type: dateTime
     readonly created_on?: string;
@@ -553,6 +623,16 @@ export interface DirectusFlowsRelations {
     user_created: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+/**
+ * DirectusFlowsRelatedCollections maps the {@link DirectusFlowsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusFlowsRelatedCollections {
+    operation: 'directus_operations';
+    operations: 'directus_operations';
+    user_created: 'directus_users';
+}
+
 export type DirectusFlowsPayload = Omit<DirectusFlows, 'date_created'> & {
     // Type: dateTime
     date_created?: string | null;
@@ -590,6 +670,14 @@ export interface DirectusFoldersRelations {
     parent: DirectusFoldersPrimaryKey | DirectusFolders;
 }
 
+/**
+ * DirectusFoldersRelatedCollections maps the {@link DirectusFoldersRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusFoldersRelatedCollections {
+    parent: 'directus_folders';
+}
+
 // The payload is the same as the schema definition.
 export type DirectusFoldersPayload = DirectusFolders;
 
@@ -618,6 +706,12 @@ export interface DirectusMigrations {
 }
 
 export interface DirectusMigrationsRelations {}
+
+/**
+ * DirectusMigrationsRelatedCollections maps the {@link DirectusMigrationsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusMigrationsRelatedCollections {}
 
 export type DirectusMigrationsPayload = Omit<DirectusMigrations, 'timestamp'> & {
     // Type: dateTime
@@ -674,6 +768,15 @@ export interface DirectusNotificationsRelations {
     recipient: DirectusUsersPrimaryKey | DirectusUsers;
 
     sender: DirectusUsersPrimaryKey | DirectusUsers;
+}
+
+/**
+ * DirectusNotificationsRelatedCollections maps the {@link DirectusNotificationsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusNotificationsRelatedCollections {
+    recipient: 'directus_users';
+    sender: 'directus_users';
 }
 
 export type DirectusNotificationsPayload = Omit<DirectusNotifications, 'timestamp'> & {
@@ -744,6 +847,17 @@ export interface DirectusOperationsRelations {
     resolve: DirectusOperationsPrimaryKey | DirectusOperations;
 
     user_created: DirectusUsersPrimaryKey | DirectusUsers;
+}
+
+/**
+ * DirectusOperationsRelatedCollections maps the {@link DirectusOperationsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusOperationsRelatedCollections {
+    flow: 'directus_flows';
+    reject: 'directus_operations';
+    resolve: 'directus_operations';
+    user_created: 'directus_users';
 }
 
 export type DirectusOperationsPayload = Omit<DirectusOperations, 'date_created'> & {
@@ -821,6 +935,15 @@ export interface DirectusPanelsRelations {
     user_created: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+/**
+ * DirectusPanelsRelatedCollections maps the {@link DirectusPanelsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusPanelsRelatedCollections {
+    dashboard: 'directus_dashboards';
+    user_created: 'directus_users';
+}
+
 export type DirectusPanelsPayload = Omit<DirectusPanels, 'date_created'> & {
     // Type: timestamp
     date_created?: string | null;
@@ -873,6 +996,14 @@ export interface DirectusPermissionsRelations {
     policy: DirectusPoliciesPrimaryKey | DirectusPolicies;
 }
 
+/**
+ * DirectusPermissionsRelatedCollections maps the {@link DirectusPermissionsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusPermissionsRelatedCollections {
+    policy: 'directus_policies';
+}
+
 // The payload is the same as the schema definition.
 export type DirectusPermissionsPayload = DirectusPermissions;
 
@@ -922,6 +1053,16 @@ export interface DirectusPoliciesRelations {
     roles: (DirectusAccessPrimaryKey | DirectusAccess)[];
 
     users: (DirectusAccessPrimaryKey | DirectusAccess)[];
+}
+
+/**
+ * DirectusPoliciesRelatedCollections maps the {@link DirectusPoliciesRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusPoliciesRelatedCollections {
+    permissions: 'directus_permissions';
+    roles: 'directus_access';
+    users: 'directus_access';
 }
 
 // The payload is the same as the schema definition.
@@ -987,6 +1128,15 @@ export interface DirectusPresetsRelations {
     user: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+/**
+ * DirectusPresetsRelatedCollections maps the {@link DirectusPresetsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusPresetsRelatedCollections {
+    role: 'directus_roles';
+    user: 'directus_users';
+}
+
 // The payload is the same as the schema definition.
 export type DirectusPresetsPayload = DirectusPresets;
 
@@ -1036,6 +1186,12 @@ export interface DirectusRelations {
 }
 
 export interface DirectusRelationsRelations {}
+
+/**
+ * DirectusRelationsRelatedCollections maps the {@link DirectusRelationsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusRelationsRelatedCollections {}
 
 // The payload is the same as the schema definition.
 export type DirectusRelationsPayload = DirectusRelations;
@@ -1087,6 +1243,16 @@ export interface DirectusRevisionsRelations {
     version: DirectusVersionsPrimaryKey | DirectusVersions;
 }
 
+/**
+ * DirectusRevisionsRelatedCollections maps the {@link DirectusRevisionsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusRevisionsRelatedCollections {
+    activity: 'directus_activity';
+    parent: 'directus_revisions';
+    version: 'directus_versions';
+}
+
 // The payload is the same as the schema definition.
 export type DirectusRevisionsPayload = DirectusRevisions;
 
@@ -1129,6 +1295,17 @@ export interface DirectusRolesRelations {
     policies: (DirectusAccessPrimaryKey | DirectusAccess)[];
 
     users: (DirectusUsersPrimaryKey | DirectusUsers)[];
+}
+
+/**
+ * DirectusRolesRelatedCollections maps the {@link DirectusRolesRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusRolesRelatedCollections {
+    children: 'directus_roles';
+    parent: 'directus_roles';
+    policies: 'directus_access';
+    users: 'directus_users';
 }
 
 // The payload is the same as the schema definition.
@@ -1177,6 +1354,15 @@ export interface DirectusSessionsRelations {
     share: DirectusSharesPrimaryKey | DirectusShares;
 
     user: DirectusUsersPrimaryKey | DirectusUsers;
+}
+
+/**
+ * DirectusSessionsRelatedCollections maps the {@link DirectusSessionsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusSessionsRelatedCollections {
+    share: 'directus_shares';
+    user: 'directus_users';
 }
 
 export type DirectusSessionsPayload = Omit<DirectusSessions, 'expires'> & {
@@ -1324,6 +1510,19 @@ export interface DirectusSettingsRelations {
     storage_default_folder: DirectusFoldersPrimaryKey | DirectusFolders;
 }
 
+/**
+ * DirectusSettingsRelatedCollections maps the {@link DirectusSettingsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusSettingsRelatedCollections {
+    project_logo: 'directus_files';
+    public_background: 'directus_files';
+    public_favicon: 'directus_files';
+    public_foreground: 'directus_files';
+    public_registration_role: 'directus_roles';
+    storage_default_folder: 'directus_folders';
+}
+
 // The payload is the same as the schema definition.
 export type DirectusSettingsPayload = DirectusSettings;
 
@@ -1390,6 +1589,16 @@ export interface DirectusSharesRelations {
     user_created: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+/**
+ * DirectusSharesRelatedCollections maps the {@link DirectusSharesRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusSharesRelatedCollections {
+    collection: 'directus_collections';
+    role: 'directus_roles';
+    user_created: 'directus_users';
+}
+
 export type DirectusSharesPayload = Omit<DirectusShares, 'date_created' | 'date_end' | 'date_start'> & {
     // Type: timestamp
     readonly date_created?: string | null;
@@ -1441,6 +1650,12 @@ export interface DirectusTranslations {
 }
 
 export interface DirectusTranslationsRelations {}
+
+/**
+ * DirectusTranslationsRelatedCollections maps the {@link DirectusTranslationsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusTranslationsRelatedCollections {}
 
 // The payload is the same as the schema definition.
 export type DirectusTranslationsPayload = DirectusTranslations;
@@ -1546,6 +1761,16 @@ export interface DirectusUsersRelations {
     role: DirectusRolesPrimaryKey | DirectusRoles;
 }
 
+/**
+ * DirectusUsersRelatedCollections maps the {@link DirectusUsersRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusUsersRelatedCollections {
+    avatar: 'directus_files';
+    policies: 'directus_access';
+    role: 'directus_roles';
+}
+
 export type DirectusUsersPayload = Omit<DirectusUsers, 'last_access'> & {
     // Type: dateTime
     readonly last_access?: string | null;
@@ -1606,6 +1831,16 @@ export interface DirectusVersionsRelations {
     user_created: DirectusUsersPrimaryKey | DirectusUsers;
 
     user_updated: DirectusUsersPrimaryKey | DirectusUsers;
+}
+
+/**
+ * DirectusVersionsRelatedCollections maps the {@link DirectusVersionsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusVersionsRelatedCollections {
+    collection: 'directus_collections';
+    user_created: 'directus_users';
+    user_updated: 'directus_users';
 }
 
 export type DirectusVersionsPayload = Omit<DirectusVersions, 'date_created' | 'date_updated'> & {
@@ -1675,6 +1910,14 @@ export interface DirectusWebhooksRelations {
     migrated_flow: DirectusFlowsPrimaryKey | DirectusFlows;
 }
 
+/**
+ * DirectusWebhooksRelatedCollections maps the {@link DirectusWebhooksRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusWebhooksRelatedCollections {
+    migrated_flow: 'directus_flows';
+}
+
 // The payload is the same as the schema definition.
 export type DirectusWebhooksPayload = DirectusWebhooks;
 
@@ -1723,6 +1966,16 @@ export interface IngredientsRelations {
     user_created: DirectusUsersPrimaryKey | DirectusUsers;
 
     user_updated: DirectusUsersPrimaryKey | DirectusUsers;
+}
+
+/**
+ * IngredientsRelatedCollections maps the {@link IngredientsRelations}
+ * fields to the name of the related collection.
+ */
+export interface IngredientsRelatedCollections {
+    recipes: 'recipes_ingredients';
+    user_created: 'directus_users';
+    user_updated: 'directus_users';
 }
 
 export type IngredientsPayload = Omit<Ingredients, 'date_created' | 'date_updated'> & {
@@ -1785,6 +2038,17 @@ export interface RecipesRelations {
     user_updated: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+/**
+ * RecipesRelatedCollections maps the {@link RecipesRelations}
+ * fields to the name of the related collection.
+ */
+export interface RecipesRelatedCollections {
+    chefs_signature_dish: 'chefs';
+    ingredients: 'recipes_ingredients';
+    user_created: 'directus_users';
+    user_updated: 'directus_users';
+}
+
 export type RecipesPayload = Omit<Recipes, 'date_created' | 'date_updated'> & {
     // Type: timestamp
     readonly date_created?: string | null;
@@ -1828,6 +2092,15 @@ export interface RecipesIngredientsRelations {
     ingredients_id: IngredientsPrimaryKey | Ingredients;
 
     recipes_id: RecipesPrimaryKey | Recipes;
+}
+
+/**
+ * RecipesIngredientsRelatedCollections maps the {@link RecipesIngredientsRelations}
+ * fields to the name of the related collection.
+ */
+export interface RecipesIngredientsRelatedCollections {
+    ingredients_id: 'ingredients';
+    recipes_id: 'recipes';
 }
 
 // The payload is the same as the schema definition.
@@ -1909,4 +2182,39 @@ export interface Relations {
     ingredients: IngredientsRelations;
     recipes: RecipesRelations;
     recipes_ingredients: RecipesIngredientsRelations;
+}
+
+// --- Related Collections ---
+
+export interface RelatedCollections {
+    chefs: ChefsRelatedCollections;
+    directus_access: DirectusAccessRelatedCollections;
+    directus_activity: DirectusActivityRelatedCollections;
+    directus_collections: DirectusCollectionsRelatedCollections;
+    directus_dashboards: DirectusDashboardsRelatedCollections;
+    directus_extensions: DirectusExtensionsRelatedCollections;
+    directus_fields: DirectusFieldsRelatedCollections;
+    directus_files: DirectusFilesRelatedCollections;
+    directus_flows: DirectusFlowsRelatedCollections;
+    directus_folders: DirectusFoldersRelatedCollections;
+    directus_migrations: DirectusMigrationsRelatedCollections;
+    directus_notifications: DirectusNotificationsRelatedCollections;
+    directus_operations: DirectusOperationsRelatedCollections;
+    directus_panels: DirectusPanelsRelatedCollections;
+    directus_permissions: DirectusPermissionsRelatedCollections;
+    directus_policies: DirectusPoliciesRelatedCollections;
+    directus_presets: DirectusPresetsRelatedCollections;
+    directus_relations: DirectusRelationsRelatedCollections;
+    directus_revisions: DirectusRevisionsRelatedCollections;
+    directus_roles: DirectusRolesRelatedCollections;
+    directus_sessions: DirectusSessionsRelatedCollections;
+    directus_settings: DirectusSettingsRelatedCollections;
+    directus_shares: DirectusSharesRelatedCollections;
+    directus_translations: DirectusTranslationsRelatedCollections;
+    directus_users: DirectusUsersRelatedCollections;
+    directus_versions: DirectusVersionsRelatedCollections;
+    directus_webhooks: DirectusWebhooksRelatedCollections;
+    ingredients: IngredientsRelatedCollections;
+    recipes: RecipesRelatedCollections;
+    recipes_ingredients: RecipesIngredientsRelatedCollections;
 }

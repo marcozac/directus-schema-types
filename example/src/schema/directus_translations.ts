@@ -21,6 +21,12 @@ export interface DirectusTranslations {
 
 export interface DirectusTranslationsRelations {}
 
+/**
+ * DirectusTranslationsRelatedCollections maps the {@link DirectusTranslationsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusTranslationsRelatedCollections {}
+
 // The payload is the same as the schema definition.
 export type DirectusTranslationsPayload = DirectusTranslations;
 

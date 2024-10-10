@@ -17,6 +17,15 @@ export interface DirectusRevisionsRelations {
     parent: DirectusRevisionsPrimaryKey | DirectusRevisions;
     version: DirectusVersionsPrimaryKey | DirectusVersions;
 }
+/**
+ * DirectusRevisionsRelatedCollections maps the {@link DirectusRevisionsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusRevisionsRelatedCollections {
+    activity: 'directus_activity';
+    parent: 'directus_revisions';
+    version: 'directus_versions';
+}
 export type DirectusRevisionsPayload = DirectusRevisions;
 /**
  * @param v The payload to parse.

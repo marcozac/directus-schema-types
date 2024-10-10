@@ -25,6 +25,15 @@ export interface RecipesIngredientsRelations {
     recipes_id: RecipesPrimaryKey | Recipes;
 }
 
+/**
+ * RecipesIngredientsRelatedCollections maps the {@link RecipesIngredientsRelations}
+ * fields to the name of the related collection.
+ */
+export interface RecipesIngredientsRelatedCollections {
+    ingredients_id: 'ingredients';
+    recipes_id: 'recipes';
+}
+
 // The payload is the same as the schema definition.
 export type RecipesIngredientsPayload = RecipesIngredients;
 

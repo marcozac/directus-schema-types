@@ -27,6 +27,14 @@ export interface DirectusCollectionsRelations {
     fields: (DirectusFieldsPrimaryKey | DirectusFields)[];
     group: DirectusCollectionsPrimaryKey | DirectusCollections;
 }
+/**
+ * DirectusCollectionsRelatedCollections maps the {@link DirectusCollectionsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusCollectionsRelatedCollections {
+    fields: 'directus_fields';
+    group: 'directus_collections';
+}
 export type DirectusCollectionsPayload = DirectusCollections;
 /**
  * @param v The payload to parse.

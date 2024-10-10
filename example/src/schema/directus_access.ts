@@ -34,6 +34,16 @@ export interface DirectusAccessRelations {
     user: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+/**
+ * DirectusAccessRelatedCollections maps the {@link DirectusAccessRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusAccessRelatedCollections {
+    policy: 'directus_policies';
+    role: 'directus_roles';
+    user: 'directus_users';
+}
+
 // The payload is the same as the schema definition.
 export type DirectusAccessPayload = DirectusAccess;
 

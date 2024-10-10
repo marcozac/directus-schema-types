@@ -55,6 +55,15 @@ export interface DirectusPresetsRelations {
     user: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+/**
+ * DirectusPresetsRelatedCollections maps the {@link DirectusPresetsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusPresetsRelatedCollections {
+    role: 'directus_roles';
+    user: 'directus_users';
+}
+
 // The payload is the same as the schema definition.
 export type DirectusPresetsPayload = DirectusPresets;
 

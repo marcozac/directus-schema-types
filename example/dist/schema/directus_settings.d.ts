@@ -46,6 +46,18 @@ export interface DirectusSettingsRelations {
     public_registration_role: DirectusRolesPrimaryKey | DirectusRoles;
     storage_default_folder: DirectusFoldersPrimaryKey | DirectusFolders;
 }
+/**
+ * DirectusSettingsRelatedCollections maps the {@link DirectusSettingsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusSettingsRelatedCollections {
+    project_logo: 'directus_files';
+    public_background: 'directus_files';
+    public_favicon: 'directus_files';
+    public_foreground: 'directus_files';
+    public_registration_role: 'directus_roles';
+    storage_default_folder: 'directus_folders';
+}
 export type DirectusSettingsPayload = DirectusSettings;
 /**
  * @param v The payload to parse.

@@ -20,6 +20,14 @@ export interface DirectusFoldersRelations {
     parent: DirectusFoldersPrimaryKey | DirectusFolders;
 }
 
+/**
+ * DirectusFoldersRelatedCollections maps the {@link DirectusFoldersRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusFoldersRelatedCollections {
+    parent: 'directus_folders';
+}
+
 // The payload is the same as the schema definition.
 export type DirectusFoldersPayload = DirectusFolders;
 

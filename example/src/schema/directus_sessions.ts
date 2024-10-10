@@ -40,6 +40,15 @@ export interface DirectusSessionsRelations {
     user: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+/**
+ * DirectusSessionsRelatedCollections maps the {@link DirectusSessionsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusSessionsRelatedCollections {
+    share: 'directus_shares';
+    user: 'directus_users';
+}
+
 export type DirectusSessionsPayload = Omit<DirectusSessions, 'expires'> & {
     // Type: dateTime
     expires?: string;

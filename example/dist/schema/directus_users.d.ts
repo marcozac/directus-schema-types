@@ -36,6 +36,15 @@ export interface DirectusUsersRelations {
     policies: (DirectusAccessPrimaryKey | DirectusAccess)[];
     role: DirectusRolesPrimaryKey | DirectusRoles;
 }
+/**
+ * DirectusUsersRelatedCollections maps the {@link DirectusUsersRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusUsersRelatedCollections {
+    avatar: 'directus_files';
+    policies: 'directus_access';
+    role: 'directus_roles';
+}
 export type DirectusUsersPayload = Omit<DirectusUsers, 'last_access'> & {
     readonly last_access?: string | null;
 };

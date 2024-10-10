@@ -59,6 +59,16 @@ export interface DirectusSharesRelations {
     user_created: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
+/**
+ * DirectusSharesRelatedCollections maps the {@link DirectusSharesRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusSharesRelatedCollections {
+    collection: 'directus_collections';
+    role: 'directus_roles';
+    user_created: 'directus_users';
+}
+
 export type DirectusSharesPayload = Omit<DirectusShares, 'date_created' | 'date_end' | 'date_start'> & {
     // Type: timestamp
     readonly date_created?: string | null;

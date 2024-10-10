@@ -82,10 +82,11 @@ type Spec struct {
 }
 
 const (
-	pkSuffix      = "PrimaryKey"
-	pkFieldSuffix = pkSuffix + "Field"
-	relSuffix     = "Relations"
-	payloadSuffix = "Payload"
+	pkSuffix       = "PrimaryKey"
+	pkFieldSuffix  = pkSuffix + "Field"
+	relSuffix      = "Relations"
+	relCollsSuffix = "RelatedCollections"
+	payloadSuffix  = "Payload"
 )
 
 var _ TypeNamer = (*CollectionSpec)(nil)
@@ -118,6 +119,12 @@ func (c *CollectionSpec) TypeName() string {
 // RelationsTypeName returns the name of the type for the collection relations.
 func (c *CollectionSpec) RelationsTypeName() string {
 	return c.TypeName() + relSuffix
+}
+
+// RelatedCollectionsTypeName returns the name of the type for the collection
+// related collections.
+func (c *CollectionSpec) RelatedCollectionsTypeName() string {
+	return c.TypeName() + relCollsSuffix
 }
 
 // PayloadTypeName returns the name of the type for the collection payload.

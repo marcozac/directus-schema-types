@@ -21,6 +21,14 @@ export interface DirectusPresetsRelations {
     role: DirectusRolesPrimaryKey | DirectusRoles;
     user: DirectusUsersPrimaryKey | DirectusUsers;
 }
+/**
+ * DirectusPresetsRelatedCollections maps the {@link DirectusPresetsRelations}
+ * fields to the name of the related collection.
+ */
+export interface DirectusPresetsRelatedCollections {
+    role: 'directus_roles';
+    user: 'directus_users';
+}
 export type DirectusPresetsPayload = DirectusPresets;
 /**
  * @param v The payload to parse.
