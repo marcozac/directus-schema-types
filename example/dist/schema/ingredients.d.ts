@@ -5,6 +5,8 @@ export type IngredientsPrimaryKey = number;
 export interface Ingredients {
     readonly date_created?: Date | null;
     readonly date_updated?: Date | null;
+    description_long: string | null;
+    description_short: string | null;
     readonly id?: number;
     name?: string | null;
     readonly user_created?: string | null;

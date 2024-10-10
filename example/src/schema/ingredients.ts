@@ -15,6 +15,12 @@ export interface Ingredients {
     // Type: timestamp
     readonly date_updated?: Date | null;
 
+    // Type: string
+    description_long: string | null;
+
+    // Type: string
+    description_short: string | null;
+
     // Type: integer
     readonly id?: number;
 
@@ -49,7 +55,7 @@ export type IngredientsPayload = Omit<Ingredients, 'date_created' | 'date_update
  * @returns The payload parsed to {@link Ingredients}.
  */
 export function parseIngredientsPayload(v: IngredientsPayload): Ingredients {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof Ingredients, unknown>;
     if (v.date_created) {
         r.date_created = new Date(v.date_created);
     }

@@ -52,7 +52,7 @@ export type DirectusNotificationsPayload = Omit<DirectusNotifications, 'timestam
  * @returns The payload parsed to {@link DirectusNotifications}.
  */
 export function parseDirectusNotificationsPayload(v: DirectusNotificationsPayload): DirectusNotifications {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof DirectusNotifications, unknown>;
     if (v.timestamp) {
         r.timestamp = new Date(v.timestamp);
     }

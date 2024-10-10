@@ -66,7 +66,7 @@ export type DirectusOperationsPayload = Omit<DirectusOperations, 'date_created'>
  * @returns The payload parsed to {@link DirectusOperations}.
  */
 export function parseDirectusOperationsPayload(v: DirectusOperationsPayload): DirectusOperations {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof DirectusOperations, unknown>;
     if (v.date_created) {
         r.date_created = new Date(v.date_created);
     }

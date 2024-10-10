@@ -107,7 +107,7 @@ export type DirectusUsersPayload = Omit<DirectusUsers, 'last_access'> & {
  * @returns The payload parsed to {@link DirectusUsers}.
  */
 export function parseDirectusUsersPayload(v: DirectusUsersPayload): DirectusUsers {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof DirectusUsers, unknown>;
     if (v.last_access) {
         r.last_access = new Date(v.last_access);
     }

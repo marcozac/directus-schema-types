@@ -28,7 +28,7 @@ export type DirectusMigrationsPayload = Omit<DirectusMigrations, 'timestamp'> & 
  * @returns The payload parsed to {@link DirectusMigrations}.
  */
 export function parseDirectusMigrationsPayload(v: DirectusMigrationsPayload): DirectusMigrations {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof DirectusMigrations, unknown>;
     if (v.timestamp) {
         r.timestamp = new Date(v.timestamp);
     }

@@ -122,7 +122,7 @@ export type DirectusActivityPayload = Omit<DirectusActivity, 'timestamp'> & {
  * @returns The payload parsed to {@link DirectusActivity}.
  */
 export function parseDirectusActivityPayload(v: DirectusActivityPayload): DirectusActivity {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof DirectusActivity, unknown>;
     if (v.timestamp) {
         r.timestamp = new Date(v.timestamp);
     }
@@ -257,7 +257,7 @@ export type DirectusDashboardsPayload = Omit<DirectusDashboards, 'date_created'>
  * @returns The payload parsed to {@link DirectusDashboards}.
  */
 export function parseDirectusDashboardsPayload(v: DirectusDashboardsPayload): DirectusDashboards {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof DirectusDashboards, unknown>;
     if (v.date_created) {
         r.date_created = new Date(v.date_created);
     }
@@ -489,7 +489,7 @@ export type DirectusFilesPayload = Omit<DirectusFiles, 'created_on' | 'modified_
  * @returns The payload parsed to {@link DirectusFiles}.
  */
 export function parseDirectusFilesPayload(v: DirectusFilesPayload): DirectusFiles {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof DirectusFiles, unknown>;
     if (v.created_on) {
         r.created_on = new Date(v.created_on);
     }
@@ -563,7 +563,7 @@ export type DirectusFlowsPayload = Omit<DirectusFlows, 'date_created'> & {
  * @returns The payload parsed to {@link DirectusFlows}.
  */
 export function parseDirectusFlowsPayload(v: DirectusFlowsPayload): DirectusFlows {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof DirectusFlows, unknown>;
     if (v.date_created) {
         r.date_created = new Date(v.date_created);
     }
@@ -629,7 +629,7 @@ export type DirectusMigrationsPayload = Omit<DirectusMigrations, 'timestamp'> & 
  * @returns The payload parsed to {@link DirectusMigrations}.
  */
 export function parseDirectusMigrationsPayload(v: DirectusMigrationsPayload): DirectusMigrations {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof DirectusMigrations, unknown>;
     if (v.timestamp) {
         r.timestamp = new Date(v.timestamp);
     }
@@ -686,7 +686,7 @@ export type DirectusNotificationsPayload = Omit<DirectusNotifications, 'timestam
  * @returns The payload parsed to {@link DirectusNotifications}.
  */
 export function parseDirectusNotificationsPayload(v: DirectusNotificationsPayload): DirectusNotifications {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof DirectusNotifications, unknown>;
     if (v.timestamp) {
         r.timestamp = new Date(v.timestamp);
     }
@@ -756,7 +756,7 @@ export type DirectusOperationsPayload = Omit<DirectusOperations, 'date_created'>
  * @returns The payload parsed to {@link DirectusOperations}.
  */
 export function parseDirectusOperationsPayload(v: DirectusOperationsPayload): DirectusOperations {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof DirectusOperations, unknown>;
     if (v.date_created) {
         r.date_created = new Date(v.date_created);
     }
@@ -831,7 +831,7 @@ export type DirectusPanelsPayload = Omit<DirectusPanels, 'date_created'> & {
  * @returns The payload parsed to {@link DirectusPanels}.
  */
 export function parseDirectusPanelsPayload(v: DirectusPanelsPayload): DirectusPanels {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof DirectusPanels, unknown>;
     if (v.date_created) {
         r.date_created = new Date(v.date_created);
     }
@@ -1189,7 +1189,7 @@ export type DirectusSessionsPayload = Omit<DirectusSessions, 'expires'> & {
  * @returns The payload parsed to {@link DirectusSessions}.
  */
 export function parseDirectusSessionsPayload(v: DirectusSessionsPayload): DirectusSessions {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof DirectusSessions, unknown>;
     if (v.expires) {
         r.expires = new Date(v.expires);
     }
@@ -1408,7 +1408,7 @@ export type DirectusSharesPayload = Omit<DirectusShares, 'date_created' | 'date_
  * @returns The payload parsed to {@link DirectusShares}.
  */
 export function parseDirectusSharesPayload(v: DirectusSharesPayload): DirectusShares {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof DirectusShares, unknown>;
     if (v.date_created) {
         r.date_created = new Date(v.date_created);
     }
@@ -1556,7 +1556,7 @@ export type DirectusUsersPayload = Omit<DirectusUsers, 'last_access'> & {
  * @returns The payload parsed to {@link DirectusUsers}.
  */
 export function parseDirectusUsersPayload(v: DirectusUsersPayload): DirectusUsers {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof DirectusUsers, unknown>;
     if (v.last_access) {
         r.last_access = new Date(v.last_access);
     }
@@ -1621,7 +1621,7 @@ export type DirectusVersionsPayload = Omit<DirectusVersions, 'date_created' | 'd
  * @returns The payload parsed to {@link DirectusVersions}.
  */
 export function parseDirectusVersionsPayload(v: DirectusVersionsPayload): DirectusVersions {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof DirectusVersions, unknown>;
     if (v.date_created) {
         r.date_created = new Date(v.date_created);
     }
@@ -1698,6 +1698,12 @@ export interface Ingredients {
     // Type: timestamp
     readonly date_updated?: Date | null;
 
+    // Type: string
+    description_long: string | null;
+
+    // Type: string
+    description_short: string | null;
+
     // Type: integer
     readonly id?: number;
 
@@ -1732,7 +1738,7 @@ export type IngredientsPayload = Omit<Ingredients, 'date_created' | 'date_update
  * @returns The payload parsed to {@link Ingredients}.
  */
 export function parseIngredientsPayload(v: IngredientsPayload): Ingredients {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof Ingredients, unknown>;
     if (v.date_created) {
         r.date_created = new Date(v.date_created);
     }
@@ -1792,7 +1798,7 @@ export type RecipesPayload = Omit<Recipes, 'date_created' | 'date_updated'> & {
  * @returns The payload parsed to {@link Recipes}.
  */
 export function parseRecipesPayload(v: RecipesPayload): Recipes {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof Recipes, unknown>;
     if (v.date_created) {
         r.date_created = new Date(v.date_created);
     }

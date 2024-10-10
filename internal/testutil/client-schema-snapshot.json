@@ -333,6 +333,50 @@
   ],
   "fields": [
     {
+      "collection": "ingredients",
+      "field": "description_short",
+      "type": "string",
+      "meta": {
+        "collection": "ingredients",
+        "field": "description_short",
+        "readonly": false,
+        "required": true,
+        "special": null,
+        "note": null
+      },
+      "schema": {
+        "name": "description_short",
+        "table": "ingredients",
+        "is_nullable": true,
+        "is_unique": false,
+        "is_primary_key": false,
+        "foreign_key_table": null,
+        "foreign_key_column": null
+      }
+    },
+    {
+      "collection": "ingredients",
+      "field": "description_long",
+      "type": "string",
+      "meta": {
+        "collection": "ingredients",
+        "field": "description_long",
+        "readonly": false,
+        "required": true,
+        "special": null,
+        "note": null
+      },
+      "schema": {
+        "name": "description_long",
+        "table": "ingredients",
+        "is_nullable": true,
+        "is_unique": false,
+        "is_primary_key": false,
+        "foreign_key_table": null,
+        "foreign_key_column": null
+      }
+    },
+    {
       "collection": "directus_migrations",
       "field": "version",
       "type": "string",

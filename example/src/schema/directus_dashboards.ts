@@ -47,7 +47,7 @@ export type DirectusDashboardsPayload = Omit<DirectusDashboards, 'date_created'>
  * @returns The payload parsed to {@link DirectusDashboards}.
  */
 export function parseDirectusDashboardsPayload(v: DirectusDashboardsPayload): DirectusDashboards {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof DirectusDashboards, unknown>;
     if (v.date_created) {
         r.date_created = new Date(v.date_created);
     }

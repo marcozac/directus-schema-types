@@ -77,7 +77,7 @@ export type DirectusSharesPayload = Omit<DirectusShares, 'date_created' | 'date_
  * @returns The payload parsed to {@link DirectusShares}.
  */
 export function parseDirectusSharesPayload(v: DirectusSharesPayload): DirectusShares {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof DirectusShares, unknown>;
     if (v.date_created) {
         r.date_created = new Date(v.date_created);
     }

@@ -50,7 +50,7 @@ export type DirectusSessionsPayload = Omit<DirectusSessions, 'expires'> & {
  * @returns The payload parsed to {@link DirectusSessions}.
  */
 export function parseDirectusSessionsPayload(v: DirectusSessionsPayload): DirectusSessions {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof DirectusSessions, unknown>;
     if (v.expires) {
         r.expires = new Date(v.expires);
     }
