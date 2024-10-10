@@ -81,7 +81,7 @@ export interface {{ $.RelationsTypeName }} {
  * @returns The payload parsed to {@link {{ $.TypeName }}}.
  */
 {{ $funcDecl }} {
-	const r: Record<string, unknown> = v;
+	const r = v as Record<keyof {{ $.TypeName }}, unknown>;
 	{{- range .Values }}
 	if (v.{{ .Name }}) {
 		r.{{ .Name }} = {{ parserOf .Spec.Type }}(v.{{ .Name }});

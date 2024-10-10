@@ -112,7 +112,7 @@ export type DirectusFilesPayload = Omit<DirectusFiles, 'created_on' | 'modified_
  * @returns The payload parsed to {@link DirectusFiles}.
  */
 export function parseDirectusFilesPayload(v: DirectusFilesPayload): DirectusFiles {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof DirectusFiles, unknown>;
     if (v.created_on) {
         r.created_on = new Date(v.created_on);
     }

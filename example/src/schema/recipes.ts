@@ -54,7 +54,7 @@ export type RecipesPayload = Omit<Recipes, 'date_created' | 'date_updated'> & {
  * @returns The payload parsed to {@link Recipes}.
  */
 export function parseRecipesPayload(v: RecipesPayload): Recipes {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof Recipes, unknown>;
     if (v.date_created) {
         r.date_created = new Date(v.date_created);
     }

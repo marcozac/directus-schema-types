@@ -61,7 +61,7 @@ export type DirectusVersionsPayload = Omit<DirectusVersions, 'date_created' | 'd
  * @returns The payload parsed to {@link DirectusVersions}.
  */
 export function parseDirectusVersionsPayload(v: DirectusVersionsPayload): DirectusVersions {
-    const r: Record<string, unknown> = v;
+    const r = v as Record<keyof DirectusVersions, unknown>;
     if (v.date_created) {
         r.date_created = new Date(v.date_created);
     }
