@@ -1,6 +1,10 @@
 package graph
 
 import (
+	"fmt"
+	"slices"
+	"strings"
+
 	"github.com/marcozac/directus-schema-types/directus"
 	"github.com/marcozac/directus-schema-types/util"
 )
@@ -44,7 +48,32 @@ type Collection interface {
 	// fields that require to be parsed or asserted to and from the value
 	// returned by the Directus API.
 	Payload() Payload
+
+	// Imports returns the list of imports required by the collection.
+	Imports(CollectionImports) []Import
 }
+
+// Import represents an import with the path and the symbols to import.
+type Import struct {
+	Path    string
+	Symbols []string
+}
+
+type CollectionImports string
+
+const (
+	// CollectionImportsAll imports all symbols in the collection imports
+	// list.
+	CollectionImportsAll CollectionImports = "all"
+
+	// CollectionImportsRelations imports only the symbols related to the
+	// collection relations.
+	CollectionImportsRelations CollectionImports = "relations"
+
+	// CollectionImportsOverrides imports only the symbols related to the
+	// collection fields override.
+	CollectionImportsOverrides CollectionImports = "overrides"
+)
 
 // newCollection creates a new [Collection] with the given name and whether
 // it is a singleton.
@@ -111,6 +140,51 @@ func (c *collection) Payload() Payload {
 	return &payload{c: c, fields: pf}
 }
 
+func (c *collection) Imports(l CollectionImports) []Import {
+	var m *util.SortedMap[string, []string]
+	switch l {
+	case CollectionImportsOverrides:
+		m = util.NewSortedMap[string, []string](0)
+	case CollectionImportsRelations:
+		fallthrough // init with same length as all
+	case CollectionImportsAll:
+		m = util.NewSortedMap[string, []string](c.relations.Len())
+	}
+	if l == CollectionImportsAll || l == CollectionImportsRelations {
+		for _, r := range c.relations.Values() {
+			if r.Collection().Name() == c.Name() {
+				continue // skip self-relation
+			}
+			// set the key as local import path for collection name
+			m.Set(fmt.Sprintf("./%s", r.Collection().Name()), append(m.GetX(r.Collection().Name()),
+				r.Collection().TypeName(),
+				r.Collection().PrimaryKey().TypeName(),
+			))
+		}
+	}
+	if l == CollectionImportsAll || l == CollectionImportsOverrides {
+		for _, f := range c.fields.Values() {
+			ov := f.Override()
+			if ov == nil || ov.Kind() != FieldOverrideExternal {
+				continue
+			}
+			parserToSubs := strings.Split(ov.ParserTo(), " ")
+			m.Set(ov.ImportPath(), append(m.GetX(ov.ImportPath()),
+				ov.TypeName(),
+				parserToSubs[len(parserToSubs)-1], // last element: new X -> X
+			))
+		}
+	}
+	imports := make([]Import, m.Len())
+	for i, k := range m.Keys() {
+		imports[i] = Import{
+			Path:    k,
+			Symbols: slices.Compact(m.GetX(k)), // remove duplicates
+		}
+	}
+	return imports
+}
+
 func (c *collection) getField(name string) Field {
 	return c.fields.GetX(name)
 }
@@ -130,15 +204,24 @@ func (c *collection) setField(name string, fieldType directus.FieldType, opts ..
 	}
 }
 
-func (c *collection) setRelation(fieldName string, relColl Collection, opts ...relationOption) {
+// setRelation sets a relation between the collection and another collection.
+// The relation is set on the field with the given name.
+// It returns nil (and the relation is not set) if the field does not exist.
+// Otherwise, it returns the field where the relation is set.
+func (c *collection) setRelation(fieldName string, relColl Collection, opts ...relationOption) Field {
+	f := c.getField(fieldName)
+	if f == nil {
+		return nil
+	}
 	r := &relation{
-		field:      c.getField(fieldName),
+		field:      f,
 		collection: relColl,
 	}
 	for _, opt := range opts {
 		opt(r)
 	}
 	c.relations.Set(fieldName, r)
+	return f
 }
 
 type PrimaryKey interface {

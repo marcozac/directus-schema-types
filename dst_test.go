@@ -6,12 +6,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
 
 	"github.com/marcozac/directus-schema-types/directus"
+	"github.com/marcozac/directus-schema-types/graph"
 	"github.com/marcozac/directus-schema-types/internal/testutil"
 	"github.com/marcozac/directus-schema-types/internal/testutil/directest"
 	"github.com/marcozac/directus-schema-types/internal/testutil/node"
@@ -167,28 +169,85 @@ func (suite *Suite) TestGenerator() {
 
 	generator := NewGenerator()
 	for _, tt := range []struct {
-		name    string
-		options []Option
+		name string
+		test func()
 	}{
 		{
-			name:    "WithWriter",
-			options: []Option{WithWriter(io.Discard)},
+			name: "WithWriter",
+			test: func() {
+				err := generator.GenerateSchema(schema, WithWriter(io.Discard))
+				suite.Require().NoError(err)
+			},
 		},
 		{
-			name:    "WithOutFile",
-			options: []Option{WithOutFile(filepath.Join(suite.pkg.Dir, "schema.ts"))},
+			name: "WithOutFile",
+			test: func() {
+				err := generator.GenerateSchema(schema,
+					WithOutFile(filepath.Join(suite.pkg.Dir, "schema.ts")),
+				)
+				suite.Require().NoError(err)
+			},
 		},
 		{
 			name: "WithOutDir",
-			options: []Option{
-				WithOutDir(filepath.Join(suite.pkg.Dir, "schema")),
-				WithFormatOutput(false), // very slower when enabled
+			test: func() {
+				err := generator.GenerateSchema(schema,
+					WithOutDir(filepath.Join(suite.pkg.Dir, "schema")),
+					WithFormatOutput(false), // very slower when enabled
+				)
+				suite.Require().NoError(err)
+			},
+		},
+		{
+			name: "WithOverrides",
+			test: func() {
+				err := os.WriteFile( // write external.ts to import the external overrides
+					filepath.Join(suite.pkg.Dir, "external.ts"),
+					[]byte(`export class InventoryItem { constructor(private external_id: string) {}; externalId() { return this.external_id; }}`),
+					0o644,
+				)
+				suite.Require().NoError(err, "Write external.ts")
+				err = generator.GenerateSchema(schema,
+					WithOutDir(filepath.Join(suite.pkg.Dir, "schema_overrides")),
+					WithGraphOptions(graph.WithOverrides(
+						graph.OverrideMap{
+							"ingredients": {
+								"status": {
+									Kind: graph.FieldOverrideKindEnum,
+									Def: map[string]string{
+										"Available":    "available",
+										"NotAvailable": "not_available",
+										"Restock":      "restock",
+									},
+								},
+								"external_inventory_id": {
+									Kind:       graph.FieldOverrideExternal,
+									Def:        "InventoryItem",
+									ImportPath: "../external",
+									ParserFrom: "externalId",
+									ParserTo:   "new InventoryItem",
+								},
+								"label_color": {
+									Kind: graph.FieldOverrideKindAssertable,
+									Def:  `'blue' | 'red'`,
+								},
+								"shelf_position": {
+									Kind: graph.FieldOverrideKindEnum,
+									Def: map[string]string{
+										"Shelf1": "1",
+										"Shelf2": "2",
+										"Shelf3": "3",
+									},
+								},
+							},
+						},
+					)),
+				)
+				suite.Require().NoError(err)
 			},
 		},
 	} {
-		suite.Run(tt.name, func() {
-			suite.Require().NoError(generator.GenerateSchema(schema, tt.options...), "generate")
-		})
+		suite.Run(tt.name, tt.test)
 	}
 
 	// run the typecheck script

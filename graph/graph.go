@@ -1,6 +1,7 @@
 package graph
 
 import (
+	"fmt"
 	"slices"
 
 	"github.com/marcozac/directus-schema-types/directus"
@@ -51,6 +52,7 @@ func (g *Graph) ParseSchema(s *directus.Schema) (err error) {
 		if skip {
 			continue
 		}
+		c := m[f.Collection] // collection must exist
 		fieldOpts := make(fieldOptions, 0, 7).
 			IsAlias(f.Type == directus.FieldTypeAlias).
 			IsRequired(f.Meta.Required).
@@ -62,25 +64,61 @@ func (g *Graph) ParseSchema(s *directus.Schema) (err error) {
 				IsNullable(f.Schema.IsNullable).
 				IsUnique(f.Schema.IsUnique)
 		}
-		m[f.Collection].setField(f.Field, f.Type, fieldOpts...)
+		if ovf := g.overrides.GetField(c.Name(), f.Field); ovf != nil { // set the overrides
+			switch ovf.Kind {
+			case FieldOverrideKindAssertable:
+				def, ok := ovf.Def.(string)
+				if !ok {
+					return newInvalidOverrideDef(ovf.Def, f.Field, c.Name())
+				}
+				fieldOpts = fieldOpts.WithAssertableOverride(def)
+			case FieldOverrideKindEnum:
+				def, ok := ovf.Def.(map[string]string)
+				if !ok {
+					return newInvalidOverrideDef(ovf.Def, f.Field, c.Name())
+				}
+				fieldOpts = fieldOpts.WithEnumOverride(def)
+			case FieldOverrideExternal:
+				def, ok := ovf.Def.(string)
+				if !ok {
+					return newInvalidOverrideDef(ovf.Def, f.Field, c.Name())
+				}
+				if ovf.ImportPath == "" {
+					return fmt.Errorf(
+						"missing import path for external override: field: %q: collection: %q",
+						f.Field, c.Name(),
+					)
+				}
+				if ovf.ParserFrom == "" || ovf.ParserTo == "" {
+					return fmt.Errorf(
+						"missing parsers for external override: field: %q: collection: %q",
+						f.Field, c.Name(),
+					)
+				}
+				fieldOpts = fieldOpts.WithExternalOverride(
+					def, ovf.ImportPath, ovf.ParserTo, ovf.ParserFrom,
+				)
+			default:
+				return fmt.Errorf("unknown override kind: %q: field: %q: collection: %q",
+					ovf.Kind, f.Field, c.Name(),
+				)
+			}
+		}
+		c.setField(f.Field, f.Type, fieldOpts...)
 	}
 	for _, r := range s.Relations {
 		collMany, ok := m[r.Meta.ManyCollection]
 		if !ok {
 			return newNotFoundError("collection", r.Meta.ManyCollection)
 		}
-
 		collOne, ok := m[r.Meta.OneCollection]
 		if !ok {
 			return newNotFoundError("collection", r.Meta.OneCollection)
 		}
-
-		manyField := collMany.getField(r.Meta.ManyField)
+		manyField := collMany.setRelation(r.Meta.ManyField, collOne) // set the relation and get the field
 		if manyField == nil {
 			return newNotFoundInError("field", r.Meta.ManyField, r.Meta.ManyCollection)
 		}
-		collMany.setRelation(manyField.Name(), collOne)
-
 		if r.Meta.OneField != nil {
 			fieldName := *r.Meta.OneField
 			if collOne.getField(fieldName) == nil {
@@ -114,7 +152,61 @@ func NewFromSchema(s *directus.Schema, opts ...Option) (*Graph, error) {
 	return g, g.ParseSchema(s)
 }
 
-type options struct{}
+type options struct {
+	overrides OverrideMap
+}
 
-// @TODO
 type Option func(*options)
+
+// OverrideMap is a map of collection names to a map of fields with their
+// overrides.
+//
+// It is not safe for concurrent use.
+//
+// Example:
+//
+//	m := OverrideMap{
+//		"my_collection": {
+//			"my_field": {
+//				Kind: FieldOverrideKindAssertable,
+//				Def:  "a | b",
+//			},
+//			"my_enum_field": {
+//				Kind: FieldOverrideKindEnum,
+//				Def: map[string]string{
+//					"Foo": "foo",
+//					"Bar": "bar",
+//				},
+//			},
+//		},
+//	}
+type OverrideMap map[string]map[string]*FieldOverrideRaw
+
+// GetCollection returns the map of field overrides for the given collection.
+// If the underlying map is nil, or the collection does not exist, it returns
+// nil.
+func (m OverrideMap) GetCollection(name string) map[string]*FieldOverrideRaw {
+	if m == nil {
+		return m[name]
+	}
+	return nil
+}
+
+// GetField returns the field override for the given collection and field.
+// If the collection or the field does not exist, it returns nil.
+func (m OverrideMap) GetField(collection, field string) *FieldOverrideRaw {
+	if m != nil {
+		if c, ok := m[collection]; ok {
+			return c[field]
+		}
+	}
+	return nil
+}
+
+// WithOverrides returns an option that sets the overrides for the graph.
+// See [OverrideMap] for more info.
+func WithOverrides(m OverrideMap) Option {
+	return func(o *options) {
+		o.overrides = m
+	}
+}

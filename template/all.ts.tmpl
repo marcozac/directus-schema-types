@@ -1,5 +1,6 @@
 {{- define "all" }}
 {{- template "header/base" }}
+{{ template "import/imports" mergeOverrideImports $ }}
 {{ template "all/collections" $.Collections }}
 {{ template "schema" $.Collections }}
 {{ template "relations" $.Collections }}

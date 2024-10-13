@@ -640,6 +640,161 @@
       "type": "string"
     },
     {
+      "collection": "ingredients",
+      "field": "shelf_position",
+      "meta": {
+        "collection": "ingredients",
+        "conditions": null,
+        "display": null,
+        "display_options": null,
+        "field": "shelf_position",
+        "group": null,
+        "hidden": false,
+        "interface": "select-dropdown",
+        "note": "This is the (numbered) shelf position",
+        "options": {
+          "choices": [
+            {
+              "text": "Shelf 1",
+              "value": 1
+            },
+            {
+              "text": "Shelf 2",
+              "value": 2
+            },
+            {
+              "text": "Shelf 3",
+              "value": 3
+            }
+          ]
+        },
+        "readonly": false,
+        "required": false,
+        "sort": 12,
+        "special": null,
+        "translations": null,
+        "validation": null,
+        "validation_message": null,
+        "width": "full"
+      },
+      "schema": {
+        "data_type": "integer",
+        "default_value": null,
+        "foreign_key_column": null,
+        "foreign_key_table": null,
+        "generation_expression": null,
+        "has_auto_increment": false,
+        "is_generated": false,
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": false,
+        "max_length": null,
+        "name": "shelf_position",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "ingredients"
+      },
+      "type": "integer"
+    },
+    {
+      "collection": "ingredients",
+      "field": "external_inventory_id",
+      "meta": {
+        "collection": "ingredients",
+        "conditions": null,
+        "display": null,
+        "display_options": null,
+        "field": "external_inventory_id",
+        "group": null,
+        "hidden": false,
+        "interface": "input",
+        "note": null,
+        "options": {
+          "choices": null,
+          "placeholder": "This is the id in the external inventory"
+        },
+        "readonly": false,
+        "required": false,
+        "sort": 13,
+        "special": null,
+        "translations": null,
+        "validation": null,
+        "validation_message": null,
+        "width": "full"
+      },
+      "schema": {
+        "data_type": "varchar",
+        "default_value": null,
+        "foreign_key_column": null,
+        "foreign_key_table": null,
+        "generation_expression": null,
+        "has_auto_increment": false,
+        "is_generated": false,
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": false,
+        "max_length": 255,
+        "name": "external_inventory_id",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "ingredients"
+      },
+      "type": "string"
+    },
+    {
+      "collection": "ingredients",
+      "field": "label_color",
+      "meta": {
+        "collection": "ingredients",
+        "conditions": null,
+        "display": null,
+        "display_options": null,
+        "field": "label_color",
+        "group": null,
+        "hidden": false,
+        "interface": "select-dropdown",
+        "note": null,
+        "options": {
+          "choices": [
+            {
+              "text": "Blue",
+              "value": "blue"
+            },
+            {
+              "text": "Red",
+              "value": "red"
+            }
+          ]
+        },
+        "readonly": false,
+        "required": false,
+        "sort": 14,
+        "special": null,
+        "translations": null,
+        "validation": null,
+        "validation_message": null,
+        "width": "full"
+      },
+      "schema": {
+        "data_type": "varchar",
+        "default_value": null,
+        "foreign_key_column": null,
+        "foreign_key_table": null,
+        "generation_expression": null,
+        "has_auto_increment": false,
+        "is_generated": false,
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": false,
+        "max_length": 255,
+        "name": "label_color",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "ingredients"
+      },
+      "type": "string"
+    },
+    {
       "collection": "recipes",
       "field": "id",
       "meta": {

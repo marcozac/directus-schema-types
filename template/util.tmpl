@@ -4,25 +4,13 @@
 {{- /* "header/base" END */ -}}
 
 
-{{- /* "import/base/from" defines the local path of an import from statement. */ -}}
-{{- /* It must be executed with a context having the path in .Name */ -}}
-{{- define "import/base/from" }}
-{{- printf "./%s" $.Name | quote }}
-{{- end }}
-{{- /* "import/base/from" END */ -}}
-
-
-{{- /* "import/from_relations" defines the imports from the collection relations. */ -}}
-{{- /* It must be executed with a Collection context. */ -}}
-{{- define "import/from_relations" }}
-{{- range dedupeRelationsImport $.Relations.Values }}
-{{- if ne $.Name .Collection.Name -}}{{/* avoid self-import */}}
-{{- $types := join .Collection.TypeName .Collection.PrimaryKey.TypeName }}
-import { {{ $types }} } from {{ template "import/base/from" .Collection }};
+{{- /* "import/imports" defines the imports from a []Import context. */ -}}
+{{- define "import/imports" }}
+{{- range $ }}
+import { {{ joinSlice .Symbols }} } from {{ quote .Path }};
 {{- end }}
 {{- end }}
-{{- end }}
-{{- /* "import/from_relations" END */ -}}
+{{- /* "import/imports" END */ -}}
 
 
 {{- /* "import/collections" defines the imports from the collections schema. */ -}}

@@ -28,3 +28,10 @@ func newNotFoundError(element, name string) error {
 func newNotFoundInError(element, name, in string) error {
 	return fmt.Errorf("%s %q in %q: %w", element, name, in, ErrNotFound)
 }
+
+// newInvalidOverrideDef returns a new error for an invalid override definition.
+func newInvalidOverrideDef(def any, field, collection string) error {
+	return fmt.Errorf("invalid override definition %v for field %q: collection: %q",
+		def, field, collection,
+	)
+}

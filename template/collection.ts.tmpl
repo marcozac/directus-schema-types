@@ -1,6 +1,6 @@
 {{- block "collection.ts" $ -}}
 {{- template "header/base" }}
-{{ template "import/from_relations" . }}
+{{ template "import/imports" .Imports "all" }}
 {{ template "collection" . }}
 {{- end }}
 {{- /* "collection.ts" END */ -}}
@@ -8,6 +8,7 @@
 
 {{- define "collection" }}
 {{ template "collection/pk" $ }}{{- /* add primary key types */ -}}
+{{ template "collection/overrides" $ }}{{- /* add override types */ -}}
 {{ template "collection/interface" $ }}{{- /* add principal interface */ -}}
 {{ template "collection/relations" $.Relations }}{{- /* add relations interface */ -}}
 {{ template "collection/related_collections" $.RelatedCollections }}{{- /* add related collections interface */ -}}
@@ -22,6 +23,38 @@ export type {{ $.PrimaryKey.TypeName }} = {{ $.PrimaryKey.Type }};
 export type {{ $.PrimaryKey.Field.TypeName }} = {{ quote $.PrimaryKey.Field.Type }};
 {{ end }}
 {{- /* "collection/pk" END */ -}}
+
+
+{{- /* "collection/overrides" defines the collection fields override. */ -}}
+{{ define "collection/overrides" }}
+{{- range $.Fields }}
+    {{- with .Override }}
+        {{- if eq .Kind "assertable" }}
+        {{ template "collection/overrides/assertable" . }}
+        {{- else if eq .Kind "enum" }}
+        {{ template "collection/overrides/enum" . }}
+        {{- end }}
+    {{- end }}
+{{- end }}
+{{ end }}
+{{- /* "collection/overrides" END */ -}}
+
+
+{{- /* "collection/overrides/assertable" defines a collection field assertable override. */ -}}
+{{- define "collection/overrides/assertable" }}
+export type {{ $.TypeName }} = {{ $.Def }};
+{{- end }}
+
+
+{{- /* "collection/overrides/enum" defines a collection field enum override. */ -}}
+{{- /* It must be executed with FieldOverride context. */ -}}
+{{- define "collection/overrides/enum" }}
+export enum {{ $.TypeName }} {
+    {{- range $k, $v := $.Def }}
+    {{ $k }} =  {{ if eq $.FieldType "string" }}{{ quote $v }}{{ else }}{{ $v }}{{- end }},
+    {{- end }}
+}
+{{- end }}
 
 
 {{- /* "collection/interface" defines the principal collection interface. */ -}}

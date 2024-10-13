@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -8,15 +9,17 @@ import (
 
 	dst "github.com/marcozac/directus-schema-types"
 	"github.com/marcozac/directus-schema-types/directus"
+	"github.com/marcozac/directus-schema-types/graph"
 )
 
 func NewGenerateCmd(viper *viper.Viper) *cobra.Command {
 	const (
-		file     = "gen_out_file"
-		dir      = "gen_out_dir"
-		fromSnap = "gen_from_snapshot"
-		format   = "gen_format"
-		clean    = "gen_clean"
+		file      = "gen_out_file"
+		dir       = "gen_out_dir"
+		fromSnap  = "gen_from_snapshot"
+		format    = "gen_format"
+		clean     = "gen_clean"
+		overrides = "gen_overrides"
 	)
 
 	cmd := &cobra.Command{
@@ -59,6 +62,13 @@ output.`,
 			default:
 				opts = append(opts, dst.WithWriter(cmd.OutOrStdout()))
 			}
+			if viper.IsSet(overrides) {
+				var om graph.OverrideMap
+				if err := json.Unmarshal([]byte(viper.GetString(overrides)), &om); err != nil {
+					return fmt.Errorf("overrides: %w", err)
+				}
+				opts = append(opts, dst.WithGraphOptions(graph.WithOverrides(om)))
+			}
 			generator := dst.NewGenerator()
 			if err := generator.GenerateSchema(schema, opts...); err != nil {
 				return fmt.Errorf("generate: %w", err)
@@ -83,6 +93,9 @@ output.`,
 
 	cmd.PersistentFlags().Bool("clean", false, "clean the output file or directory before generating")
 	_ = viper.BindPFlag(clean, cmd.PersistentFlags().Lookup("clean"))
+
+	cmd.PersistentFlags().String("overrides", "", "a JSON object with the fields to override")
+	_ = viper.BindPFlag(overrides, cmd.PersistentFlags().Lookup("overrides"))
 
 	return cmd
 }

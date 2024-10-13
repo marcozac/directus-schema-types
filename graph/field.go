@@ -113,6 +113,10 @@ func (f *field) Override() FieldOverride {
 	return f.override
 }
 
+func (f *field) setOverride(raw *FieldOverrideRaw) {
+	f.override = &fieldOverride{f, raw}
+}
+
 // fieldOption represents an option that can be set creating a new field.
 type fieldOption func(*field)
 
@@ -188,14 +192,51 @@ func (fo fieldOptions) WithNote(note *string) fieldOptions {
 // field.
 func (fo fieldOptions) WithAssertableOverride(def string) fieldOptions {
 	return append(fo, func(f *field) {
-		f.override = newFieldOverride(f, FieldOverrideKindAssertable, def)
+		f.setOverride(&FieldOverrideRaw{
+			Kind: FieldOverrideKindAssertable,
+			Def:  def,
+		})
 	})
 }
 
 // WithEnumOverride adds an option to set an enum override for the field.
+// The definition is a map of the enum key and value.
+//
+// Example:
+//
+//	WithEnumOverride(map[string]string{
+//		"Foo": "foo",
+//		"Bar": "bar",
+//	})
+//
+// Will generate:
+//
+//	```ts
+//	enum Example {
+//		Foo = 'foo',
+//		Bar = 'bar',
+//	}
+//	```
 func (fo fieldOptions) WithEnumOverride(def map[string]string) fieldOptions {
 	return append(fo, func(f *field) {
-		f.override = newFieldOverride(f, FieldOverrideKindEnum, def)
+		f.setOverride(&FieldOverrideRaw{
+			Kind: FieldOverrideKindEnum,
+			Def:  def,
+		})
+	})
+}
+
+// WithExternalOverride adds an option to set an external override for the field
+// with the given definition (the type name), and parsers.
+func (fo fieldOptions) WithExternalOverride(def string, importPath, parserTo, parserFrom string) fieldOptions {
+	return append(fo, func(f *field) {
+		f.setOverride(&FieldOverrideRaw{
+			Kind:       FieldOverrideExternal,
+			Def:        def,
+			ImportPath: importPath,
+			ParserTo:   parserTo,
+			ParserFrom: parserFrom,
+		})
 	})
 }
 
@@ -230,6 +271,7 @@ func directusTypeToTs(directusType string) string {
 // type.
 type FieldOverride interface {
 	Typer
+	Field
 	Parseable
 
 	// Kind returns the kind of field override.
@@ -238,24 +280,13 @@ type FieldOverride interface {
 	// Def returns the definition of the field override.
 	Def() any
 
+	// ImportPath returns the path to the module that contains the type definition.
+	ImportPath() string
+
 	// Assertable returns whether the payload field can be asserted to the
 	// schema field type.
 	Assertable() bool
 }
-
-type FieldOverrideKind string
-
-const (
-	// FieldOverrideKindAssertable is the kind of field override that can be
-	// asserted and is not another more specific kind (e.g. enum).
-	//
-	// Example:
-	//	type Foo = 'a' | 'b';
-	FieldOverrideKindAssertable FieldOverrideKind = "assertable"
-
-	// FieldOverrideKindEnum is the kind of field override that is an enum.
-	FieldOverrideKindEnum FieldOverrideKind = "enum"
-)
 
 // Parseable is the interface implemented by field overrides that can be parsed
 // to and from the payload.
@@ -272,8 +303,10 @@ type Parseable interface {
 	// returns a valid `string`.
 	ParserFrom() string
 
-	// ParserTo returns the name of a function that parses the payload
-	// field and returns the value to be used in the schema field.
+	// ParserTo returns the name of a function that can be used to parse the
+	// payload field and returns the value to be used in the schema field.
+	// It can be also a constructor function. In this case, it must be set as
+	// `new Constructor`.
 	//
 	// The function must have a single parameter of the type of the payload
 	// field and return the type of the schema field.
@@ -284,31 +317,62 @@ type Parseable interface {
 	ParserTo() string
 }
 
-// newFieldOverride creates a new field override with the given collection, field,
-// kind, and options.
-func newFieldOverride(f Field, kind FieldOverrideKind, def any, opts ...fieldOverrideOption) FieldOverride {
-	fo := &fieldOverride{
-		f:    f,
-		def:  def,
-		kind: kind,
-	}
-	for _, opt := range opts {
-		opt(fo)
-	}
-	return fo
+type FieldOverrideKind string
+
+const (
+	// FieldOverrideKindAssertable is the kind of field override that can be
+	// asserted and is not another more specific kind (e.g. enum).
+	//
+	// Example:
+	//	type Foo = 'a' | 'b';
+	FieldOverrideKindAssertable FieldOverrideKind = "assertable"
+
+	// FieldOverrideKindEnum is the kind of field override that is an enum.
+	FieldOverrideKindEnum FieldOverrideKind = "enum"
+
+	// FieldOverrideExternal is the kind of field override that is a custom
+	// type defined in another module.
+	FieldOverrideExternal FieldOverrideKind = "external"
+)
+
+type FieldOverrideRaw struct {
+	// Kind is the kind of field override.
+	Kind FieldOverrideKind `json:"kind"`
+
+	// Def is the definition of the field override.
+	//
+	// It can be:
+	//	- a map[string]string for enums
+	//	- a string with the type name for any other kind
+	Def any `json:"def"`
+
+	// ImportPath is the path to the module that contains the type definition.
+	// It is required for external overrides.
+	ImportPath string `json:"importPath"`
+
+	// ParserFrom is the name of a method of the schema field type that returns
+	// the value to be used in the payload field. See [Parseable] for more info.
+	ParserFrom string `json:"parserFrom"`
+
+	// ParserTo is the name of a function that can be used to parse the payload
+	// field and returns the value to be used in the schema field. See [Parseable]
+	// for more info.
+	//
+	// It is required for external overrides.
+	ParserTo string `json:"parserTo"`
 }
 
 type fieldOverride struct {
-	f          Field
-	kind       FieldOverrideKind
-	def        any
-	parserFrom string
-	parserTo   string
+	Field
+	*FieldOverrideRaw
 }
 
 func (fo *fieldOverride) TypeName() string {
-	n := fo.f.Collection().TypeName() + util.ToPascalCase(fo.f.Name())
-	switch fo.kind {
+	if fo.Kind() == FieldOverrideExternal {
+		return fo.Def().(string)
+	}
+	n := fo.Field.Collection().TypeName() + util.ToPascalCase(fo.Field.Name())
+	switch fo.FieldOverrideRaw.Kind {
 	case FieldOverrideKindEnum:
 		n += "Enum"
 	default:
@@ -322,15 +386,19 @@ func (fo *fieldOverride) Type() string {
 }
 
 func (fo *fieldOverride) Kind() FieldOverrideKind {
-	return fo.kind
+	return fo.FieldOverrideRaw.Kind
 }
 
 func (fo *fieldOverride) Def() any {
-	return fo.def
+	return fo.FieldOverrideRaw.Def
+}
+
+func (fo *fieldOverride) ImportPath() string {
+	return fo.FieldOverrideRaw.ImportPath
 }
 
 func (fo *fieldOverride) Assertable() bool {
-	switch fo.kind {
+	switch fo.Kind() {
 	case FieldOverrideKindAssertable, FieldOverrideKindEnum:
 		return true
 	}
@@ -338,37 +406,9 @@ func (fo *fieldOverride) Assertable() bool {
 }
 
 func (fo *fieldOverride) ParserTo() string {
-	return fo.parserTo
+	return fo.FieldOverrideRaw.ParserTo
 }
 
 func (fo *fieldOverride) ParserFrom() string {
-	return fo.parserFrom
-}
-
-// fieldOverrideOption represents an option that can be set creating a new field
-// override.
-type fieldOverrideOption func(*fieldOverride)
-
-// fieldOverrideOptions is a slice of [fieldOverrideOption]s with chainable methods
-// to set the options.
-//
-// As [fieldOptions], every method uses the append function to add the option to
-// the slice. See [fieldOptions] for more information about variable assignment
-// and example.
-type fieldOverrideOptions []fieldOverrideOption
-
-// WithParserTo adds an option to set the function to be used to parse the schema
-// field to the payload field.
-func (fo fieldOverrideOptions) WithParserTo(parserTo string) fieldOverrideOptions {
-	return append(fo, func(f *fieldOverride) {
-		f.parserTo = parserTo
-	})
-}
-
-// WithParserFrom adds an option to set the function to be used to parse the payload
-// field to the schema field.
-func (fo fieldOverrideOptions) WithParserFrom(parserFrom string) fieldOverrideOptions {
-	return append(fo, func(f *fieldOverride) {
-		f.parserFrom = parserFrom
-	})
+	return fo.FieldOverrideRaw.ParserFrom
 }

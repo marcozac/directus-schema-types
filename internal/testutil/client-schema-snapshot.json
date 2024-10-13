@@ -7631,6 +7631,72 @@
     },
     {
       "collection": "ingredients",
+      "field": "shelf_position",
+      "type": "integer",
+      "meta": {
+        "collection": "ingredients",
+        "field": "shelf_position",
+        "readonly": false,
+        "required": false,
+        "special": null,
+        "note": "This is the (numbered) shelf position"
+      },
+      "schema": {
+        "name": "shelf_position",
+        "table": "ingredients",
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": false,
+        "foreign_key_table": null,
+        "foreign_key_column": null
+      }
+    },
+    {
+      "collection": "ingredients",
+      "field": "external_inventory_id",
+      "type": "string",
+      "meta": {
+        "collection": "ingredients",
+        "field": "external_inventory_id",
+        "readonly": false,
+        "required": false,
+        "special": null,
+        "note": null
+      },
+      "schema": {
+        "name": "external_inventory_id",
+        "table": "ingredients",
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": false,
+        "foreign_key_table": null,
+        "foreign_key_column": null
+      }
+    },
+    {
+      "collection": "ingredients",
+      "field": "label_color",
+      "type": "string",
+      "meta": {
+        "collection": "ingredients",
+        "field": "label_color",
+        "readonly": false,
+        "required": false,
+        "special": null,
+        "note": null
+      },
+      "schema": {
+        "name": "label_color",
+        "table": "ingredients",
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": false,
+        "foreign_key_table": null,
+        "foreign_key_column": null
+      }
+    },
+    {
+      "collection": "ingredients",
       "field": "recipes",
       "type": "alias",
       "meta": {

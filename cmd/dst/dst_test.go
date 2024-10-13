@@ -105,6 +105,21 @@ func (suite *Suite) Test() {
 				suite.Assert().FileExists(path, "file exists")
 			},
 		},
+		{
+			name: "GenerateWithOverrides",
+			test: func() {
+				const ov = `{"ingredients":{"external_inventory_id":{"kind":"external","def":"InventoryItem","importPath":"../external","parserFrom":"externalId","parserTo":"new InventoryItem"},"label_color":{"kind":"assertable","def":"'blue' | 'red'","importPath":"","parserFrom":"","parserTo":""},"shelf_position":{"kind":"enum","def":{"Shelf1":"1","Shelf2":"2","Shelf3":"3"},"importPath":"","parserFrom":"","parserTo":""},"status":{"kind":"enum","def":{"Available":"available","NotAvailable":"not_available","Restock":"restock"},"importPath":"","parserFrom":"","parserTo":""}}}`
+				path := filepath.Join(tempDir, "schema_overrides")
+				cmd := NewRootCmd()
+				cmd.SetArgs([]string{
+					"generate",
+					"--dir", path,
+					"--overrides", ov,
+				})
+				suite.Require().NoError(cmd.Execute(), "execute")
+				suite.Assert().DirExists(path, "dir exists")
+			},
+		},
 	} {
 		suite.Run(tt.name, tt.test)
 	}

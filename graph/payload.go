@@ -87,6 +87,7 @@ func directusPayloadType(directusType string) string {
 	return directusTypeToTs(directusType)
 }
 
+// parserFrom returns the built-in parser for the given type.
 func parserFrom(typ string) string {
 	switch typ {
 	case "Date":
@@ -96,6 +97,7 @@ func parserFrom(typ string) string {
 	}
 }
 
+// parserTo returns the built-in parser for the given type.
 func parserTo(typ string) string {
 	switch typ {
 	case "Date":

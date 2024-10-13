@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"strings"
 	"sync"
 	"text/template"
@@ -26,6 +27,25 @@ func NewGenerator() *Generator {
 	g := &Generator{
 		tmpl: template.Must(template.New("").
 			Funcs(template.FuncMap{
+				"mergeOverrideImports": func(g graph.Graph) []graph.Import {
+					cs := g.Collections()
+					m := util.NewSortedMap[string, []string](len(cs))
+					for _, c := range cs {
+						ims := c.Imports(graph.CollectionImportsOverrides)
+						for _, im := range ims {
+							m.Set(im.Path, append(m.GetX(im.Path), im.Symbols...))
+						}
+					}
+					imports := make([]graph.Import, m.Len())
+					for i, k := range m.Keys() {
+						imports[i] = graph.Import{
+							Path:    k,
+							Symbols: slices.Compact(m.GetX(k)), // remove duplicates
+						}
+					}
+					return imports
+				},
+
 				// dedupeRelationsImport returns a slice with the
 				// relations deduplicated by collection name.
 				"dedupeRelationsImport": func(rels []graph.Relation) []graph.Relation {
@@ -38,6 +58,10 @@ func NewGenerator() *Generator {
 
 				// join returns a string with the slice elements joined by a comma.
 				"join": func(slice ...string) string {
+					return strings.Join(slice, ", ")
+				},
+
+				"joinSlice": func(slice []string) string {
 					return strings.Join(slice, ", ")
 				},
 
@@ -68,21 +92,26 @@ type Generator struct {
 }
 
 func (gen *Generator) GenerateSchema(schema *directus.Schema, opts ...Option) error {
-	gr, err := graph.NewFromSchema(schema)
-	if err != nil {
-		return fmt.Errorf("create graph: %w", err)
-	}
-	return gen.GenerateGraph(gr, opts...)
-}
-
-func (gen *Generator) GenerateGraph(gr *graph.Graph, opts ...Option) error {
-	o := &options{ // default options
-		formatOutput: true,
-		outDir:       filepath.Join("src", "_gen", "schema"),
-	}
+	o := gen.defaultOptions()
 	for _, opt := range opts {
 		opt(o)
 	}
+	gr, err := graph.NewFromSchema(schema, o.graphOptions...)
+	if err != nil {
+		return fmt.Errorf("create graph: %w", err)
+	}
+	return gen.generateGraph(gr, o)
+}
+
+func (gen *Generator) GenerateGraph(gr *graph.Graph, opts ...Option) error {
+	o := gen.defaultOptions()
+	for _, opt := range opts {
+		opt(o)
+	}
+	return gen.generateGraph(gr, o)
+}
+
+func (gen *Generator) generateGraph(gr *graph.Graph, o *options) error {
 	switch {
 	case o.writer != nil:
 		return gen.generateAll(gr, o.writer, o.formatOutput)
@@ -92,6 +121,13 @@ func (gen *Generator) GenerateGraph(gr *graph.Graph, opts ...Option) error {
 		return gen.generateDir(gr, o)
 	}
 	return errors.New("no output specified")
+}
+
+func (gen *Generator) defaultOptions() *options {
+	return &options{
+		formatOutput: true,
+		outDir:       filepath.Join("src", "_gen", "schema"),
+	}
 }
 
 func (gen *Generator) generateFile(gr *graph.Graph, o *options) error {
@@ -205,6 +241,7 @@ type options struct {
 	outFile      string
 	outDir       string
 	clean        bool
+	graphOptions []graph.Option
 }
 
 // Option is an option for the generator.
@@ -243,5 +280,13 @@ func WithOutDir(path string) Option {
 func WithClean(v bool) Option {
 	return func(o *options) {
 		o.clean = v
+	}
+}
+
+// WithGraphOptions sets the options for the graph.
+// It has effect only when a custom graph is not provided.
+func WithGraphOptions(opts ...graph.Option) Option {
+	return func(o *options) {
+		o.graphOptions = opts
 	}
 }
