@@ -1,0 +1,14 @@
+{{- define "all" }}
+{{- template "header/base" }}
+{{ template "all/collections" $.Collections }}
+{{ template "schema" $.Collections }}
+{{ template "relations" $.Collections }}
+{{- end }}
+
+
+{{- /* "all/collections" groups all the collections. */ -}}
+{{- define "all/collections" }}
+{{- range $ }}
+{{ template "collection" . }}
+{{- end }}
+{{- end }}

@@ -1,29 +1,43 @@
-import { DirectusPoliciesPrimaryKey, DirectusPolicies } from './directus_policies';
-export type DirectusPermissionsPrimaryKeyField = 'id';
+import { DirectusPolicies, DirectusPoliciesPrimaryKey } from './directus_policies';
 export type DirectusPermissionsPrimaryKey = number;
+export type DirectusPermissionsPrimaryKeyField = 'id';
 export interface DirectusPermissions {
+    /**
+     * Type: string
+     */
     action?: string;
+    /**
+     * Type: string
+     */
     collection?: string;
+    /**
+     * Type: csv
+     */
     fields?: any | null;
-    id?: number;
+    /**
+     * Type: integer
+     */
+    id?: DirectusPermissionsPrimaryKey;
+    /**
+     * Type: json
+     */
     permissions?: object | null;
+    /**
+     * Type: string
+     */
     policy?: string;
+    /**
+     * Type: json
+     */
     presets?: object | null;
+    /**
+     * Type: json
+     */
     validation?: object | null;
 }
 export interface DirectusPermissionsRelations {
-    policy: DirectusPoliciesPrimaryKey | DirectusPolicies;
+    policy?: DirectusPoliciesPrimaryKey | DirectusPolicies;
 }
-/**
- * DirectusPermissionsRelatedCollections maps the {@link DirectusPermissionsRelations}
- * fields to the name of the related collection.
- */
 export interface DirectusPermissionsRelatedCollections {
     policy: 'directus_policies';
 }
-export type DirectusPermissionsPayload = DirectusPermissions;
-/**
- * @param v The payload to parse.
- * @returns The payload as it is received: it is the same as the schema definition.
- */
-export declare function parseDirectusPermissionsPayload(v: DirectusPermissionsPayload): DirectusPermissions;

@@ -3,6 +3,7 @@ package testutil
 import (
 	"bytes"
 	"io"
+	"strings"
 
 	_ "embed"
 )
@@ -35,7 +36,7 @@ var clientSchemaSnapshot []byte
 // The environment variables in the snapshot are expanded.
 // It panics on variables expansion error.
 func DirectusSchemaSnapshot() io.Reader {
-	return bytes.NewBufferString(
+	return strings.NewReader(
 		expandEnv(directusSchemaSnapshot),
 	)
 }
@@ -44,7 +45,7 @@ func DirectusSchemaSnapshot() io.Reader {
 // The environment variables in the snapshot are expanded.
 // It panics on variables expansion error.
 func DirectusEmptySchemaSnapshot() io.Reader {
-	return bytes.NewBufferString(
+	return strings.NewReader(
 		expandEnv(directusEmptySchemaSnapshot),
 	)
 }

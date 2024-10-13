@@ -31,8 +31,6 @@ import { Ingredients } from './ingredients';
 import { Recipes } from './recipes';
 import { RecipesIngredients } from './recipes_ingredients';
 
-// --- Schema ---
-
 export interface Schema {
     chefs: Chefs;
     directus_access: DirectusAccess;

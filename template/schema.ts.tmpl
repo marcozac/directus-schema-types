@@ -1,0 +1,32 @@
+{{- block "schema.ts" $ -}}
+{{- template "header/base" }}
+{{ template "import/collections" $.Collections }}
+{{ template "schema" $.Collections }}
+{{- end }}
+{{- /* "schema.ts" END */ -}}
+
+
+{{- define "schema" }}
+{{- template "schema/interface" $ }}
+{{- end }}
+{{- /* "schema" END */ -}}
+
+
+{{- /* "schema/interface" defines the principal schema interface. */ -}}
+{{- /* It must be executed with []Collection context. */ -}}
+{{- define "schema/interface" }}
+export interface Schema {
+    {{- range $ }}
+    {{- template "schema/interface/field" . }}
+    {{- end }}
+}
+{{- end }}
+{{- /* "schema/interface" END */ -}}
+
+
+{{- /* "schema/interface/field" defines a schema interface field. */ -}}
+{{- /* It must be executed with Collection context. */ -}}
+{{- define "schema/interface/field" }}
+    {{ $.Name }}: {{ $.TypeName }}
+{{- end }}
+{{- /* "schema/interface/field" END */ -}}

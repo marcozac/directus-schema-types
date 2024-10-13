@@ -1,23 +1,19 @@
-import { RecipesPrimaryKey, Recipes } from './recipes';
-export type ChefsPrimaryKeyField = 'id';
+import { Recipes, RecipesPrimaryKey } from './recipes';
 export type ChefsPrimaryKey = number;
+export type ChefsPrimaryKeyField = 'id';
 export interface Chefs {
-    readonly id?: number;
+    /**
+     * Type: integer
+     */
+    readonly id?: ChefsPrimaryKey;
+    /**
+     * Type: integer
+     */
     signature_dish?: number | null;
 }
 export interface ChefsRelations {
-    signature_dish: RecipesPrimaryKey | Recipes;
+    signature_dish?: RecipesPrimaryKey | Recipes;
 }
-/**
- * ChefsRelatedCollections maps the {@link ChefsRelations}
- * fields to the name of the related collection.
- */
 export interface ChefsRelatedCollections {
     signature_dish: 'recipes';
 }
-export type ChefsPayload = Chefs;
-/**
- * @param v The payload to parse.
- * @returns The payload as it is received: it is the same as the schema definition.
- */
-export declare function parseChefsPayload(v: ChefsPayload): Chefs;

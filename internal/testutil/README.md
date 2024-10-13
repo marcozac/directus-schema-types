@@ -16,3 +16,16 @@ The file includes the following environment variables, which are expanded at run
 
 As the file described above, but with an empty schema.
 It's used to reset the schema in tests and includes the same environment variables.
+
+## [client-schema-snapshot.json](./client-schema-snapshot.json)
+
+This file is a snapshot obtained running `dst snapshot` command in the CLI.
+
+## Updates
+
+In case you need to update the snapshots, you can make the changes in `Directus`,
+and then run the following command in this directory:
+
+```sh
+go run ./cmd/update_snapshots/main.go
+```

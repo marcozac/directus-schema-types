@@ -59,8 +59,8 @@ output.`,
 			default:
 				opts = append(opts, dst.WithWriter(cmd.OutOrStdout()))
 			}
-			generator := dst.NewGenerator(schema, opts...)
-			if err := generator.Generate(); err != nil {
+			generator := dst.NewGenerator()
+			if err := generator.GenerateSchema(schema, opts...); err != nil {
 				return fmt.Errorf("generate: %w", err)
 			}
 			return nil

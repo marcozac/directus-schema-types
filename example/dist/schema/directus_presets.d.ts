@@ -1,37 +1,66 @@
-import { DirectusRolesPrimaryKey, DirectusRoles } from './directus_roles';
-import { DirectusUsersPrimaryKey, DirectusUsers } from './directus_users';
-export type DirectusPresetsPrimaryKeyField = 'id';
+import { DirectusRoles, DirectusRolesPrimaryKey } from './directus_roles';
+import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users';
 export type DirectusPresetsPrimaryKey = number;
+export type DirectusPresetsPrimaryKeyField = 'id';
 export interface DirectusPresets {
+    /**
+     * Type: string
+     */
     bookmark?: string | null;
+    /**
+     * Type: string
+     */
     collection?: string | null;
+    /**
+     * Type: string
+     */
     color?: string | null;
+    /**
+     * Type: json
+     */
     filter?: object | null;
+    /**
+     * Type: string
+     */
     icon?: string | null;
-    id?: number;
+    /**
+     * Type: integer
+     */
+    id?: DirectusPresetsPrimaryKey;
+    /**
+     * Type: string
+     */
     layout?: string | null;
+    /**
+     * Type: json
+     */
     layout_options?: object | null;
+    /**
+     * Type: json
+     */
     layout_query?: object | null;
+    /**
+     * Type: integer
+     */
     refresh_interval?: number | null;
+    /**
+     * Type: string
+     */
     role?: string | null;
+    /**
+     * Type: string
+     */
     search?: string | null;
+    /**
+     * Type: string
+     */
     user?: string | null;
 }
 export interface DirectusPresetsRelations {
-    role: DirectusRolesPrimaryKey | DirectusRoles;
-    user: DirectusUsersPrimaryKey | DirectusUsers;
+    role?: DirectusRolesPrimaryKey | DirectusRoles;
+    user?: DirectusUsersPrimaryKey | DirectusUsers;
 }
-/**
- * DirectusPresetsRelatedCollections maps the {@link DirectusPresetsRelations}
- * fields to the name of the related collection.
- */
 export interface DirectusPresetsRelatedCollections {
     role: 'directus_roles';
     user: 'directus_users';
 }
-export type DirectusPresetsPayload = DirectusPresets;
-/**
- * @param v The payload to parse.
- * @returns The payload as it is received: it is the same as the schema definition.
- */
-export declare function parseDirectusPresetsPayload(v: DirectusPresetsPayload): DirectusPresets;

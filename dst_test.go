@@ -162,9 +162,10 @@ func (suite *Suite) TestGenerator() {
 	defer cancel()
 
 	// get the schema
-	s, err := suite.client.GetSchema()
+	schema, err := suite.client.GetSchema()
 	suite.Require().NoError(err, "GetSchema")
 
+	generator := NewGenerator()
 	for _, tt := range []struct {
 		name    string
 		options []Option
@@ -186,8 +187,7 @@ func (suite *Suite) TestGenerator() {
 		},
 	} {
 		suite.Run(tt.name, func() {
-			generator := NewGenerator(s, tt.options...)
-			suite.Require().NoError(generator.Generate(), "generate")
+			suite.Require().NoError(generator.GenerateSchema(schema, tt.options...), "generate")
 		})
 	}
 

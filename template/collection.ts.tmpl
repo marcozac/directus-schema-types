@@ -1,0 +1,200 @@
+{{- block "collection.ts" $ -}}
+{{- template "header/base" }}
+{{ template "import/from_relations" . }}
+{{ template "collection" . }}
+{{- end }}
+{{- /* "collection.ts" END */ -}}
+
+
+{{- define "collection" }}
+{{ template "collection/pk" $ }}{{- /* add primary key types */ -}}
+{{ template "collection/interface" $ }}{{- /* add principal interface */ -}}
+{{ template "collection/relations" $.Relations }}{{- /* add relations interface */ -}}
+{{ template "collection/related_collections" $.RelatedCollections }}{{- /* add related collections interface */ -}}
+{{ template "collection/payload" $ }}{{- /* add collection payload */ -}}
+{{- end }}
+{{- /* "collection" END */ -}}
+
+
+{{- /* "collection/pk" defines the collection primary key types. */ -}}
+{{ define "collection/pk" }}
+export type {{ $.PrimaryKey.TypeName }} = {{ $.PrimaryKey.Type }};
+export type {{ $.PrimaryKey.Field.TypeName }} = {{ quote $.PrimaryKey.Field.Type }};
+{{ end }}
+{{- /* "collection/pk" END */ -}}
+
+
+{{- /* "collection/interface" defines the principal collection interface. */ -}}
+{{ define "collection/interface" }}
+export interface {{ $.TypeName }} {
+    {{- range $.Fields }}
+        {{- template "collection/interface/field" . }}
+    {{- end }}
+}
+{{ end }}
+{{- /* "collection/interface" END */ -}}
+
+
+{{- /* "collection/interface/field" defines a collection field. */ -}}
+{{- define "collection/interface/field" }}
+{{- if not $.IsAlias }}
+    /**
+	{{- with $.Note }}
+     * {{ . }}
+    {{- end }}
+	 * Type: {{ $.FieldType }}
+	 */
+	{{ template "collection/interface/field/key" $ }}: {{ template "collection/interface/field/value" $ }};
+{{- end }}
+{{- end }}
+{{- /* "collection/interface/field" END */ -}}
+
+
+{{- /* "collection/interface/field/key" defines the key of a collection field. */ -}}
+{{- define "collection/interface/field/key" }}
+{{- if $.IsReadonly }}readonly {{ end -}}{{ $.Name }}{{ if not $.IsRequired }}?{{ end }}
+{{- end }}
+{{- /* "collection/interface/field/key" END */ -}}
+
+
+{{- /* "collection/interface/field/value" defines the value of a collection field. */ -}}
+{{- define "collection/interface/field/value" }}
+{{- if $.IsPrimaryKey }}
+    {{- $.Collection.PrimaryKey.TypeName }}
+{{- else }}
+    {{- $.Type }}{{ if $.IsNullable }} | null{{ end }}
+{{- end }}
+{{- end }}
+{{- /* "collection/interface/field/value" END */ -}}
+
+
+{{- /* "collection/relations" defines the collection relations interface. */ -}}
+{{ define "collection/relations" }}
+export interface {{ $.TypeName }} {
+    {{- range $.Values }}
+        {{- template "collection/relations/field" . }}
+    {{- end }}
+}
+{{ end }}
+{{- /* "collection/relations" END */ -}}
+
+
+{{- /* "collection/relations/field" defines a collection relations field. */ -}}
+{{- /* It must be executed with the Relation context. */ -}}
+{{- define "collection/relations/field" }}
+{{- if $.Unique }}
+	/**
+	 * NOTE
+	 * The related field of {@link {{ $.Collection.TypeName }}} is marked as unique.
+	 * The resulting array will contain only one element.
+	 */
+{{- end }}
+    {{ template "collection/interface/field/key" $.Field }}: {{ template "collection/relations/field/value" $ }};
+{{- end }}
+{{- /* "collection/relations" END */ -}}
+
+
+{{- /* "collection/relations/field/value" defines a collection relations field value. */ -}}
+{{- /* It must be executed with the Relation context. */ -}}
+{{- define "collection/relations/field/value" }}
+{{- $typ := printf "%s | %s" $.Collection.PrimaryKey.TypeName $.Collection.TypeName }}
+{{- if $.Many -}}
+    ({{- $typ }})[]
+{{- else -}}
+    {{- $typ }}
+{{- end }}
+{{- end }}
+{{- /* "collection/relations/field/value" END */ -}}
+
+
+{{- /* "collection/related_collections" defines the collection related collections interface. */ -}}
+{{ define "collection/related_collections" }}
+export interface {{ $.TypeName }} {
+    {{- range $.Values }}
+    {{ .Field.Name }}: {{ quote .Collection.Name }};
+    {{- end }}
+}
+{{ end }}
+{{- /* "collection/related_collections" END */ -}}
+
+
+{{- /* "collection/payload" defines a collection payload. */ -}}
+{{ define "collection/payload" }}
+{{ with $.Payload }}{{- /* skip if no payload */ -}}
+{{ template "collection/payload/interface" . }}
+{{ template "collection/payload/parse" . }}
+{{- end }}
+{{ end }}
+{{- /* "collection/payload" END */ -}}
+
+
+{{- define "collection/payload/interface" }}
+export interface {{ $.TypeName }} extends Omit<{{ $.Collection.TypeName }}, {{ unionType $.FieldNames true }}> {
+{{- range $.Fields }}
+    {{- template "collection/payload/interface/field" . }}
+{{- end }}
+}
+{{- end }}
+{{- /* "collection/payload/interface" END */ -}}
+
+
+{{- /* "collection/payload/field" defines a field for a collection payload. */ -}}
+{{- define "collection/payload/interface/field" }}
+    {{ template "collection/interface/field/key" . }}: {{ template "collection/interface/field/value" . }}
+{{- end }}
+{{- /* "collection/payload/interface/field" END */ -}}
+
+
+{{- define "collection/payload/parse" }}
+{{ template "collection/payload/parse/from" $ }}
+{{ template "collection/payload/parse/to" $ }}
+{{- end }}
+{{- /* "collection/payload/parse" END */ -}}
+
+
+{{- define "collection/payload/parse/from" }}
+/**
+ * parse{{ $.TypeName }} parses the given {@link {{ $.TypeName }}} payload.
+ * @param v The payload to parse.
+ * @returns The payload parsed to {@link {{ $.Collection.TypeName }}}.
+ */
+export function parse{{ $.TypeName }}(v: {{ $.TypeName }}): {{ $.Collection.TypeName }} {
+	const r = v as Record<keyof {{ $.Collection.TypeName }}, unknown>;
+    {{- range $.Fields }}
+	if (v.{{ .Name }}) {
+        r.{{ .Name }} =
+            {{- if .Assertable -}}
+                v.{{ .Name }} as {{ .Field.Type }};
+            {{- else }}{{- /* not assertable */ -}}
+    		    {{- .ParserTo }}(v.{{ .Name }});
+            {{- end }}
+	}
+	{{- end }}
+    return r as {{ $.Collection.TypeName }};
+}
+{{- end }}
+{{- /* "collection/payload/parse/from" END */ -}}
+
+
+{{- define "collection/payload/parse/to" }}
+/**
+ * parse{{ $.Collection.TypeName }} parses the given {@link {{ $.Collection.TypeName }}}.
+ * @param v The object to parse.
+ * @returns The payload {@link {{ $.TypeName }}}.
+ */
+export function parse{{ $.Collection.TypeName }}(v: {{ $.Collection.TypeName }}): {{ $.TypeName }} {
+	const r = v as Record<keyof {{ $.TypeName }}, unknown>;
+    {{- range $.Fields }}
+	if (v.{{ .Name }}) {
+        r.{{ .Name }} =
+            {{- if .Assertable -}}
+                v.{{ .Name }} as {{ .Type }};
+            {{- else }}{{- /* not assertable */ -}}
+    		    v.{{ .Name }}.{{- .ParserFrom }}();
+            {{- end }}
+	}
+	{{- end }}
+    return r as {{ $.TypeName }};
+}
+{{- end }}
+{{- /* "collection/payload/parse/to" END */ -}}

@@ -1,0 +1,38 @@
+{{- block "relations.ts" $ -}}
+{{- template "header/base" }}
+{{ template "import/relations" $.Collections }}
+{{ template "relations" $.Collections }}
+{{- end }}
+{{- /* "relations.ts" END */ -}}
+
+
+{{- /* "relations" */ -}}
+{{- define "relations" }}
+{{ template "relations/interface" $ }}
+{{ template "relations/related_collections" $ }}
+{{- end }}
+{{- /* "relations" END */ -}}
+
+
+{{- /* "relations/interface" defines the principal relations interface. */ -}}
+{{- /* It must be executed with []Collection context. */ -}}
+{{- define "relations/interface" }}
+export interface Relations {
+{{- range $ }}
+    {{ .Name }}: {{ .Relations.TypeName }}
+{{- end }}
+}
+{{- end }}
+{{- /* "relations/interface" END */ -}}
+
+
+{{- /* "relations/related_collections" defines the principal related collections interface. */ -}}
+{{- /* It must be executed with []Collection context. */ -}}
+{{- define "relations/related_collections" }}
+export interface RelatedCollections {
+{{- range $ }}
+    {{ .Name }}: {{ .RelatedCollections.TypeName }}
+{{- end }}
+}
+{{- end }}
+{{- /* "relations/related_collections" END */ -}}

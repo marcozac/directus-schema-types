@@ -1,0 +1,16 @@
+{{- block "index.ts" $ -}}
+{{- template "header/base" }}
+{{ template "index" $ }}
+{{- end }}
+{{- /* "index.ts" END */ -}}
+
+
+{{- define "index" }}
+{{- range $.Collections }}
+export * from {{ printf "./%s" .Name | quote }};
+{{- end }}
+
+export * from './schema';
+export * from './relations';
+{{- end }}
+{{- /* "index" END */ -}}

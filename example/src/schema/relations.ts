@@ -31,8 +31,6 @@ import { IngredientsRelations, IngredientsRelatedCollections } from './ingredien
 import { RecipesRelations, RecipesRelatedCollections } from './recipes';
 import { RecipesIngredientsRelations, RecipesIngredientsRelatedCollections } from './recipes_ingredients';
 
-// --- Relations ---
-
 export interface Relations {
     chefs: ChefsRelations;
     directus_access: DirectusAccessRelations;
@@ -65,8 +63,6 @@ export interface Relations {
     recipes: RecipesRelations;
     recipes_ingredients: RecipesIngredientsRelations;
 }
-
-// --- Related Collections ---
 
 export interface RelatedCollections {
     chefs: ChefsRelatedCollections;

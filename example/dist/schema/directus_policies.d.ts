@@ -1,34 +1,49 @@
-import { DirectusAccessPrimaryKey, DirectusAccess } from './directus_access';
-import { DirectusPermissionsPrimaryKey, DirectusPermissions } from './directus_permissions';
-export type DirectusPoliciesPrimaryKeyField = 'id';
+import { DirectusAccess, DirectusAccessPrimaryKey } from './directus_access';
+import { DirectusPermissions, DirectusPermissionsPrimaryKey } from './directus_permissions';
 export type DirectusPoliciesPrimaryKey = string;
+export type DirectusPoliciesPrimaryKeyField = 'id';
 export interface DirectusPolicies {
+    /**
+     * Type: boolean
+     */
     admin_access?: boolean;
+    /**
+     * Type: boolean
+     */
     app_access?: boolean;
+    /**
+     * Type: text
+     */
     description?: string | null;
+    /**
+     * $t:field_options.directus_policies.enforce_tfa
+     * Type: boolean
+     */
     enforce_tfa?: boolean;
+    /**
+     * Type: string
+     */
     icon?: string;
-    id?: string | null;
+    /**
+     * Type: uuid
+     */
+    id?: DirectusPoliciesPrimaryKey;
+    /**
+     * Type: csv
+     */
     ip_access?: any | null;
+    /**
+     * Type: string
+     */
     name: string;
 }
 export interface DirectusPoliciesRelations {
-    permissions: (DirectusPermissionsPrimaryKey | DirectusPermissions)[];
-    roles: (DirectusAccessPrimaryKey | DirectusAccess)[];
-    users: (DirectusAccessPrimaryKey | DirectusAccess)[];
+    permissions?: (DirectusPermissionsPrimaryKey | DirectusPermissions)[];
+    roles?: (DirectusAccessPrimaryKey | DirectusAccess)[];
+    users?: (DirectusAccessPrimaryKey | DirectusAccess)[];
 }
-/**
- * DirectusPoliciesRelatedCollections maps the {@link DirectusPoliciesRelations}
- * fields to the name of the related collection.
- */
 export interface DirectusPoliciesRelatedCollections {
     permissions: 'directus_permissions';
     roles: 'directus_access';
     users: 'directus_access';
 }
-export type DirectusPoliciesPayload = DirectusPolicies;
-/**
- * @param v The payload to parse.
- * @returns The payload as it is received: it is the same as the schema definition.
- */
-export declare function parseDirectusPoliciesPayload(v: DirectusPoliciesPayload): DirectusPolicies;

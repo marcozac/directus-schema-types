@@ -14,20 +14,33 @@ import (
 	"text/template"
 
 	"github.com/marcozac/directus-schema-types/directus"
+	"github.com/marcozac/directus-schema-types/graph"
+	"github.com/marcozac/directus-schema-types/util"
 )
 
 //go:embed template/*
 var tmplFS embed.FS
 
 // NewGenerator creates a new generator.
-func NewGenerator(s *directus.Schema, opts ...Option) *Generator {
+func NewGenerator() *Generator {
 	g := &Generator{
-		spec: SchemaToSpec(s),
 		tmpl: template.Must(template.New("").
 			Funcs(template.FuncMap{
-				"join": func(slice []string) string {
+				// dedupeRelationsImport returns a slice with the
+				// relations deduplicated by collection name.
+				"dedupeRelationsImport": func(rels []graph.Relation) []graph.Relation {
+					m := util.NewSortedMap[string, graph.Relation](len(rels))
+					for _, r := range rels {
+						m.Set(r.Collection().Name(), r)
+					}
+					return m.Values()
+				},
+
+				// join returns a string with the slice elements joined by a comma.
+				"join": func(slice ...string) string {
 					return strings.Join(slice, ", ")
 				},
+
 				// unionType returns a string with the union of the slice elements.
 				// If quote is true, the elements are (single) quoted.
 				"unionType": func(slice []string, quote bool) string {
@@ -38,123 +51,100 @@ func NewGenerator(s *directus.Schema, opts ...Option) *Generator {
 					}
 					return strings.Join(slice, "| ")
 				},
-				"parserOf": func(t TsType) string {
-					switch t {
-					case TsTypeDate:
-						return "new Date"
-					default:
-						panic(fmt.Sprintf("parserOf: unknown type %s", t))
-					}
+
+				// quote returns a string with the input (single) quoted.
+				"quote": func(s string) string {
+					return fmt.Sprintf("'%s'", s)
 				},
 			}).
 			ParseFS(tmplFS, "template/*.tmpl"),
 		),
-		options: &options{ // default options
-			formatOutput: true,
-			outDir:       filepath.Join("src", "_gen", "schema"),
-		},
-	}
-	for _, opt := range opts {
-		opt(g.options)
 	}
 	return g
 }
 
-type spec = Spec
-
 type Generator struct {
-	*spec
-	*options
 	tmpl *template.Template
 }
 
-func (g *Generator) Generate() error {
+func (gen *Generator) GenerateSchema(schema *directus.Schema, opts ...Option) error {
+	gr, err := graph.NewFromSchema(schema)
+	if err != nil {
+		return fmt.Errorf("create graph: %w", err)
+	}
+	return gen.GenerateGraph(gr, opts...)
+}
+
+func (gen *Generator) GenerateGraph(gr *graph.Graph, opts ...Option) error {
+	o := &options{ // default options
+		formatOutput: true,
+		outDir:       filepath.Join("src", "_gen", "schema"),
+	}
+	for _, opt := range opts {
+		opt(o)
+	}
 	switch {
-	case g.writer != nil:
-		return g.generateAll(g.writer)
-	case g.outFile != "":
-		return g.generateFile()
-	case g.outDir != "":
-		return g.generateDir()
+	case o.writer != nil:
+		return gen.generateAll(gr, o.writer, o.formatOutput)
+	case o.outFile != "":
+		return gen.generateFile(gr, o)
+	case o.outDir != "":
+		return gen.generateDir(gr, o)
 	}
 	return errors.New("no output specified")
 }
 
-func (g *Generator) generateFile() error {
-	_ = g.clean(g.outFile) // the method checks the clean option
-	if err := os.MkdirAll(filepath.Dir(g.outFile), 0o755); err != nil {
+func (gen *Generator) generateFile(gr *graph.Graph, o *options) error {
+	if o.clean {
+		_ = gen.clean(o.outFile)
+	}
+	if err := os.MkdirAll(filepath.Dir(o.outFile), 0o755); err != nil {
 		return fmt.Errorf("create directory: %w", err)
 	}
-	f, err := os.Create(g.outFile)
+	f, err := os.Create(o.outFile)
 	if err != nil {
 		return fmt.Errorf("create file: %w", err)
 	}
 	defer f.Close()
-	return g.generateAll(f)
+	return gen.generateAll(gr, f, o.formatOutput)
 }
 
-func (g *Generator) generateDir() error {
-	_ = g.clean(g.outDir) // the method checks the clean option
-	if err := os.MkdirAll(g.outDir, 0o755); err != nil {
+func (gen *Generator) generateDir(gr *graph.Graph, o *options) error {
+	if o.clean {
+		_ = gen.clean(o.outDir)
+	}
+	if err := os.MkdirAll(o.outDir, 0o755); err != nil {
 		return fmt.Errorf("create directory: %w", err)
 	}
-
-	schemaImports := make(ImportsSpec, len(g.spec.Collections))
-	relationsImports := make(ImportsSpec, len(g.spec.Collections))
-	for _, collection := range g.spec.Collections {
-		schemaImports[collection.Name] = []string{collection.TypeName()}
-		relationsImports[collection.Name] = []string{
-			collection.RelationsTypeName(),
-			collection.RelatedCollectionsTypeName(),
-		}
-	}
-
 	type E struct {
 		templateName string
 		file         string
 		data         any
 	}
-	entries := make([]E, 0, len(g.spec.Collections)+3)
+	cs := gr.Collections()
+	entries := make([]E, 0, len(cs)+3)
 	entries = append(entries,
 		E{
 			templateName: "schema.ts",
 			file:         "schema.ts",
-			data: Spec{
-				Collections: g.spec.Collections,
-				Imports:     schemaImports,
-			},
+			data:         gr,
 		},
 		E{
 			templateName: "relations.ts",
 			file:         "relations.ts",
-			data: Spec{
-				Collections: g.spec.Collections,
-				Imports:     relationsImports,
-			},
+			data:         gr,
 		},
 		E{
 			templateName: "index.ts",
 			file:         "index.ts",
-			data:         g,
+			data:         gr,
 		},
 	)
-	for _, collection := range g.spec.Collections {
-		if len(collection.Relations) > 0 {
-			collection.Imports = make(ImportsSpec, len(collection.Relations))
-			for _, rel := range collection.Relations {
-				if rel.RelatedCollection.Name == collection.Name {
-					continue // skip self-references
-				}
-				collection.Imports[rel.RelatedCollection.Name] = []string{
-					rel.RelatedCollection.PrimaryKey().TypeName(),
-					rel.RelatedCollection.TypeName(),
-				}
-			}
-		}
+	for _, c := range cs {
 		entries = append(entries, E{
 			templateName: "collection.ts",
-			file:         collection.Name + ".ts",
-			data:         collection,
+			file:         c.Name() + ".ts",
+			data:         c,
 		})
 	}
 
@@ -165,13 +155,13 @@ func (g *Generator) generateDir() error {
 	for _, e := range entries {
 		go func(e E) {
 			defer wg.Done()
-			f, err := os.Create(filepath.Join(g.outDir, e.file))
+			f, err := os.Create(filepath.Join(o.outDir, e.file))
 			if err != nil {
 				errs <- fmt.Errorf("create file %s: %w", e.file, err)
 				return
 			}
 			defer f.Close()
-			if err := g.execute(f, e.templateName, e.data); err != nil {
+			if err := gen.execute(f, e.templateName, e.data, o.formatOutput); err != nil {
 				errs <- fmt.Errorf("execute template for %s: %w", e.file, err)
 			}
 		}(e)
@@ -186,16 +176,16 @@ func (g *Generator) generateDir() error {
 	return err
 }
 
-func (g *Generator) generateAll(w io.Writer) error {
-	return g.execute(w, "all", g)
+func (gen *Generator) generateAll(gr *graph.Graph, w io.Writer, formatOutput bool) error {
+	return gen.execute(w, "all", gr, formatOutput)
 }
 
-func (g *Generator) execute(w io.Writer, name string, data any) error {
+func (gen *Generator) execute(w io.Writer, name string, data any, formatOutput bool) error {
 	buf := new(bytes.Buffer)
-	if err := g.tmpl.ExecuteTemplate(buf, name, data); err != nil {
+	if err := gen.tmpl.ExecuteTemplate(buf, name, data); err != nil {
 		return fmt.Errorf("execute template: %w", err)
 	}
-	if g.formatOutput {
+	if formatOutput {
 		cmd := exec.Command("npx", "--yes", "--", "prettier", "--stdin-filepath", "schema.ts")
 		cmd.Stdin = buf
 		cmd.Stdout = w
@@ -205,11 +195,8 @@ func (g *Generator) execute(w io.Writer, name string, data any) error {
 	return err
 }
 
-func (g *Generator) clean(path string) error {
-	if g.options.clean {
-		return os.RemoveAll(path)
-	}
-	return nil
+func (gen *Generator) clean(path string) error {
+	return os.RemoveAll(path)
 }
 
 type options struct {

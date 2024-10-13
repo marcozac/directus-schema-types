@@ -48,16 +48,17 @@ func generate() error {
 	}
 
 	// generate the schema types
+	generator := dst.NewGenerator()
 	for _, out := range []dst.Option{
 		dst.WithOutFile("src/schema.ts"), // write to a file
 		dst.WithOutDir("src/schema"),     // write to a directory
 	} {
-		g := dst.NewGenerator(schema,
+		err := generator.GenerateSchema(schema,
 			out,
 			dst.WithFormatOutput(true),
 			dst.WithClean(true),
 		)
-		if err := g.Generate(); err != nil {
+		if err != nil {
 			return fmt.Errorf("generate: %w", err)
 		}
 	}

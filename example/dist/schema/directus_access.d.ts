@@ -1,32 +1,37 @@
-import { DirectusPoliciesPrimaryKey, DirectusPolicies } from './directus_policies';
-import { DirectusRolesPrimaryKey, DirectusRoles } from './directus_roles';
-import { DirectusUsersPrimaryKey, DirectusUsers } from './directus_users';
-export type DirectusAccessPrimaryKeyField = 'id';
+import { DirectusPolicies, DirectusPoliciesPrimaryKey } from './directus_policies';
+import { DirectusRoles, DirectusRolesPrimaryKey } from './directus_roles';
+import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users';
 export type DirectusAccessPrimaryKey = string;
+export type DirectusAccessPrimaryKeyField = 'id';
 export interface DirectusAccess {
-    id?: string | null;
+    /**
+     * Type: uuid
+     */
+    id?: DirectusAccessPrimaryKey;
+    /**
+     * Type: string
+     */
     policy?: string;
+    /**
+     * Type: string
+     */
     role?: string | null;
+    /**
+     * Type: integer
+     */
     sort?: number | null;
+    /**
+     * Type: string
+     */
     user?: string | null;
 }
 export interface DirectusAccessRelations {
-    policy: DirectusPoliciesPrimaryKey | DirectusPolicies;
-    role: DirectusRolesPrimaryKey | DirectusRoles;
-    user: DirectusUsersPrimaryKey | DirectusUsers;
+    policy?: DirectusPoliciesPrimaryKey | DirectusPolicies;
+    role?: DirectusRolesPrimaryKey | DirectusRoles;
+    user?: DirectusUsersPrimaryKey | DirectusUsers;
 }
-/**
- * DirectusAccessRelatedCollections maps the {@link DirectusAccessRelations}
- * fields to the name of the related collection.
- */
 export interface DirectusAccessRelatedCollections {
     policy: 'directus_policies';
     role: 'directus_roles';
     user: 'directus_users';
 }
-export type DirectusAccessPayload = DirectusAccess;
-/**
- * @param v The payload to parse.
- * @returns The payload as it is received: it is the same as the schema definition.
- */
-export declare function parseDirectusAccessPayload(v: DirectusAccessPayload): DirectusAccess;
