@@ -1,4 +1,4 @@
-package main
+package cmdapi
 
 import (
 	"context"
@@ -52,7 +52,7 @@ func (suite *Suite) Test() {
 			name: "GenerateFile",
 			test: func() {
 				path := filepath.Join(tempDir, "schema.ts")
-				cmd := NewRootCmd()
+				cmd := NewDstCmd()
 				cmd.SetArgs([]string{
 					"generate",
 					"--file", path,
@@ -65,7 +65,7 @@ func (suite *Suite) Test() {
 			name: "GenerateDir",
 			test: func() {
 				path := filepath.Join(tempDir, "schema")
-				cmd := NewRootCmd()
+				cmd := NewDstCmd()
 				cmd.SetArgs([]string{
 					"generate",
 					"--dir", path,
@@ -78,7 +78,7 @@ func (suite *Suite) Test() {
 			name: "SnapshotPretty",
 			test: func() {
 				path := filepath.Join(tempDir, "snapshot-pretty.json")
-				cmd := NewRootCmd()
+				cmd := NewDstCmd()
 				cmd.SetArgs([]string{
 					"snapshot",
 					"--file", path,
@@ -95,7 +95,7 @@ func (suite *Suite) Test() {
 			test: func() {
 				suite.Require().NotEmpty(snapPath, "snapshot path")
 				path := filepath.Join(tempDir, "schema-from-snapshot.ts")
-				cmd := NewRootCmd()
+				cmd := NewDstCmd()
 				cmd.SetArgs([]string{
 					"generate",
 					"--file", path,
@@ -108,13 +108,12 @@ func (suite *Suite) Test() {
 		{
 			name: "GenerateWithOverrides",
 			test: func() {
-				const ov = `{"ingredients":{"external_inventory_id":{"kind":"external","def":"InventoryItem","importPath":"../external","parserFrom":"externalId","parserTo":"new InventoryItem"},"label_color":{"kind":"assertable","def":"'blue' | 'red'","importPath":"","parserFrom":"","parserTo":""},"shelf_position":{"kind":"enum","def":{"Shelf1":"1","Shelf2":"2","Shelf3":"3"},"importPath":"","parserFrom":"","parserTo":""},"status":{"kind":"enum","def":{"Available":"available","NotAvailable":"not_available","Restock":"restock"},"importPath":"","parserFrom":"","parserTo":""}}}`
 				path := filepath.Join(tempDir, "schema_overrides")
-				cmd := NewRootCmd()
+				cmd := NewDstCmd()
 				cmd.SetArgs([]string{
 					"generate",
 					"--dir", path,
-					"--overrides", ov,
+					"--overrides", overrideDef,
 				})
 				suite.Require().NoError(cmd.Execute(), "execute")
 				suite.Assert().DirExists(path, "dir exists")
@@ -124,3 +123,35 @@ func (suite *Suite) Test() {
 		suite.Run(tt.name, tt.test)
 	}
 }
+
+const overrideDef = `{
+  "ingredients": {
+    "external_inventory_id": {
+      "kind": "external",
+      "def": "InventoryItem",
+      "importPath": "../external",
+      "parserFrom": "externalId",
+      "parserTo": "new InventoryItem"
+    },
+    "label_color": {
+      "kind": "assertable",
+      "def": "'blue' | 'red'"
+    },
+    "shelf_position": {
+      "kind": "enum",
+      "def": {
+        "Shelf1": "1",
+        "Shelf2": "2",
+        "Shelf3": "3"
+      }
+    },
+    "status": {
+      "kind": "enum",
+      "def": {
+        "Available": "available",
+        "NotAvailable": "not_available",
+        "Restock": "restock"
+      }
+    }
+  }
+}`

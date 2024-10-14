@@ -1,4 +1,4 @@
-package main
+package cmdapi
 
 import (
 	"encoding/json"
@@ -37,16 +37,14 @@ instead, without connecting to the Directus instance.
 
 The output can be saved to a file or directory, or printed to the standard
 output.`,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			var schema *directus.Schema
-			var err error
 			if viper.IsSet(fromSnap) {
 				schema, err = directus.SchemaFromSnapshotFile(viper.GetString(fromSnap))
 			} else {
-				client := newClient(viper)
+				client := getClient(viper)
 				schema, err = client.GetSchema()
 			}
-
 			if err != nil {
 				return fmt.Errorf("schema: %w", err)
 			}

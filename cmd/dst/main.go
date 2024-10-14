@@ -1,5 +1,7 @@
 package main
 
+import "github.com/marcozac/directus-schema-types/internal/cmdapi"
+
 func main() {
-	_ = NewRootCmd().Execute()
+	_ = cmdapi.NewDstCmd().Execute()
 }

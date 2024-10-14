@@ -1,4 +1,4 @@
-package main
+package cmdapi
 
 import (
 	"fmt"
@@ -35,7 +35,7 @@ schema changes.`,
 				defer f.Close()
 				w = f
 			}
-			client := newClient(viper)
+			client := getClient(viper)
 			snap := client.Snapshot
 			if viper.GetBool(pretty) {
 				snap = client.SnapshotPretty

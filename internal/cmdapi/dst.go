@@ -1,21 +1,18 @@
-package main
+package cmdapi
 
 import (
 	"github.com/joho/godotenv"
+	dst "github.com/marcozac/directus-schema-types"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-
-	dst "github.com/marcozac/directus-schema-types"
 )
 
-const (
-	// --- [root] config keys ---
+func NewDstCmd() *cobra.Command {
+	const (
+		baseUrlKey = "base_url"
+		tokenKey   = "token"
+	)
 
-	baseUrlKey = "base_url"
-	tokenKey   = "token"
-)
-
-func NewRootCmd() *cobra.Command {
 	_ = godotenv.Load() // try to load .env file
 
 	viper := viper.New()
@@ -27,7 +24,7 @@ func NewRootCmd() *cobra.Command {
 		Use: "dst",
 	}
 
-	// --- [root] flags ---
+	// --- [dst] flags ---
 
 	cmd.PersistentFlags().
 		StringP("url", "u", "http://localhost:8055", "Directus base URL")
@@ -37,7 +34,13 @@ func NewRootCmd() *cobra.Command {
 		StringP("token", "t", "", "Directus admin token")
 	_ = viper.BindPFlag(tokenKey, cmd.PersistentFlags().Lookup("token"))
 
-	// --- [root] commands ---
+	// create and set client to share between commands
+	viper.Set("dst_client", dst.NewClient(dst.ClientOptions{
+		BaseURL: viper.GetString(baseUrlKey),
+		Token:   viper.GetString(tokenKey),
+	}))
+
+	// --- [dst] commands ---
 	cmd.AddCommand(
 		NewGenerateCmd(viper),
 		NewSnapshotCmd(viper),
@@ -45,11 +48,7 @@ func NewRootCmd() *cobra.Command {
 	return cmd
 }
 
-// newClient creates a client using the configuration from the environment
-// variables and command-line flags.
-func newClient(viper *viper.Viper) *dst.Client {
-	return dst.NewClient(dst.ClientOptions{
-		BaseURL: viper.GetString(baseUrlKey),
-		Token:   viper.GetString(tokenKey),
-	})
+// getClient returns the client from the viper instance.
+func getClient(viper *viper.Viper) *dst.Client {
+	return viper.Get("dst_client").(*dst.Client)
 }
