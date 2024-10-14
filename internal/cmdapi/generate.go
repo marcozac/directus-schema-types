@@ -3,6 +3,7 @@ package cmdapi
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -14,12 +15,13 @@ import (
 
 func NewGenerateCmd(viper *viper.Viper) *cobra.Command {
 	const (
-		file      = "gen_out_file"
-		dir       = "gen_out_dir"
-		fromSnap  = "gen_from_snapshot"
-		format    = "gen_format"
-		clean     = "gen_clean"
-		overrides = "gen_overrides"
+		file           = "gen_out_file"
+		dir            = "gen_out_dir"
+		fromSnap       = "gen_from_snapshot"
+		format         = "gen_format"
+		clean          = "gen_clean"
+		overrides      = "gen_overrides"
+		overrides_file = "gen_overrides_file"
 	)
 
 	cmd := &cobra.Command{
@@ -61,9 +63,18 @@ output.`,
 			default:
 				opts = append(opts, dst.WithWriter(cmd.OutOrStdout()))
 			}
-			if viper.IsSet(overrides) {
+			if viper.IsSet(overrides) || viper.IsSet(overrides_file) {
+				var data []byte
+				if viper.IsSet(overrides_file) {
+					data, err = os.ReadFile(viper.GetString(overrides_file))
+					if err != nil {
+						return fmt.Errorf("overrides file: %w", err)
+					}
+				} else {
+					data = []byte(viper.GetString(overrides))
+				}
 				var om graph.OverrideMap
-				if err := json.Unmarshal([]byte(viper.GetString(overrides)), &om); err != nil {
+				if err := json.Unmarshal(data, &om); err != nil {
 					return fmt.Errorf("overrides: %w", err)
 				}
 				opts = append(opts, dst.WithGraphOptions(graph.WithOverrides(om)))
@@ -95,6 +106,9 @@ output.`,
 
 	cmd.PersistentFlags().String("overrides", "", "a string containing a JSON object with the type overrides")
 	_ = viper.BindPFlag(overrides, cmd.PersistentFlags().Lookup("overrides"))
+
+	cmd.PersistentFlags().String("overrides-file", "", "a file containing a JSON object with the type overrides")
+	_ = viper.BindPFlag(overrides_file, cmd.PersistentFlags().Lookup("overrides-file"))
 
 	return cmd
 }

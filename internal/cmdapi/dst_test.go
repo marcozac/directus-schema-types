@@ -2,6 +2,7 @@ package cmdapi
 
 import (
 	"context"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -9,7 +10,12 @@ import (
 
 	"github.com/marcozac/directus-schema-types/internal/testutil"
 	"github.com/marcozac/directus-schema-types/internal/testutil/directest"
+
+	_ "embed"
 )
+
+//go:embed testdata/overrides.json
+var overrideDef string
 
 func TestSuite(t *testing.T) {
 	suite.Run(t, &Suite{})
@@ -51,42 +57,42 @@ func (suite *Suite) Test() {
 		{
 			name: "GenerateFile",
 			test: func() {
-				path := filepath.Join(tempDir, "schema.ts")
+				filePath := filepath.Join(tempDir, "schema.ts")
 				cmd := NewDstCmd()
 				cmd.SetArgs([]string{
 					"generate",
-					"--file", path,
+					"--file", filePath,
 				})
 				suite.Require().NoError(cmd.Execute(), "execute")
-				suite.Assert().FileExists(path, "file exists")
+				suite.Assert().FileExists(filePath, "file exists")
 			},
 		},
 		{
 			name: "GenerateDir",
 			test: func() {
-				path := filepath.Join(tempDir, "schema")
+				dir := filepath.Join(tempDir, "schema")
 				cmd := NewDstCmd()
 				cmd.SetArgs([]string{
 					"generate",
-					"--dir", path,
+					"--dir", dir,
 				})
 				suite.Require().NoError(cmd.Execute(), "execute")
-				suite.Assert().DirExists(path, "dir exists")
+				suite.Assert().DirExists(dir, "dir exists")
 			},
 		},
 		{
 			name: "SnapshotPretty",
 			test: func() {
-				path := filepath.Join(tempDir, "snapshot-pretty.json")
+				filePath := filepath.Join(tempDir, "snapshot-pretty.json")
 				cmd := NewDstCmd()
 				cmd.SetArgs([]string{
 					"snapshot",
-					"--file", path,
+					"--file", filePath,
 					"--pretty",
 				})
 				suite.Require().NoError(cmd.Execute(), "execute")
-				suite.Assert().FileExists(path, "file exists")
-				snapPath = path
+				suite.Assert().FileExists(filePath, "file exists")
+				snapPath = filePath
 			},
 		},
 		{
@@ -94,64 +100,63 @@ func (suite *Suite) Test() {
 			name: "GenerateFromSnapshot",
 			test: func() {
 				suite.Require().NotEmpty(snapPath, "snapshot path")
-				path := filepath.Join(tempDir, "schema-from-snapshot.ts")
+				filePath := filepath.Join(tempDir, "schema-from-snapshot.ts")
 				cmd := NewDstCmd()
 				cmd.SetArgs([]string{
 					"generate",
-					"--file", path,
+					"--file", filePath,
 					"--from-snapshot", snapPath,
 				})
 				suite.Require().NoError(cmd.Execute(), "execute")
-				suite.Assert().FileExists(path, "file exists")
+				suite.Assert().FileExists(filePath, "file exists")
 			},
 		},
 		{
 			name: "GenerateWithOverrides",
 			test: func() {
-				path := filepath.Join(tempDir, "schema_overrides")
+				dir := filepath.Join(tempDir, "schema_overrides")
 				cmd := NewDstCmd()
 				cmd.SetArgs([]string{
 					"generate",
-					"--dir", path,
+					"--dir", dir,
 					"--overrides", overrideDef,
 				})
 				suite.Require().NoError(cmd.Execute(), "execute")
-				suite.Assert().DirExists(path, "dir exists")
+				suite.Assert().DirExists(dir, "dir exists")
+			},
+		},
+		{
+			name: "GenerateWithOverridesFile",
+			test: func() {
+				filePath := filepath.Join(tempDir, "overrides.json")
+				suite.Require().NoError(os.WriteFile(filePath, []byte(overrideDef), 0o644), "write overrides.json")
+				dir := filepath.Join(tempDir, "schema_overrides_file")
+				cmd := NewDstCmd()
+				cmd.SetArgs([]string{
+					"generate",
+					"--dir", dir,
+					"--overrides-file", filePath,
+				})
+				suite.Require().NoError(cmd.Execute(), "execute")
+				suite.Assert().DirExists(dir, "dir exists")
+			},
+		},
+		{
+			name: "GenerateWithOverridesFileError",
+			test: func() {
+				cmd := NewDstCmd()
+				cmd.SilenceUsage = true // don't print usage on error
+				dir := filepath.Join(tempDir, "schema_overrides_file_error")
+				cmd.SetArgs([]string{
+					"generate",
+					"--dir", tempDir,
+					"--overrides-file", "notfound.json",
+				})
+				suite.Require().Error(cmd.Execute(), "execute")
+				suite.Assert().NoDirExists(dir, "dir does not exist")
 			},
 		},
 	} {
 		suite.Run(tt.name, tt.test)
 	}
 }
-
-const overrideDef = `{
-  "ingredients": {
-    "external_inventory_id": {
-      "kind": "external",
-      "def": "InventoryItem",
-      "importPath": "../external",
-      "parserFrom": "externalId",
-      "parserTo": "new InventoryItem"
-    },
-    "label_color": {
-      "kind": "assertable",
-      "def": "'blue' | 'red'"
-    },
-    "shelf_position": {
-      "kind": "enum",
-      "def": {
-        "Shelf1": "1",
-        "Shelf2": "2",
-        "Shelf3": "3"
-      }
-    },
-    "status": {
-      "kind": "enum",
-      "def": {
-        "Available": "available",
-        "NotAvailable": "not_available",
-        "Restock": "restock"
-      }
-    }
-  }
-}`

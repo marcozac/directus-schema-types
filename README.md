@@ -160,6 +160,12 @@ For the `external` kind, the following properties are also required:
 -   `parserTo`: a function or constructor with one argument, accepting the
     original type and returning the external one.
 
+They can be set using:
+
+-   the `--overrides` flag with the string representation of
+    the JSON object
+-   or `--overrides-file` with the path to a JSON file.
+
 For example, overriding the `status`, `label_color` and `external_inventory_id`
 fields in the `ingredients` with:
 
