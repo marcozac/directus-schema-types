@@ -126,7 +126,7 @@ func (gen *Generator) generateGraph(gr *graph.Graph, o *options) error {
 func (gen *Generator) defaultOptions() *options {
 	return &options{
 		formatOutput: true,
-		outDir:       filepath.Join("src", "_gen", "schema"),
+		// outDir:       filepath.Join("src", "_gen", "schema"),
 	}
 }
 

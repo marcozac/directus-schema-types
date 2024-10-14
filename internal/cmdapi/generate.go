@@ -25,15 +25,16 @@ func NewGenerateCmd(viper *viper.Viper) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "generate",
 		Short: "Generates Typescript types from the Directus schema",
-		Long: `
-Generates Typescript types from the Directus schema including all collections,
+		Long: `Generates Typescript types from the Directus schema including all collections,
 fields, and relations.
 
 By default, reads the schema from the Directus instance, using the provided
-base URL and admin token. It is also possible to set the DIRECTUS_BASE_URL and
-DIRECTUS_TOKEN env variables, but their values are overridden by the flags.
-If the --from-snapshot flag is set, reads the schema from a snapshot file
-instead, without connecting to the Directus instance.
+base URL and admin token. If the --from-snapshot flag is set, reads the schema
+from a snapshot file instead, without connecting the Directus server.
+
+By default, the output is formatted using prettier and printed to the standard
+output. Setting the --file or --dir flags, the output can be saved to a file or
+multiple files in a directory.
 
 The output can be saved to a file or directory, or printed to the standard
 output.`,
@@ -77,22 +78,22 @@ output.`,
 
 	// --- [generate] flags ---
 
-	cmd.PersistentFlags().StringP("file", "f", "", "output file")
+	cmd.PersistentFlags().StringP("file", "f", "", "file path where to save the generated types")
 	_ = viper.BindPFlag(file, cmd.PersistentFlags().Lookup("file"))
 
-	cmd.PersistentFlags().StringP("dir", "d", "", "output directory")
+	cmd.PersistentFlags().StringP("dir", "d", "", "directory path where to generate the files")
 	_ = viper.BindPFlag(dir, cmd.PersistentFlags().Lookup("dir"))
 
-	cmd.PersistentFlags().String("from-snapshot", "", "use a snapshot file as schema source")
+	cmd.PersistentFlags().String("from-snapshot", "", "path to a snapshot file to read the schema from")
 	_ = viper.BindPFlag(fromSnap, cmd.PersistentFlags().Lookup("from-snapshot"))
 
-	cmd.PersistentFlags().Bool("format", true, "format the output")
+	cmd.PersistentFlags().Bool("format", true, "enable output formatting with prettier")
 	_ = viper.BindPFlag(format, cmd.PersistentFlags().Lookup("format"))
 
 	cmd.PersistentFlags().Bool("clean", false, "clean the output file or directory before generating")
 	_ = viper.BindPFlag(clean, cmd.PersistentFlags().Lookup("clean"))
 
-	cmd.PersistentFlags().String("overrides", "", "a JSON object with the fields to override")
+	cmd.PersistentFlags().String("overrides", "", "a string containing a JSON object with the type overrides")
 	_ = viper.BindPFlag(overrides, cmd.PersistentFlags().Lookup("overrides"))
 
 	return cmd
