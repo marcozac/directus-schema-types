@@ -1,4 +1,4 @@
-package main
+package cmdapi
 
 import (
 	"fmt"
@@ -35,7 +35,7 @@ schema changes.`,
 				defer f.Close()
 				w = f
 			}
-			client := newClient(viper)
+			client := getClient(viper)
 			snap := client.Snapshot
 			if viper.GetBool(pretty) {
 				snap = client.SnapshotPretty
@@ -46,10 +46,10 @@ schema changes.`,
 
 	// --- [snapshot] flags ---
 
-	cmd.PersistentFlags().StringP("file", "f", "", "output file")
+	cmd.PersistentFlags().StringP("file", "f", "", "the file path where to save the snapshot")
 	_ = viper.BindPFlag(file, cmd.PersistentFlags().Lookup("file"))
 
-	cmd.PersistentFlags().Bool("pretty", false, "pretty-print the output")
+	cmd.PersistentFlags().Bool("pretty", false, "enable pretty printing of the snapshot")
 	_ = viper.BindPFlag(pretty, cmd.PersistentFlags().Lookup("pretty"))
 
 	return cmd

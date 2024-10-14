@@ -6,12 +6,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
 
 	"github.com/marcozac/directus-schema-types/directus"
+	"github.com/marcozac/directus-schema-types/graph"
 	"github.com/marcozac/directus-schema-types/internal/testutil"
 	"github.com/marcozac/directus-schema-types/internal/testutil/directest"
 	"github.com/marcozac/directus-schema-types/internal/testutil/node"
@@ -162,33 +164,101 @@ func (suite *Suite) TestGenerator() {
 	defer cancel()
 
 	// get the schema
-	s, err := suite.client.GetSchema()
+	schema, err := suite.client.GetSchema()
 	suite.Require().NoError(err, "GetSchema")
 
+	generator := NewGenerator()
 	for _, tt := range []struct {
-		name    string
-		options []Option
+		name string
+		test func()
 	}{
 		{
-			name:    "WithWriter",
-			options: []Option{WithWriter(io.Discard)},
+			name: "WithWriter",
+			test: func() {
+				err := generator.GenerateSchema(schema, WithWriter(io.Discard))
+				suite.Require().NoError(err)
+			},
 		},
 		{
-			name:    "WithOutFile",
-			options: []Option{WithOutFile(filepath.Join(suite.pkg.Dir, "schema.ts"))},
+			name: "WithOutFile",
+			test: func() {
+				err := generator.GenerateSchema(schema,
+					WithOutFile(filepath.Join(suite.pkg.Dir, "schema.ts")),
+					WithFormatOutput(false), // very slower when enabled
+				)
+				suite.Require().NoError(err)
+			},
 		},
 		{
 			name: "WithOutDir",
-			options: []Option{
-				WithOutDir(filepath.Join(suite.pkg.Dir, "schema")),
-				WithFormatOutput(false), // very slower when enabled
+			test: func() {
+				dir := filepath.Join(suite.pkg.Dir, "schema")
+				// test also the clean option
+				suite.Require().NoError(os.MkdirAll(dir, 0o755), "MkdirAll")
+				f, err := os.CreateTemp(dir, "example-*.txt")
+				suite.Require().NoError(err, "CreateTemp")
+				f.Close()
+				suite.Assert().FileExists(f.Name(), "example.txt exists") // check the file exists
+				err = generator.GenerateSchema(schema,
+					WithOutDir(dir),
+					WithFormatOutput(false), // very slower when enabled
+					WithClean(true),
+				)
+				suite.Require().NoError(err, "GenerateSchema")
+				suite.Assert().NoFileExists(f.Name(), "example.txt removed cleaning the out dir")
+			},
+		},
+		{
+			name: "WithOverrides",
+			test: func() {
+				err := os.WriteFile( // write external.ts to import the external overrides
+					filepath.Join(suite.pkg.Dir, "external.ts"),
+					[]byte(`export class InventoryItem { constructor(private external_id: string) {}; externalId() { return this.external_id; }}`),
+					0o644,
+				)
+				suite.Require().NoError(err, "Write external.ts")
+				err = generator.GenerateSchema(schema,
+					WithOutDir(filepath.Join(suite.pkg.Dir, "schema_overrides")),
+					WithFormatOutput(false), // very slower when enabled
+					WithGraphOptions(graph.WithOverrides(
+						graph.OverrideMap{
+							"ingredients": {
+								"status": {
+									Kind: graph.FieldOverrideKindEnum,
+									Def: map[string]string{
+										"Available":    "available",
+										"NotAvailable": "not_available",
+										"Restock":      "restock",
+									},
+								},
+								"external_inventory_id": {
+									Kind:       graph.FieldOverrideExternal,
+									Def:        "InventoryItem",
+									ImportPath: "../external",
+									ParserFrom: "externalId",
+									ParserTo:   "new InventoryItem",
+								},
+								"label_color": {
+									Kind: graph.FieldOverrideKindAssertable,
+									Def:  `'blue' | 'red'`,
+								},
+								"shelf_position": {
+									Kind: graph.FieldOverrideKindEnum,
+									Def: map[string]string{
+										"Shelf1": "1",
+										"Shelf2": "2",
+										"Shelf3": "3",
+									},
+								},
+							},
+						},
+					)),
+				)
+				suite.Require().NoError(err)
 			},
 		},
 	} {
-		suite.Run(tt.name, func() {
-			generator := NewGenerator(s, tt.options...)
-			suite.Require().NoError(generator.Generate(), "generate")
-		})
+		suite.Run(tt.name, tt.test)
 	}
 
 	// run the typecheck script

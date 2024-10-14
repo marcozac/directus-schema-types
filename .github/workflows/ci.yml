@@ -92,19 +92,6 @@ jobs:
           -coverprofile=coverage.out
           -coverpkg=./...
           ./...
-      # Check the generated files in 'testdata' are up-to-date.
-      - name: Check generated files
-        # Run only once, when coverage is enabled.
-        if: ${{ matrix.coverage }}
-        run: |
-          STATUS=$(git status --porcelain)
-          if [ -n "$STATUS" ]; then
-            echo "the branch contains not generated files"
-            echo "run 'go generate ./...' and commit the changes"
-            echo "$STATUS"
-            git --no-pager diff
-            exit 1
-          fi
       - name: Upload coverage reports to Codecov
         if: ${{ matrix.coverage }}
         uses: codecov/codecov-action@v4

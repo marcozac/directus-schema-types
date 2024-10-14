@@ -27,5 +27,5 @@ type Payload[T PayloadData] struct {
 // It includes also the json.RawMessage type to allow for custom
 // decoding of unknown types.
 type PayloadData interface {
-	[]Collection | []Field | []Relation | json.RawMessage
+	[]Collection | []Field | []Relation | json.RawMessage | map[string]any
 }

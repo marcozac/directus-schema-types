@@ -1,3 +1,4 @@
 ignore:
   - 'internal/testutil' # ignore test utilities
+  - 'internal/cmd/doc' # ignore doc generator
   - 'example' # ignore examples

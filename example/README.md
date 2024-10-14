@@ -31,8 +31,8 @@ if err != nil {
     return fmt.Errorf("client.GetSchema: %w", err)
 }
 
-g := dst.NewGenerator(schema, dst.WithOutFile("src/schema.ts"))
-err := g.Generate()
+g := dst.NewGenerator()
+err = g.GenerateSchema(schema, dst.WithOutFile("src/schema.ts"))
 if err != nil {
     // ...
 }
@@ -51,8 +51,8 @@ dst generate --dir src/schema
 Or with the Go package:
 
 ```go
-g := dst.NewGenerator(schema, dst.WithOutDir("src/schema"))
-err := g.Generate()
+g := dst.NewGenerator()
+err = g.GenerateSchema(schema, dst.WithOutDir("src/schema"))
 if err != nil {
     // ...
 }

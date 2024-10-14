@@ -1,7 +1,4 @@
 {
-  "version": 1,
-  "directus": "${DIRECTUS_VERSION:-11.1.0}",
-  "vendor": "${DIRECTUS_DB_VENDOR:-sqlite}",
   "collections": [
     {
       "collection": "chefs",
@@ -27,7 +24,9 @@
         "unarchive_value": null,
         "versioning": false
       },
-      "schema": { "name": "chefs" }
+      "schema": {
+        "name": "chefs"
+      }
     },
     {
       "collection": "ingredients",
@@ -53,7 +52,9 @@
         "unarchive_value": null,
         "versioning": false
       },
-      "schema": { "name": "ingredients" }
+      "schema": {
+        "name": "ingredients"
+      }
     },
     {
       "collection": "recipes",
@@ -79,7 +80,9 @@
         "unarchive_value": null,
         "versioning": false
       },
-      "schema": { "name": "recipes" }
+      "schema": {
+        "name": "recipes"
+      }
     },
     {
       "collection": "recipes_ingredients",
@@ -105,14 +108,16 @@
         "unarchive_value": null,
         "versioning": false
       },
-      "schema": { "name": "recipes_ingredients" }
+      "schema": {
+        "name": "recipes_ingredients"
+      }
     }
   ],
+  "directus": "${DIRECTUS_VERSION:-11.1.0}",
   "fields": [
     {
       "collection": "chefs",
       "field": "id",
-      "type": "integer",
       "meta": {
         "collection": "chefs",
         "conditions": null,
@@ -134,27 +139,27 @@
         "width": "full"
       },
       "schema": {
-        "name": "id",
-        "table": "chefs",
         "data_type": "integer",
         "default_value": null,
-        "max_length": null,
-        "numeric_precision": null,
-        "numeric_scale": null,
-        "is_nullable": false,
-        "is_unique": false,
-        "is_primary_key": true,
-        "is_generated": false,
+        "foreign_key_column": null,
+        "foreign_key_table": null,
         "generation_expression": null,
         "has_auto_increment": true,
-        "foreign_key_table": null,
-        "foreign_key_column": null
-      }
+        "is_generated": false,
+        "is_nullable": false,
+        "is_primary_key": true,
+        "is_unique": false,
+        "max_length": null,
+        "name": "id",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "chefs"
+      },
+      "type": "integer"
     },
     {
       "collection": "chefs",
       "field": "signature_dish",
-      "type": "integer",
       "meta": {
         "collection": "chefs",
         "conditions": null,
@@ -169,34 +174,36 @@
         "readonly": false,
         "required": false,
         "sort": 2,
-        "special": ["m2o"],
+        "special": [
+          "m2o"
+        ],
         "translations": null,
         "validation": null,
         "validation_message": null,
         "width": "full"
       },
       "schema": {
-        "name": "signature_dish",
-        "table": "chefs",
         "data_type": "integer",
         "default_value": null,
-        "max_length": null,
-        "numeric_precision": null,
-        "numeric_scale": null,
-        "is_nullable": true,
-        "is_unique": true,
-        "is_primary_key": false,
-        "is_generated": false,
+        "foreign_key_column": "id",
+        "foreign_key_table": "recipes",
         "generation_expression": null,
         "has_auto_increment": false,
-        "foreign_key_table": "recipes",
-        "foreign_key_column": "id"
-      }
+        "is_generated": false,
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": true,
+        "max_length": null,
+        "name": "signature_dish",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "chefs"
+      },
+      "type": "integer"
     },
     {
       "collection": "ingredients",
       "field": "id",
-      "type": "integer",
       "meta": {
         "collection": "ingredients",
         "conditions": null,
@@ -218,27 +225,27 @@
         "width": "full"
       },
       "schema": {
-        "name": "id",
-        "table": "ingredients",
         "data_type": "integer",
         "default_value": null,
-        "max_length": null,
-        "numeric_precision": null,
-        "numeric_scale": null,
-        "is_nullable": false,
-        "is_unique": false,
-        "is_primary_key": true,
-        "is_generated": false,
+        "foreign_key_column": null,
+        "foreign_key_table": null,
         "generation_expression": null,
         "has_auto_increment": true,
-        "foreign_key_table": null,
-        "foreign_key_column": null
-      }
+        "is_generated": false,
+        "is_nullable": false,
+        "is_primary_key": true,
+        "is_unique": false,
+        "max_length": null,
+        "name": "id",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "ingredients"
+      },
+      "type": "integer"
     },
     {
       "collection": "ingredients",
       "field": "user_created",
-      "type": "string",
       "meta": {
         "collection": "ingredients",
         "conditions": null,
@@ -250,44 +257,48 @@
         "interface": "select-dropdown-m2o",
         "note": null,
         "options": {
-          "template": "{{avatar.$thumbnail}} {{first_name}} {{last_name}}"
+          "template": "{{avatar.}} {{first_name}} {{last_name}}"
         },
         "readonly": true,
         "required": false,
         "sort": 2,
-        "special": ["user-created"],
+        "special": [
+          "user-created"
+        ],
         "translations": null,
         "validation": null,
         "validation_message": null,
         "width": "half"
       },
       "schema": {
-        "name": "user_created",
-        "table": "ingredients",
         "data_type": "char",
         "default_value": null,
-        "max_length": 36,
-        "numeric_precision": null,
-        "numeric_scale": null,
-        "is_nullable": true,
-        "is_unique": false,
-        "is_primary_key": false,
-        "is_generated": false,
+        "foreign_key_column": "id",
+        "foreign_key_table": "directus_users",
         "generation_expression": null,
         "has_auto_increment": false,
-        "foreign_key_table": "directus_users",
-        "foreign_key_column": "id"
-      }
+        "is_generated": false,
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": false,
+        "max_length": 36,
+        "name": "user_created",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "ingredients"
+      },
+      "type": "string"
     },
     {
       "collection": "ingredients",
       "field": "date_created",
-      "type": "timestamp",
       "meta": {
         "collection": "ingredients",
         "conditions": null,
         "display": "datetime",
-        "display_options": { "relative": true },
+        "display_options": {
+          "relative": true
+        },
         "field": "date_created",
         "group": null,
         "hidden": true,
@@ -297,34 +308,37 @@
         "readonly": true,
         "required": false,
         "sort": 3,
-        "special": ["cast-timestamp", "date-created"],
+        "special": [
+          "cast-timestamp",
+          "date-created"
+        ],
         "translations": null,
         "validation": null,
         "validation_message": null,
         "width": "half"
       },
       "schema": {
-        "name": "date_created",
-        "table": "ingredients",
         "data_type": "datetime",
         "default_value": null,
-        "max_length": null,
-        "numeric_precision": null,
-        "numeric_scale": null,
-        "is_nullable": true,
-        "is_unique": false,
-        "is_primary_key": false,
-        "is_generated": false,
+        "foreign_key_column": null,
+        "foreign_key_table": null,
         "generation_expression": null,
         "has_auto_increment": false,
-        "foreign_key_table": null,
-        "foreign_key_column": null
-      }
+        "is_generated": false,
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": false,
+        "max_length": null,
+        "name": "date_created",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "ingredients"
+      },
+      "type": "timestamp"
     },
     {
       "collection": "ingredients",
       "field": "user_updated",
-      "type": "string",
       "meta": {
         "collection": "ingredients",
         "conditions": null,
@@ -336,44 +350,48 @@
         "interface": "select-dropdown-m2o",
         "note": null,
         "options": {
-          "template": "{{avatar.$thumbnail}} {{first_name}} {{last_name}}"
+          "template": "{{avatar.}} {{first_name}} {{last_name}}"
         },
         "readonly": true,
         "required": false,
         "sort": 4,
-        "special": ["user-updated"],
+        "special": [
+          "user-updated"
+        ],
         "translations": null,
         "validation": null,
         "validation_message": null,
         "width": "half"
       },
       "schema": {
-        "name": "user_updated",
-        "table": "ingredients",
         "data_type": "char",
         "default_value": null,
-        "max_length": 36,
-        "numeric_precision": null,
-        "numeric_scale": null,
-        "is_nullable": true,
-        "is_unique": false,
-        "is_primary_key": false,
-        "is_generated": false,
+        "foreign_key_column": "id",
+        "foreign_key_table": "directus_users",
         "generation_expression": null,
         "has_auto_increment": false,
-        "foreign_key_table": "directus_users",
-        "foreign_key_column": "id"
-      }
+        "is_generated": false,
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": false,
+        "max_length": 36,
+        "name": "user_updated",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "ingredients"
+      },
+      "type": "string"
     },
     {
       "collection": "ingredients",
       "field": "date_updated",
-      "type": "timestamp",
       "meta": {
         "collection": "ingredients",
         "conditions": null,
         "display": "datetime",
-        "display_options": { "relative": true },
+        "display_options": {
+          "relative": true
+        },
         "field": "date_updated",
         "group": null,
         "hidden": true,
@@ -383,34 +401,37 @@
         "readonly": true,
         "required": false,
         "sort": 5,
-        "special": ["cast-timestamp", "date-updated"],
+        "special": [
+          "cast-timestamp",
+          "date-updated"
+        ],
         "translations": null,
         "validation": null,
         "validation_message": null,
         "width": "half"
       },
       "schema": {
-        "name": "date_updated",
-        "table": "ingredients",
         "data_type": "datetime",
         "default_value": null,
-        "max_length": null,
-        "numeric_precision": null,
-        "numeric_scale": null,
-        "is_nullable": true,
-        "is_unique": false,
-        "is_primary_key": false,
-        "is_generated": false,
+        "foreign_key_column": null,
+        "foreign_key_table": null,
         "generation_expression": null,
         "has_auto_increment": false,
-        "foreign_key_table": null,
-        "foreign_key_column": null
-      }
+        "is_generated": false,
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": false,
+        "max_length": null,
+        "name": "date_updated",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "ingredients"
+      },
+      "type": "timestamp"
     },
     {
       "collection": "ingredients",
       "field": "name",
-      "type": "string",
       "meta": {
         "collection": "ingredients",
         "conditions": null,
@@ -432,27 +453,27 @@
         "width": "full"
       },
       "schema": {
-        "name": "name",
-        "table": "ingredients",
         "data_type": "varchar",
         "default_value": null,
-        "max_length": 255,
-        "numeric_precision": null,
-        "numeric_scale": null,
-        "is_nullable": true,
-        "is_unique": true,
-        "is_primary_key": false,
-        "is_generated": false,
+        "foreign_key_column": null,
+        "foreign_key_table": null,
         "generation_expression": null,
         "has_auto_increment": false,
-        "foreign_key_table": null,
-        "foreign_key_column": null
-      }
+        "is_generated": false,
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": true,
+        "max_length": 255,
+        "name": "name",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "ingredients"
+      },
+      "type": "string"
     },
     {
       "collection": "ingredients",
       "field": "recipes",
-      "type": "alias",
       "meta": {
         "collection": "ingredients",
         "conditions": null,
@@ -467,17 +488,19 @@
         "readonly": false,
         "required": false,
         "sort": 7,
-        "special": ["m2m"],
+        "special": [
+          "m2m"
+        ],
         "translations": null,
         "validation": null,
         "validation_message": null,
         "width": "full"
-      }
+      },
+      "type": "alias"
     },
     {
       "collection": "ingredients",
       "field": "description_short",
-      "type": "string",
       "meta": {
         "collection": "ingredients",
         "conditions": null,
@@ -491,7 +514,7 @@
         "options": null,
         "readonly": false,
         "required": true,
-        "sort": 7,
+        "sort": 9,
         "special": null,
         "translations": null,
         "validation": null,
@@ -499,27 +522,27 @@
         "width": "full"
       },
       "schema": {
-        "name": "description_short",
-        "table": "ingredients",
         "data_type": "varchar",
         "default_value": null,
-        "max_length": 255,
-        "numeric_precision": null,
-        "numeric_scale": null,
-        "is_nullable": true,
-        "is_unique": false,
-        "is_primary_key": false,
-        "is_generated": false,
+        "foreign_key_column": null,
+        "foreign_key_table": null,
         "generation_expression": null,
         "has_auto_increment": false,
-        "foreign_key_table": null,
-        "foreign_key_column": null
-      }
+        "is_generated": false,
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": false,
+        "max_length": 255,
+        "name": "description_short",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "ingredients"
+      },
+      "type": "string"
     },
     {
       "collection": "ingredients",
       "field": "description_long",
-      "type": "string",
       "meta": {
         "collection": "ingredients",
         "conditions": null,
@@ -533,7 +556,7 @@
         "options": null,
         "readonly": false,
         "required": true,
-        "sort": 8,
+        "sort": 10,
         "special": null,
         "translations": null,
         "validation": null,
@@ -541,27 +564,239 @@
         "width": "full"
       },
       "schema": {
-        "name": "description_long",
-        "table": "ingredients",
         "data_type": "varchar",
         "default_value": null,
-        "max_length": 255,
-        "numeric_precision": null,
-        "numeric_scale": null,
-        "is_nullable": true,
-        "is_unique": false,
-        "is_primary_key": false,
-        "is_generated": false,
+        "foreign_key_column": null,
+        "foreign_key_table": null,
         "generation_expression": null,
         "has_auto_increment": false,
+        "is_generated": false,
+        "is_nullable": false,
+        "is_primary_key": false,
+        "is_unique": false,
+        "max_length": 255,
+        "name": "description_long",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "ingredients"
+      },
+      "type": "string"
+    },
+    {
+      "collection": "ingredients",
+      "field": "status",
+      "meta": {
+        "collection": "ingredients",
+        "conditions": null,
+        "display": null,
+        "display_options": null,
+        "field": "status",
+        "group": null,
+        "hidden": false,
+        "interface": "select-dropdown",
+        "note": "This is the current availability of the ingredient",
+        "options": {
+          "choices": [
+            {
+              "text": "Available",
+              "value": "available"
+            },
+            {
+              "text": "Not Available",
+              "value": "not_available"
+            },
+            {
+              "text": "Restock",
+              "value": "restock"
+            }
+          ]
+        },
+        "readonly": false,
+        "required": false,
+        "sort": 11,
+        "special": null,
+        "translations": null,
+        "validation": null,
+        "validation_message": null,
+        "width": "full"
+      },
+      "schema": {
+        "data_type": "varchar",
+        "default_value": null,
+        "foreign_key_column": null,
         "foreign_key_table": null,
-        "foreign_key_column": null
-      }
+        "generation_expression": null,
+        "has_auto_increment": false,
+        "is_generated": false,
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": false,
+        "max_length": 255,
+        "name": "status",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "ingredients"
+      },
+      "type": "string"
+    },
+    {
+      "collection": "ingredients",
+      "field": "shelf_position",
+      "meta": {
+        "collection": "ingredients",
+        "conditions": null,
+        "display": null,
+        "display_options": null,
+        "field": "shelf_position",
+        "group": null,
+        "hidden": false,
+        "interface": "select-dropdown",
+        "note": "This is the (numbered) shelf position",
+        "options": {
+          "choices": [
+            {
+              "text": "Shelf 1",
+              "value": 1
+            },
+            {
+              "text": "Shelf 2",
+              "value": 2
+            },
+            {
+              "text": "Shelf 3",
+              "value": 3
+            }
+          ]
+        },
+        "readonly": false,
+        "required": false,
+        "sort": 12,
+        "special": null,
+        "translations": null,
+        "validation": null,
+        "validation_message": null,
+        "width": "full"
+      },
+      "schema": {
+        "data_type": "integer",
+        "default_value": null,
+        "foreign_key_column": null,
+        "foreign_key_table": null,
+        "generation_expression": null,
+        "has_auto_increment": false,
+        "is_generated": false,
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": false,
+        "max_length": null,
+        "name": "shelf_position",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "ingredients"
+      },
+      "type": "integer"
+    },
+    {
+      "collection": "ingredients",
+      "field": "external_inventory_id",
+      "meta": {
+        "collection": "ingredients",
+        "conditions": null,
+        "display": null,
+        "display_options": null,
+        "field": "external_inventory_id",
+        "group": null,
+        "hidden": false,
+        "interface": "input",
+        "note": null,
+        "options": {
+          "choices": null,
+          "placeholder": "This is the id in the external inventory"
+        },
+        "readonly": false,
+        "required": false,
+        "sort": 13,
+        "special": null,
+        "translations": null,
+        "validation": null,
+        "validation_message": null,
+        "width": "full"
+      },
+      "schema": {
+        "data_type": "varchar",
+        "default_value": null,
+        "foreign_key_column": null,
+        "foreign_key_table": null,
+        "generation_expression": null,
+        "has_auto_increment": false,
+        "is_generated": false,
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": false,
+        "max_length": 255,
+        "name": "external_inventory_id",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "ingredients"
+      },
+      "type": "string"
+    },
+    {
+      "collection": "ingredients",
+      "field": "label_color",
+      "meta": {
+        "collection": "ingredients",
+        "conditions": null,
+        "display": null,
+        "display_options": null,
+        "field": "label_color",
+        "group": null,
+        "hidden": false,
+        "interface": "select-dropdown",
+        "note": null,
+        "options": {
+          "choices": [
+            {
+              "text": "Blue",
+              "value": "blue"
+            },
+            {
+              "text": "Red",
+              "value": "red"
+            }
+          ]
+        },
+        "readonly": false,
+        "required": false,
+        "sort": 14,
+        "special": null,
+        "translations": null,
+        "validation": null,
+        "validation_message": null,
+        "width": "full"
+      },
+      "schema": {
+        "data_type": "varchar",
+        "default_value": null,
+        "foreign_key_column": null,
+        "foreign_key_table": null,
+        "generation_expression": null,
+        "has_auto_increment": false,
+        "is_generated": false,
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": false,
+        "max_length": 255,
+        "name": "label_color",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "ingredients"
+      },
+      "type": "string"
     },
     {
       "collection": "recipes",
       "field": "id",
-      "type": "integer",
       "meta": {
         "collection": "recipes",
         "conditions": null,
@@ -583,27 +818,27 @@
         "width": "full"
       },
       "schema": {
-        "name": "id",
-        "table": "recipes",
         "data_type": "integer",
         "default_value": null,
-        "max_length": null,
-        "numeric_precision": null,
-        "numeric_scale": null,
-        "is_nullable": false,
-        "is_unique": false,
-        "is_primary_key": true,
-        "is_generated": false,
+        "foreign_key_column": null,
+        "foreign_key_table": null,
         "generation_expression": null,
         "has_auto_increment": true,
-        "foreign_key_table": null,
-        "foreign_key_column": null
-      }
+        "is_generated": false,
+        "is_nullable": false,
+        "is_primary_key": true,
+        "is_unique": false,
+        "max_length": null,
+        "name": "id",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "recipes"
+      },
+      "type": "integer"
     },
     {
       "collection": "recipes",
       "field": "user_created",
-      "type": "string",
       "meta": {
         "collection": "recipes",
         "conditions": null,
@@ -615,44 +850,48 @@
         "interface": "select-dropdown-m2o",
         "note": null,
         "options": {
-          "template": "{{avatar.$thumbnail}} {{first_name}} {{last_name}}"
+          "template": "{{avatar.}} {{first_name}} {{last_name}}"
         },
         "readonly": true,
         "required": false,
         "sort": 2,
-        "special": ["user-created"],
+        "special": [
+          "user-created"
+        ],
         "translations": null,
         "validation": null,
         "validation_message": null,
         "width": "half"
       },
       "schema": {
-        "name": "user_created",
-        "table": "recipes",
         "data_type": "char",
         "default_value": null,
-        "max_length": 36,
-        "numeric_precision": null,
-        "numeric_scale": null,
-        "is_nullable": true,
-        "is_unique": false,
-        "is_primary_key": false,
-        "is_generated": false,
+        "foreign_key_column": "id",
+        "foreign_key_table": "directus_users",
         "generation_expression": null,
         "has_auto_increment": false,
-        "foreign_key_table": "directus_users",
-        "foreign_key_column": "id"
-      }
+        "is_generated": false,
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": false,
+        "max_length": 36,
+        "name": "user_created",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "recipes"
+      },
+      "type": "string"
     },
     {
       "collection": "recipes",
       "field": "date_created",
-      "type": "timestamp",
       "meta": {
         "collection": "recipes",
         "conditions": null,
         "display": "datetime",
-        "display_options": { "relative": true },
+        "display_options": {
+          "relative": true
+        },
         "field": "date_created",
         "group": null,
         "hidden": true,
@@ -662,34 +901,37 @@
         "readonly": true,
         "required": false,
         "sort": 3,
-        "special": ["cast-timestamp", "date-created"],
+        "special": [
+          "cast-timestamp",
+          "date-created"
+        ],
         "translations": null,
         "validation": null,
         "validation_message": null,
         "width": "half"
       },
       "schema": {
-        "name": "date_created",
-        "table": "recipes",
         "data_type": "datetime",
         "default_value": null,
-        "max_length": null,
-        "numeric_precision": null,
-        "numeric_scale": null,
-        "is_nullable": true,
-        "is_unique": false,
-        "is_primary_key": false,
-        "is_generated": false,
+        "foreign_key_column": null,
+        "foreign_key_table": null,
         "generation_expression": null,
         "has_auto_increment": false,
-        "foreign_key_table": null,
-        "foreign_key_column": null
-      }
+        "is_generated": false,
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": false,
+        "max_length": null,
+        "name": "date_created",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "recipes"
+      },
+      "type": "timestamp"
     },
     {
       "collection": "recipes",
       "field": "user_updated",
-      "type": "string",
       "meta": {
         "collection": "recipes",
         "conditions": null,
@@ -701,44 +943,48 @@
         "interface": "select-dropdown-m2o",
         "note": null,
         "options": {
-          "template": "{{avatar.$thumbnail}} {{first_name}} {{last_name}}"
+          "template": "{{avatar.}} {{first_name}} {{last_name}}"
         },
         "readonly": true,
         "required": false,
         "sort": 4,
-        "special": ["user-updated"],
+        "special": [
+          "user-updated"
+        ],
         "translations": null,
         "validation": null,
         "validation_message": null,
         "width": "half"
       },
       "schema": {
-        "name": "user_updated",
-        "table": "recipes",
         "data_type": "char",
         "default_value": null,
-        "max_length": 36,
-        "numeric_precision": null,
-        "numeric_scale": null,
-        "is_nullable": true,
-        "is_unique": false,
-        "is_primary_key": false,
-        "is_generated": false,
+        "foreign_key_column": "id",
+        "foreign_key_table": "directus_users",
         "generation_expression": null,
         "has_auto_increment": false,
-        "foreign_key_table": "directus_users",
-        "foreign_key_column": "id"
-      }
+        "is_generated": false,
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": false,
+        "max_length": 36,
+        "name": "user_updated",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "recipes"
+      },
+      "type": "string"
     },
     {
       "collection": "recipes",
       "field": "date_updated",
-      "type": "timestamp",
       "meta": {
         "collection": "recipes",
         "conditions": null,
         "display": "datetime",
-        "display_options": { "relative": true },
+        "display_options": {
+          "relative": true
+        },
         "field": "date_updated",
         "group": null,
         "hidden": true,
@@ -748,34 +994,37 @@
         "readonly": true,
         "required": false,
         "sort": 5,
-        "special": ["cast-timestamp", "date-updated"],
+        "special": [
+          "cast-timestamp",
+          "date-updated"
+        ],
         "translations": null,
         "validation": null,
         "validation_message": null,
         "width": "half"
       },
       "schema": {
-        "name": "date_updated",
-        "table": "recipes",
         "data_type": "datetime",
         "default_value": null,
-        "max_length": null,
-        "numeric_precision": null,
-        "numeric_scale": null,
-        "is_nullable": true,
-        "is_unique": false,
-        "is_primary_key": false,
-        "is_generated": false,
+        "foreign_key_column": null,
+        "foreign_key_table": null,
         "generation_expression": null,
         "has_auto_increment": false,
-        "foreign_key_table": null,
-        "foreign_key_column": null
-      }
+        "is_generated": false,
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": false,
+        "max_length": null,
+        "name": "date_updated",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "recipes"
+      },
+      "type": "timestamp"
     },
     {
       "collection": "recipes",
       "field": "ingredients",
-      "type": "alias",
       "meta": {
         "collection": "recipes",
         "conditions": null,
@@ -790,17 +1039,19 @@
         "readonly": false,
         "required": true,
         "sort": 6,
-        "special": ["m2m"],
+        "special": [
+          "m2m"
+        ],
         "translations": null,
         "validation": null,
         "validation_message": null,
         "width": "full"
-      }
+      },
+      "type": "alias"
     },
     {
       "collection": "recipes",
       "field": "chefs_signature_dish",
-      "type": "alias",
       "meta": {
         "collection": "recipes",
         "conditions": null,
@@ -815,17 +1066,19 @@
         "readonly": false,
         "required": false,
         "sort": 7,
-        "special": ["o2m"],
+        "special": [
+          "o2m"
+        ],
         "translations": null,
         "validation": null,
         "validation_message": null,
         "width": "full"
-      }
+      },
+      "type": "alias"
     },
     {
       "collection": "recipes_ingredients",
       "field": "id",
-      "type": "integer",
       "meta": {
         "collection": "recipes_ingredients",
         "conditions": null,
@@ -847,27 +1100,27 @@
         "width": "full"
       },
       "schema": {
-        "name": "id",
-        "table": "recipes_ingredients",
         "data_type": "integer",
         "default_value": null,
-        "max_length": null,
-        "numeric_precision": null,
-        "numeric_scale": null,
-        "is_nullable": false,
-        "is_unique": false,
-        "is_primary_key": true,
-        "is_generated": false,
+        "foreign_key_column": null,
+        "foreign_key_table": null,
         "generation_expression": null,
         "has_auto_increment": true,
-        "foreign_key_table": null,
-        "foreign_key_column": null
-      }
+        "is_generated": false,
+        "is_nullable": false,
+        "is_primary_key": true,
+        "is_unique": false,
+        "max_length": null,
+        "name": "id",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "recipes_ingredients"
+      },
+      "type": "integer"
     },
     {
       "collection": "recipes_ingredients",
       "field": "recipes_id",
-      "type": "integer",
       "meta": {
         "collection": "recipes_ingredients",
         "conditions": null,
@@ -889,27 +1142,27 @@
         "width": "full"
       },
       "schema": {
-        "name": "recipes_id",
-        "table": "recipes_ingredients",
         "data_type": "integer",
         "default_value": null,
-        "max_length": null,
-        "numeric_precision": null,
-        "numeric_scale": null,
-        "is_nullable": true,
-        "is_unique": false,
-        "is_primary_key": false,
-        "is_generated": false,
+        "foreign_key_column": "id",
+        "foreign_key_table": "recipes",
         "generation_expression": null,
         "has_auto_increment": false,
-        "foreign_key_table": "recipes",
-        "foreign_key_column": "id"
-      }
+        "is_generated": false,
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": false,
+        "max_length": null,
+        "name": "recipes_id",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "recipes_ingredients"
+      },
+      "type": "integer"
     },
     {
       "collection": "recipes_ingredients",
       "field": "ingredients_id",
-      "type": "integer",
       "meta": {
         "collection": "recipes_ingredients",
         "conditions": null,
@@ -931,29 +1184,29 @@
         "width": "full"
       },
       "schema": {
-        "name": "ingredients_id",
-        "table": "recipes_ingredients",
         "data_type": "integer",
         "default_value": null,
-        "max_length": null,
-        "numeric_precision": null,
-        "numeric_scale": null,
-        "is_nullable": true,
-        "is_unique": false,
-        "is_primary_key": false,
-        "is_generated": false,
+        "foreign_key_column": "id",
+        "foreign_key_table": "ingredients",
         "generation_expression": null,
         "has_auto_increment": false,
-        "foreign_key_table": "ingredients",
-        "foreign_key_column": "id"
-      }
+        "is_generated": false,
+        "is_nullable": true,
+        "is_primary_key": false,
+        "is_unique": false,
+        "max_length": null,
+        "name": "ingredients_id",
+        "numeric_precision": null,
+        "numeric_scale": null,
+        "table": "recipes_ingredients"
+      },
+      "type": "integer"
     }
   ],
   "relations": [
     {
       "collection": "chefs",
       "field": "signature_dish",
-      "related_collection": "recipes",
       "meta": {
         "junction_field": null,
         "many_collection": "chefs",
@@ -965,20 +1218,20 @@
         "one_field": "chefs_signature_dish",
         "sort_field": null
       },
+      "related_collection": "recipes",
       "schema": {
-        "table": "chefs",
         "column": "signature_dish",
+        "constraint_name": null,
+        "foreign_key_column": "id",
         "foreign_key_table": "recipes",
-        "foreign_key_column": "id",
-        "constraint_name": null,
+        "on_delete": "SET NULL",
         "on_update": "NO ACTION",
-        "on_delete": "SET NULL"
+        "table": "chefs"
       }
     },
     {
       "collection": "ingredients",
       "field": "user_created",
-      "related_collection": "directus_users",
       "meta": {
         "junction_field": null,
         "many_collection": "ingredients",
@@ -990,20 +1243,20 @@
         "one_field": null,
         "sort_field": null
       },
+      "related_collection": "directus_users",
       "schema": {
-        "table": "ingredients",
         "column": "user_created",
-        "foreign_key_table": "directus_users",
-        "foreign_key_column": "id",
         "constraint_name": null,
+        "foreign_key_column": "id",
+        "foreign_key_table": "directus_users",
+        "on_delete": "NO ACTION",
         "on_update": "NO ACTION",
-        "on_delete": "NO ACTION"
+        "table": "ingredients"
       }
     },
     {
       "collection": "ingredients",
       "field": "user_updated",
-      "related_collection": "directus_users",
       "meta": {
         "junction_field": null,
         "many_collection": "ingredients",
@@ -1015,20 +1268,20 @@
         "one_field": null,
         "sort_field": null
       },
+      "related_collection": "directus_users",
       "schema": {
-        "table": "ingredients",
         "column": "user_updated",
-        "foreign_key_table": "directus_users",
-        "foreign_key_column": "id",
         "constraint_name": null,
+        "foreign_key_column": "id",
+        "foreign_key_table": "directus_users",
+        "on_delete": "NO ACTION",
         "on_update": "NO ACTION",
-        "on_delete": "NO ACTION"
+        "table": "ingredients"
       }
     },
     {
       "collection": "recipes",
       "field": "user_created",
-      "related_collection": "directus_users",
       "meta": {
         "junction_field": null,
         "many_collection": "recipes",
@@ -1040,20 +1293,20 @@
         "one_field": null,
         "sort_field": null
       },
+      "related_collection": "directus_users",
       "schema": {
-        "table": "recipes",
         "column": "user_created",
-        "foreign_key_table": "directus_users",
-        "foreign_key_column": "id",
         "constraint_name": null,
+        "foreign_key_column": "id",
+        "foreign_key_table": "directus_users",
+        "on_delete": "NO ACTION",
         "on_update": "NO ACTION",
-        "on_delete": "NO ACTION"
+        "table": "recipes"
       }
     },
     {
       "collection": "recipes",
       "field": "user_updated",
-      "related_collection": "directus_users",
       "meta": {
         "junction_field": null,
         "many_collection": "recipes",
@@ -1065,20 +1318,20 @@
         "one_field": null,
         "sort_field": null
       },
+      "related_collection": "directus_users",
       "schema": {
-        "table": "recipes",
         "column": "user_updated",
-        "foreign_key_table": "directus_users",
-        "foreign_key_column": "id",
         "constraint_name": null,
+        "foreign_key_column": "id",
+        "foreign_key_table": "directus_users",
+        "on_delete": "NO ACTION",
         "on_update": "NO ACTION",
-        "on_delete": "NO ACTION"
+        "table": "recipes"
       }
     },
     {
       "collection": "recipes_ingredients",
       "field": "ingredients_id",
-      "related_collection": "ingredients",
       "meta": {
         "junction_field": "recipes_id",
         "many_collection": "recipes_ingredients",
@@ -1090,20 +1343,20 @@
         "one_field": "recipes",
         "sort_field": null
       },
+      "related_collection": "ingredients",
       "schema": {
-        "table": "recipes_ingredients",
         "column": "ingredients_id",
-        "foreign_key_table": "ingredients",
-        "foreign_key_column": "id",
         "constraint_name": null,
+        "foreign_key_column": "id",
+        "foreign_key_table": "ingredients",
+        "on_delete": "SET NULL",
         "on_update": "NO ACTION",
-        "on_delete": "SET NULL"
+        "table": "recipes_ingredients"
       }
     },
     {
       "collection": "recipes_ingredients",
       "field": "recipes_id",
-      "related_collection": "recipes",
       "meta": {
         "junction_field": "ingredients_id",
         "many_collection": "recipes_ingredients",
@@ -1115,15 +1368,18 @@
         "one_field": "ingredients",
         "sort_field": null
       },
+      "related_collection": "recipes",
       "schema": {
-        "table": "recipes_ingredients",
         "column": "recipes_id",
-        "foreign_key_table": "recipes",
-        "foreign_key_column": "id",
         "constraint_name": null,
+        "foreign_key_column": "id",
+        "foreign_key_table": "recipes",
+        "on_delete": "SET NULL",
         "on_update": "NO ACTION",
-        "on_delete": "SET NULL"
+        "table": "recipes_ingredients"
       }
     }
-  ]
+  ],
+  "vendor": "${DIRECTUS_DB_VENDOR:-sqlite}",
+  "version": 1
 }

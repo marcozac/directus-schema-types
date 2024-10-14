@@ -7,7 +7,7 @@ import (
 	"os"
 
 	dst "github.com/marcozac/directus-schema-types"
-
+	"github.com/marcozac/directus-schema-types/graph"
 	"github.com/marcozac/directus-schema-types/internal/testutil"
 	"github.com/marcozac/directus-schema-types/internal/testutil/directest"
 	"github.com/marcozac/directus-schema-types/internal/testutil/node"
@@ -48,16 +48,50 @@ func generate() error {
 	}
 
 	// generate the schema types
+	generator := dst.NewGenerator()
 	for _, out := range []dst.Option{
 		dst.WithOutFile("src/schema.ts"), // write to a file
 		dst.WithOutDir("src/schema"),     // write to a directory
 	} {
-		g := dst.NewGenerator(schema,
+		err := generator.GenerateSchema(schema,
 			out,
 			dst.WithFormatOutput(true),
 			dst.WithClean(true),
+			dst.WithGraphOptions(graph.WithOverrides(
+				graph.OverrideMap{
+					"ingredients": {
+						"status": {
+							Kind: graph.FieldOverrideKindEnum,
+							Def: map[string]string{
+								"Available":    "available",
+								"NotAvailable": "not_available",
+								"Restock":      "restock",
+							},
+						},
+						"external_inventory_id": {
+							Kind:       graph.FieldOverrideExternal,
+							Def:        "InventoryItem",
+							ImportPath: "../external",
+							ParserFrom: "externalId",
+							ParserTo:   "new InventoryItem",
+						},
+						"label_color": {
+							Kind: graph.FieldOverrideKindAssertable,
+							Def:  `'blue' | 'red'`,
+						},
+						"shelf_position": {
+							Kind: graph.FieldOverrideKindEnum,
+							Def: map[string]string{
+								"Shelf1": "1",
+								"Shelf2": "2",
+								"Shelf3": "3",
+							},
+						},
+					},
+				},
+			)),
 		)
-		if err := g.Generate(); err != nil {
+		if err != nil {
 			return fmt.Errorf("generate: %w", err)
 		}
 	}
