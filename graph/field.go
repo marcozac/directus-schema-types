@@ -1,6 +1,9 @@
 package graph
 
 import (
+	"encoding/json"
+	"fmt"
+
 	"github.com/marcozac/directus-schema-types/directus"
 	"github.com/marcozac/directus-schema-types/util"
 )
@@ -335,6 +338,8 @@ const (
 	FieldOverrideExternal FieldOverrideKind = "external"
 )
 
+var _ json.Unmarshaler = (*FieldOverrideRaw)(nil)
+
 type FieldOverrideRaw struct {
 	// Kind is the kind of field override.
 	Kind FieldOverrideKind `json:"kind"`
@@ -360,6 +365,32 @@ type FieldOverrideRaw struct {
 	//
 	// It is required for external overrides.
 	ParserTo string `json:"parserTo"`
+}
+
+func (f *FieldOverrideRaw) UnmarshalJSON(data []byte) error {
+	type Alias FieldOverrideRaw
+	aux := &struct{ *Alias }{(*Alias)(f)}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+	if f.Kind != FieldOverrideKindEnum {
+		return nil
+	}
+	// override def as map[string]string
+	def, ok := aux.Def.(map[string]any)
+	if !ok {
+		return fmt.Errorf("field override: expected map[string]any, got %T", aux.Def)
+	}
+	m := make(map[string]string, len(def))
+	for k, v := range def {
+		s, ok := v.(string)
+		if !ok {
+			return fmt.Errorf("field override: expected string, got %T", v)
+		}
+		m[k] = s
+	}
+	f.Def = m
+	return nil
 }
 
 type fieldOverride struct {
