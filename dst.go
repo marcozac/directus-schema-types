@@ -46,21 +46,12 @@ func NewGenerator() *Generator {
 					return imports
 				},
 
-				// dedupeRelationsImport returns a slice with the
-				// relations deduplicated by collection name.
-				"dedupeRelationsImport": func(rels []graph.Relation) []graph.Relation {
-					m := util.NewSortedMap[string, graph.Relation](len(rels))
-					for _, r := range rels {
-						m.Set(r.Collection().Name(), r)
-					}
-					return m.Values()
-				},
-
 				// join returns a string with the slice elements joined by a comma.
 				"join": func(slice ...string) string {
 					return strings.Join(slice, ", ")
 				},
 
+				// joinSlice returns a string with the slice elements joined by a comma.
 				"joinSlice": func(slice []string) string {
 					return strings.Join(slice, ", ")
 				},

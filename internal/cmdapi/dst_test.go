@@ -75,6 +75,7 @@ func (suite *Suite) Test() {
 				cmd.SetArgs([]string{
 					"generate",
 					"--dir", dir,
+					"--format", "false",
 				})
 				suite.Require().NoError(cmd.Execute(), "execute")
 				suite.Assert().DirExists(dir, "dir exists")
@@ -120,6 +121,7 @@ func (suite *Suite) Test() {
 					"generate",
 					"--dir", dir,
 					"--overrides", overrideDef,
+					"--format", "false",
 				})
 				suite.Require().NoError(cmd.Execute(), "execute")
 				suite.Assert().DirExists(dir, "dir exists")
@@ -136,6 +138,7 @@ func (suite *Suite) Test() {
 					"generate",
 					"--dir", dir,
 					"--overrides-file", filePath,
+					"--format", "false",
 				})
 				suite.Require().NoError(cmd.Execute(), "execute")
 				suite.Assert().DirExists(dir, "dir exists")

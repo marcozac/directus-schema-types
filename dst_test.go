@@ -184,6 +184,7 @@ func (suite *Suite) TestGenerator() {
 			test: func() {
 				err := generator.GenerateSchema(schema,
 					WithOutFile(filepath.Join(suite.pkg.Dir, "schema.ts")),
+					WithFormatOutput(false), // very slower when enabled
 				)
 				suite.Require().NoError(err)
 			},
@@ -191,11 +192,20 @@ func (suite *Suite) TestGenerator() {
 		{
 			name: "WithOutDir",
 			test: func() {
-				err := generator.GenerateSchema(schema,
-					WithOutDir(filepath.Join(suite.pkg.Dir, "schema")),
+				dir := filepath.Join(suite.pkg.Dir, "schema")
+				// test also the clean option
+				suite.Require().NoError(os.MkdirAll(dir, 0o755), "MkdirAll")
+				f, err := os.CreateTemp(dir, "example-*.txt")
+				suite.Require().NoError(err, "CreateTemp")
+				f.Close()
+				suite.Assert().FileExists(f.Name(), "example.txt exists") // check the file exists
+				err = generator.GenerateSchema(schema,
+					WithOutDir(dir),
 					WithFormatOutput(false), // very slower when enabled
+					WithClean(true),
 				)
-				suite.Require().NoError(err)
+				suite.Require().NoError(err, "GenerateSchema")
+				suite.Assert().NoFileExists(f.Name(), "example.txt removed cleaning the out dir")
 			},
 		},
 		{
@@ -209,6 +219,7 @@ func (suite *Suite) TestGenerator() {
 				suite.Require().NoError(err, "Write external.ts")
 				err = generator.GenerateSchema(schema,
 					WithOutDir(filepath.Join(suite.pkg.Dir, "schema_overrides")),
+					WithFormatOutput(false), // very slower when enabled
 					WithGraphOptions(graph.WithOverrides(
 						graph.OverrideMap{
 							"ingredients": {
