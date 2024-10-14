@@ -186,7 +186,7 @@ type OverrideMap map[string]map[string]*FieldOverrideRaw
 // If the underlying map is nil, or the collection does not exist, it returns
 // nil.
 func (m OverrideMap) GetCollection(name string) map[string]*FieldOverrideRaw {
-	if m == nil {
+	if m != nil {
 		return m[name]
 	}
 	return nil

@@ -55,6 +55,16 @@ func (suite *Suite) Test() {
 		test func()
 	}{
 		{
+			name: "GenerateStdout",
+			test: func() {
+				cmd := NewDstCmd()
+				cmd.SetArgs([]string{
+					"generate",
+				})
+				suite.Require().NoError(cmd.Execute(), "execute")
+			},
+		},
+		{
 			name: "GenerateFile",
 			test: func() {
 				filePath := filepath.Join(tempDir, "schema.ts")
@@ -62,6 +72,7 @@ func (suite *Suite) Test() {
 				cmd.SetArgs([]string{
 					"generate",
 					"--file", filePath,
+					"--format", "false",
 				})
 				suite.Require().NoError(cmd.Execute(), "execute")
 				suite.Assert().FileExists(filePath, "file exists")
