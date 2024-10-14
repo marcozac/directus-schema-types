@@ -7,7 +7,6 @@ import (
 	"os"
 
 	dst "github.com/marcozac/directus-schema-types"
-
 	"github.com/marcozac/directus-schema-types/graph"
 	"github.com/marcozac/directus-schema-types/internal/testutil"
 	"github.com/marcozac/directus-schema-types/internal/testutil/directest"
