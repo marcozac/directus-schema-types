@@ -83,64 +83,64 @@ type Generator struct {
 }
 
 func (gen *Generator) GenerateSchema(schema *directus.Schema, opts ...Option) error {
-	o := gen.defaultOptions()
+	cfg := gen.defaultConfig()
 	for _, opt := range opts {
-		opt(o)
+		opt(cfg)
 	}
-	gr, err := graph.NewFromSchema(schema, o.graphOptions...)
+	gr, err := graph.NewFromSchema(schema, cfg.graphOptions...)
 	if err != nil {
 		return fmt.Errorf("create graph: %w", err)
 	}
-	return gen.generateGraph(gr, o)
+	return gen.generateGraph(gr, cfg)
 }
 
 func (gen *Generator) GenerateGraph(gr *graph.Graph, opts ...Option) error {
-	o := gen.defaultOptions()
+	cfg := gen.defaultConfig()
 	for _, opt := range opts {
-		opt(o)
+		opt(cfg)
 	}
-	return gen.generateGraph(gr, o)
+	return gen.generateGraph(gr, cfg)
 }
 
-func (gen *Generator) generateGraph(gr *graph.Graph, o *options) error {
+func (gen *Generator) generateGraph(gr *graph.Graph, cfg *Config) error {
 	switch {
-	case o.writer != nil:
-		return gen.generateAll(gr, o.writer, o.formatOutput)
-	case o.outFile != "":
-		return gen.generateFile(gr, o)
-	case o.outDir != "":
-		return gen.generateDir(gr, o)
+	case cfg.Writer != nil:
+		return gen.generateAll(gr, cfg.Writer, cfg.FormatOutput)
+	case cfg.OutFile != "":
+		return gen.generateFile(gr, cfg)
+	case cfg.OutDir != "":
+		return gen.generateDir(gr, cfg)
 	}
 	return errors.New("no output specified")
 }
 
-func (gen *Generator) defaultOptions() *options {
-	return &options{
-		formatOutput: true,
+func (gen *Generator) defaultConfig() *Config {
+	return &Config{
+		FormatOutput: true,
 		// outDir:       filepath.Join("src", "_gen", "schema"),
 	}
 }
 
-func (gen *Generator) generateFile(gr *graph.Graph, o *options) error {
-	if o.clean {
-		_ = gen.clean(o.outFile)
+func (gen *Generator) generateFile(gr *graph.Graph, cfg *Config) error {
+	if cfg.Clean {
+		_ = gen.clean(cfg.OutFile)
 	}
-	if err := os.MkdirAll(filepath.Dir(o.outFile), 0o755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(cfg.OutFile), 0o755); err != nil {
 		return fmt.Errorf("create directory: %w", err)
 	}
-	f, err := os.Create(o.outFile)
+	f, err := os.Create(cfg.OutFile)
 	if err != nil {
 		return fmt.Errorf("create file: %w", err)
 	}
 	defer f.Close()
-	return gen.generateAll(gr, f, o.formatOutput)
+	return gen.generateAll(gr, f, cfg.FormatOutput)
 }
 
-func (gen *Generator) generateDir(gr *graph.Graph, o *options) error {
-	if o.clean {
-		_ = gen.clean(o.outDir)
+func (gen *Generator) generateDir(gr *graph.Graph, cfg *Config) error {
+	if cfg.Clean {
+		_ = gen.clean(cfg.OutDir)
 	}
-	if err := os.MkdirAll(o.outDir, 0o755); err != nil {
+	if err := os.MkdirAll(cfg.OutDir, 0o755); err != nil {
 		return fmt.Errorf("create directory: %w", err)
 	}
 	type E struct {
@@ -182,13 +182,13 @@ func (gen *Generator) generateDir(gr *graph.Graph, o *options) error {
 	for _, e := range entries {
 		go func(e E) {
 			defer wg.Done()
-			f, err := os.Create(filepath.Join(o.outDir, e.file))
+			f, err := os.Create(filepath.Join(cfg.OutDir, e.file))
 			if err != nil {
 				errs <- fmt.Errorf("create file %s: %w", e.file, err)
 				return
 			}
 			defer f.Close()
-			if err := gen.execute(f, e.templateName, e.data, o.formatOutput); err != nil {
+			if err := gen.execute(f, e.templateName, e.data, cfg.FormatOutput); err != nil {
 				errs <- fmt.Errorf("execute template for %s: %w", e.file, err)
 			}
 		}(e)
@@ -226,58 +226,100 @@ func (gen *Generator) clean(path string) error {
 	return os.RemoveAll(path)
 }
 
-type options struct {
-	formatOutput bool
-	writer       io.Writer
-	outFile      string
-	outDir       string
-	clean        bool
+type Config struct {
+	// FormatOutput enables the output formatting using prettier.
+	FormatOutput bool `json:"formatOutput,omitempty"`
+
+	// Writer is the writer for the output.
+	Writer io.Writer `json:"-"`
+
+	// OutFile is the output file path.
+	OutFile string `json:"outFile,omitempty"`
+
+	// OutDir is the output directory path.
+	OutDir string `json:"outDir,omitempty"`
+
+	// Clean removes the output file or directory before generating.
+	Clean bool `json:"clean,omitempty"`
+
+	// --- graph options ---
+
 	graphOptions []graph.Option
+
+	// Overrides is a map of field type overrides for the graph.
+	// See [graph.WithOverrides] for more info.
+	Overrides graph.OverrideMap `json:"overrides,omitempty"`
+}
+
+// ToOptions converts the config to a list of options.
+//
+// This method is used externally for compatibility with the C API and should
+// not be used as replacement for the options, that are preferred and more
+// flexible. All the options are set, making ineffective any default value
+// applied elsewhere (except for the graph options).
+func (c *Config) ToOptions() []Option {
+	return []Option{
+		WithFormatOutput(c.FormatOutput),
+		WithWriter(c.Writer),
+		WithOutFile(c.OutFile),
+		WithOutDir(c.OutDir),
+		WithClean(c.Clean),
+		WithGraphOptions(
+			graph.WithOverrides(c.Overrides),
+		),
+	}
 }
 
 // Option is an option for the generator.
-type Option func(*options)
+type Option func(*Config)
 
 // WithFormatOutput formats the output using prettier.
 func WithFormatOutput(v bool) Option {
-	return func(o *options) {
-		o.formatOutput = v
+	return func(c *Config) {
+		c.FormatOutput = v
 	}
 }
 
 // WithWriter sets the writer for the output.
 func WithWriter(w io.Writer) Option {
-	return func(o *options) {
-		o.writer = w
+	return func(c *Config) {
+		c.Writer = w
 	}
 }
 
 // WithOutFile sets the output file path.
 func WithOutFile(path string) Option {
-	return func(o *options) {
-		o.outFile = path
+	return func(c *Config) {
+		c.OutFile = path
 	}
 }
 
 // WithOutDir sets the output directory path.
 func WithOutDir(path string) Option {
-	return func(o *options) {
-		o.outDir = path
+	return func(c *Config) {
+		c.OutDir = path
 	}
 }
 
 // WithClean removes the output file or directory before generating.
 // Setting a Writer, this option is ignored.
 func WithClean(v bool) Option {
-	return func(o *options) {
-		o.clean = v
+	return func(c *Config) {
+		c.Clean = v
 	}
 }
 
 // WithGraphOptions sets the options for the graph.
+// The given options are appended to the existing ones (if any).
 // It has effect only when a custom graph is not provided.
 func WithGraphOptions(opts ...graph.Option) Option {
-	return func(o *options) {
-		o.graphOptions = opts
+	return func(c *Config) {
+		c.graphOptions = append(c.graphOptions, opts...)
 	}
+}
+
+// WithOverrides sets the field type overrides for the graph.
+// It's a shortcut for WithGraphOptions(graph.WithOverrides(m)).
+func WithOverrides(m graph.OverrideMap) Option {
+	return WithGraphOptions(graph.WithOverrides(m))
 }
