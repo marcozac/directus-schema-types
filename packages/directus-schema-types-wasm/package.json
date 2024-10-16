@@ -1,0 +1,26 @@
+{
+  "name": "directus-schema-types-wasm",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build:go": "node scripts/build_go.cjs"
+  },
+  "files": [],
+  "homepage": "https://github.com/marcozac/directus-schema-types#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcozac/directus-schema-types.git",
+    "directory": "packages/directus-schema-types-wasm"
+  },
+  "author": "marcozac",
+  "license": "MIT",
+  "keywords": [],
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^20",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
