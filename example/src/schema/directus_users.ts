@@ -116,7 +116,7 @@ export interface DirectusUsers {
 
 export interface DirectusUsersRelations {
     avatar?: DirectusFilesPrimaryKey | DirectusFiles;
-    policies?: (DirectusAccessPrimaryKey | DirectusAccess)[];
+    policies?: DirectusAccessPrimaryKey[] | DirectusAccess[];
     role?: DirectusRolesPrimaryKey | DirectusRoles;
 }
 

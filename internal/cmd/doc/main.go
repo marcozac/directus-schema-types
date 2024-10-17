@@ -26,5 +26,7 @@ func run() error {
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return fmt.Errorf("create %s dir: %w", dir, err)
 	}
-	return doc.GenMarkdownTree(cmdapi.NewDstCmd(), dir)
+	cmd := cmdapi.NewDstCmd()
+	cmd.DisableAutoGenTag = true // disable auto generated tag: ci failure on different date
+	return doc.GenMarkdownTree(cmd, dir)
 }
