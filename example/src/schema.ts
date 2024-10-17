@@ -109,7 +109,7 @@ export interface DirectusActivity {
 }
 
 export interface DirectusActivityRelations {
-    revisions?: (DirectusRevisionsPrimaryKey | DirectusRevisions)[];
+    revisions?: DirectusRevisionsPrimaryKey[] | DirectusRevisions[];
     user?: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
@@ -277,7 +277,7 @@ export interface DirectusDashboards {
 }
 
 export interface DirectusDashboardsRelations {
-    panels?: (DirectusPanelsPrimaryKey | DirectusPanels)[];
+    panels?: DirectusPanelsPrimaryKey[] | DirectusPanels[];
     user_created?: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
@@ -660,7 +660,7 @@ export interface DirectusFlows {
 
 export interface DirectusFlowsRelations {
     operation?: DirectusOperationsPrimaryKey | DirectusOperations;
-    operations?: (DirectusOperationsPrimaryKey | DirectusOperations)[];
+    operations?: DirectusOperationsPrimaryKey[] | DirectusOperations[];
     user_created?: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
@@ -1150,9 +1150,9 @@ export interface DirectusPolicies {
 }
 
 export interface DirectusPoliciesRelations {
-    permissions?: (DirectusPermissionsPrimaryKey | DirectusPermissions)[];
-    roles?: (DirectusAccessPrimaryKey | DirectusAccess)[];
-    users?: (DirectusAccessPrimaryKey | DirectusAccess)[];
+    permissions?: DirectusPermissionsPrimaryKey[] | DirectusPermissions[];
+    roles?: DirectusAccessPrimaryKey[] | DirectusAccess[];
+    users?: DirectusAccessPrimaryKey[] | DirectusAccess[];
 }
 
 export interface DirectusPoliciesRelatedCollections {
@@ -1357,10 +1357,10 @@ export interface DirectusRoles {
 }
 
 export interface DirectusRolesRelations {
-    children?: (DirectusRolesPrimaryKey | DirectusRoles)[];
+    children?: DirectusRolesPrimaryKey[] | DirectusRoles[];
     parent?: DirectusRolesPrimaryKey | DirectusRoles;
-    policies?: (DirectusAccessPrimaryKey | DirectusAccess)[];
-    users?: (DirectusUsersPrimaryKey | DirectusUsers)[];
+    policies?: DirectusAccessPrimaryKey[] | DirectusAccess[];
+    users?: DirectusUsersPrimaryKey[] | DirectusUsers[];
 }
 
 export interface DirectusRolesRelatedCollections {
@@ -1864,7 +1864,7 @@ export interface DirectusUsers {
 
 export interface DirectusUsersRelations {
     avatar?: DirectusFilesPrimaryKey | DirectusFiles;
-    policies?: (DirectusAccessPrimaryKey | DirectusAccess)[];
+    policies?: DirectusAccessPrimaryKey[] | DirectusAccess[];
     role?: DirectusRolesPrimaryKey | DirectusRoles;
 }
 
@@ -2128,7 +2128,7 @@ export interface Ingredients {
 }
 
 export interface IngredientsRelations {
-    recipes?: (RecipesIngredientsPrimaryKey | RecipesIngredients)[];
+    recipes?: RecipesIngredientsPrimaryKey[] | RecipesIngredients[];
     readonly user_created?: DirectusUsersPrimaryKey | DirectusUsers;
     readonly user_updated?: DirectusUsersPrimaryKey | DirectusUsers;
 }
@@ -2240,8 +2240,8 @@ export interface RecipesRelations {
      * The related field of {@link Chefs} is marked as unique.
      * The resulting array will contain only one element.
      */
-    chefs_signature_dish?: (ChefsPrimaryKey | Chefs)[];
-    ingredients: (RecipesIngredientsPrimaryKey | RecipesIngredients)[];
+    chefs_signature_dish?: ChefsPrimaryKey[] | Chefs[];
+    ingredients: RecipesIngredientsPrimaryKey[] | RecipesIngredients[];
     readonly user_created?: DirectusUsersPrimaryKey | DirectusUsers;
     readonly user_updated?: DirectusUsersPrimaryKey | DirectusUsers;
 }

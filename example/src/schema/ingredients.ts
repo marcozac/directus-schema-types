@@ -75,7 +75,7 @@ export interface Ingredients {
 }
 
 export interface IngredientsRelations {
-    recipes?: (RecipesIngredientsPrimaryKey | RecipesIngredients)[];
+    recipes?: RecipesIngredientsPrimaryKey[] | RecipesIngredients[];
     readonly user_created?: DirectusUsersPrimaryKey | DirectusUsers;
     readonly user_updated?: DirectusUsersPrimaryKey | DirectusUsers;
 }

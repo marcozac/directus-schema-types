@@ -50,7 +50,7 @@ export interface DirectusActivity {
 }
 
 export interface DirectusActivityRelations {
-    revisions?: (DirectusRevisionsPrimaryKey | DirectusRevisions)[];
+    revisions?: DirectusRevisionsPrimaryKey[] | DirectusRevisions[];
     user?: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
