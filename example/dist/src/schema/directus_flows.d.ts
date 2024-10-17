@@ -54,7 +54,7 @@ export interface DirectusFlows {
 }
 export interface DirectusFlowsRelations {
     operation?: DirectusOperationsPrimaryKey | DirectusOperations;
-    operations?: (DirectusOperationsPrimaryKey | DirectusOperations)[];
+    operations?: DirectusOperationsPrimaryKey[] | DirectusOperations[];
     user_created?: DirectusUsersPrimaryKey | DirectusUsers;
 }
 export interface DirectusFlowsRelatedCollections {

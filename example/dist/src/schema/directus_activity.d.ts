@@ -45,7 +45,7 @@ export interface DirectusActivity {
     user_agent?: string | null;
 }
 export interface DirectusActivityRelations {
-    revisions?: (DirectusRevisionsPrimaryKey | DirectusRevisions)[];
+    revisions?: DirectusRevisionsPrimaryKey[] | DirectusRevisions[];
     user?: DirectusUsersPrimaryKey | DirectusUsers;
 }
 export interface DirectusActivityRelatedCollections {

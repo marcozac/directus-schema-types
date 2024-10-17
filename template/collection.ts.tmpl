@@ -132,9 +132,9 @@ export interface {{ $.TypeName }} {
 {{- define "collection/relations/field/value" }}
 {{- $typ := printf "%s | %s" $.Collection.PrimaryKey.TypeName $.Collection.TypeName }}
 {{- if $.Many -}}
-    ({{- $typ }})[]
+    {{- $.Collection.PrimaryKey.TypeName }}[] | {{ $.Collection.TypeName }}[]
 {{- else -}}
-    {{- $typ }}
+    {{- $.Collection.PrimaryKey.TypeName }} | {{ $.Collection.TypeName }}
 {{- end }}
 {{- end }}
 {{- /* "collection/relations/field/value" END */ -}}

@@ -38,9 +38,9 @@ export interface DirectusPolicies {
     name: string;
 }
 export interface DirectusPoliciesRelations {
-    permissions?: (DirectusPermissionsPrimaryKey | DirectusPermissions)[];
-    roles?: (DirectusAccessPrimaryKey | DirectusAccess)[];
-    users?: (DirectusAccessPrimaryKey | DirectusAccess)[];
+    permissions?: DirectusPermissionsPrimaryKey[] | DirectusPermissions[];
+    roles?: DirectusAccessPrimaryKey[] | DirectusAccess[];
+    users?: DirectusAccessPrimaryKey[] | DirectusAccess[];
 }
 export interface DirectusPoliciesRelatedCollections {
     permissions: 'directus_permissions';

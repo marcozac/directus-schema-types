@@ -31,10 +31,10 @@ export interface DirectusRoles {
 }
 
 export interface DirectusRolesRelations {
-    children?: (DirectusRolesPrimaryKey | DirectusRoles)[];
+    children?: DirectusRolesPrimaryKey[] | DirectusRoles[];
     parent?: DirectusRolesPrimaryKey | DirectusRoles;
-    policies?: (DirectusAccessPrimaryKey | DirectusAccess)[];
-    users?: (DirectusUsersPrimaryKey | DirectusUsers)[];
+    policies?: DirectusAccessPrimaryKey[] | DirectusAccess[];
+    users?: DirectusUsersPrimaryKey[] | DirectusUsers[];
 }
 
 export interface DirectusRolesRelatedCollections {

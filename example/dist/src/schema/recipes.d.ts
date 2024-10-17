@@ -31,8 +31,8 @@ export interface RecipesRelations {
      * The related field of {@link Chefs} is marked as unique.
      * The resulting array will contain only one element.
      */
-    chefs_signature_dish?: (ChefsPrimaryKey | Chefs)[];
-    ingredients: (RecipesIngredientsPrimaryKey | RecipesIngredients)[];
+    chefs_signature_dish?: ChefsPrimaryKey[] | Chefs[];
+    ingredients: RecipesIngredientsPrimaryKey[] | RecipesIngredients[];
     readonly user_created?: DirectusUsersPrimaryKey | DirectusUsers;
     readonly user_updated?: DirectusUsersPrimaryKey | DirectusUsers;
 }

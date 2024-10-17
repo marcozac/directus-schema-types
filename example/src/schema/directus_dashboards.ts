@@ -38,7 +38,7 @@ export interface DirectusDashboards {
 }
 
 export interface DirectusDashboardsRelations {
-    panels?: (DirectusPanelsPrimaryKey | DirectusPanels)[];
+    panels?: DirectusPanelsPrimaryKey[] | DirectusPanels[];
     user_created?: DirectusUsersPrimaryKey | DirectusUsers;
 }
 
