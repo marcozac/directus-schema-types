@@ -17,7 +17,7 @@ import { {{ joinSlice .Symbols }} } from {{ quote .Path }};
 {{- /* It must be executed with a []Collection context. */ -}}
 {{- define "import/collections" }}
 {{- range $ }}
-import { {{ .TypeName }} } from {{ printf "./%s" .Name | quote }}; 
+import { {{ .TypeName }} } from {{ printf "./%s" .Name | quote }};
 {{- end }}
 {{- end }}
 {{- /* "import/collections" END */ -}}
@@ -27,7 +27,17 @@ import { {{ .TypeName }} } from {{ printf "./%s" .Name | quote }};
 {{- /* It must be executed with a []Collection context. */ -}}
 {{- define "import/relations" }}
 {{- range $ }}
-import { {{ join .Relations.TypeName .RelatedCollections.TypeName }} } from {{ printf "./%s" .Name | quote }}; 
+import { {{ join .Relations.TypeName .RelatedCollections.TypeName }} } from {{ printf "./%s" .Name | quote }};
 {{- end }}
 {{- end }}
 {{- /* "import/relations" END */ -}}
+
+
+{{- /* "import/payloads" defines the imports of all the collections payload. */ -}}
+{{- /* It must be executed with a []Collection context. */ -}}
+{{- define "import/payloads" }}
+{{- range $ }}
+import { {{ template "payload/type_name" . }} } from {{ printf "./%s" .Name | quote }};
+{{- end }}
+{{- end }}
+{{- /* "import/payloads" END */ -}}

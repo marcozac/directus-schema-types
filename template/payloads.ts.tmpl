@@ -1,0 +1,37 @@
+{{- block "payloads.ts" $ -}}
+{{- template "header/base" }}
+{{ template "import/payloads" $.Collections }}
+{{ template "payloads" $.Collections }}
+{{- end }}
+{{- /* "payloads.ts" END */ -}}
+
+
+{{- /* "payloads" */ -}}
+{{- define "payloads" }}
+{{ template "payloads/interface" $ }}
+{{- end }}
+{{- /* "payloads" END */ -}}
+
+
+{{- /* "payloads/interface" defines the principal payloads interface. */ -}}
+{{- /* It must be executed with []Collection context. */ -}}
+{{- define "payloads/interface" }}
+export interface Payloads {
+{{- range $ }}
+    {{ .Name }}: {{ template "payload/type_name" . }};
+{{- end }}
+}
+{{- end }}
+{{- /* "payloads/interface" END */ -}}
+
+
+{{- /* "payload/type_name" defines a payload type name. If the payload does not exist, it's the collection one. */ -}}
+{{- /* It must be executed with a Collection context. */ -}}
+{{- define "payload/type_name" -}}
+{{- with .Payload }}
+	{{- .TypeName }}{{- /* type name of the payload */ -}}
+{{- else }}
+	{{- .TypeName }}{{- /* type name of the collection */ -}}
+{{- end }}
+{{- end }}
+{{- /* "payload/type_name" END */ -}}

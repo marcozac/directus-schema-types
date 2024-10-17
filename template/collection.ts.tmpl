@@ -72,12 +72,12 @@ export interface {{ $.TypeName }} {
 {{- define "collection/interface/field" }}
 {{- if not $.IsAlias }}
     /**
-	{{- with $.Note }}
+    {{- with $.Note }}
      * {{ . }}
     {{- end }}
-	 * Type: {{ $.FieldType }}
-	 */
-	{{ template "collection/interface/field/key" $ }}: {{ template "collection/interface/field/value" $ }};
+     * Type: {{ $.FieldType }}
+     */
+    {{ template "collection/interface/field/key" $ }}: {{ template "collection/interface/field/value" $ }};
 {{- end }}
 {{- end }}
 {{- /* "collection/interface/field" END */ -}}

@@ -19,7 +19,7 @@
 {{- define "relations/interface" }}
 export interface Relations {
 {{- range $ }}
-    {{ .Name }}: {{ .Relations.TypeName }}
+    {{ .Name }}: {{ .Relations.TypeName }};
 {{- end }}
 }
 {{- end }}
@@ -31,7 +31,7 @@ export interface Relations {
 {{- define "relations/related_collections" }}
 export interface RelatedCollections {
 {{- range $ }}
-    {{ .Name }}: {{ .RelatedCollections.TypeName }}
+    {{ .Name }}: {{ .RelatedCollections.TypeName }};
 {{- end }}
 }
 {{- end }}

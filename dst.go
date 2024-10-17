@@ -149,7 +149,7 @@ func (gen *Generator) generateDir(gr *graph.Graph, o *options) error {
 		data         any
 	}
 	cs := gr.Collections()
-	entries := make([]E, 0, len(cs)+3)
+	entries := make([]E, 0, len(cs)+4)
 	entries = append(entries,
 		E{
 			templateName: "schema.ts",
@@ -159,6 +159,11 @@ func (gen *Generator) generateDir(gr *graph.Graph, o *options) error {
 		E{
 			templateName: "relations.ts",
 			file:         "relations.ts",
+			data:         gr,
+		},
+		E{
+			templateName: "payloads.ts",
+			file:         "payloads.ts",
 			data:         gr,
 		},
 		E{

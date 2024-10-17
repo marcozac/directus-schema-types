@@ -2016,3 +2016,35 @@ export interface RelatedCollections {
     recipes: RecipesRelatedCollections;
     recipes_ingredients: RecipesIngredientsRelatedCollections;
 }
+export interface Payloads {
+    chefs: Chefs;
+    directus_access: DirectusAccess;
+    directus_activity: DirectusActivityPayload;
+    directus_collections: DirectusCollections;
+    directus_dashboards: DirectusDashboardsPayload;
+    directus_extensions: DirectusExtensions;
+    directus_fields: DirectusFields;
+    directus_files: DirectusFilesPayload;
+    directus_flows: DirectusFlowsPayload;
+    directus_folders: DirectusFolders;
+    directus_migrations: DirectusMigrationsPayload;
+    directus_notifications: DirectusNotificationsPayload;
+    directus_operations: DirectusOperationsPayload;
+    directus_panels: DirectusPanelsPayload;
+    directus_permissions: DirectusPermissions;
+    directus_policies: DirectusPolicies;
+    directus_presets: DirectusPresets;
+    directus_relations: DirectusRelations;
+    directus_revisions: DirectusRevisions;
+    directus_roles: DirectusRoles;
+    directus_sessions: DirectusSessionsPayload;
+    directus_settings: DirectusSettings;
+    directus_shares: DirectusSharesPayload;
+    directus_translations: DirectusTranslations;
+    directus_users: DirectusUsersPayload;
+    directus_versions: DirectusVersionsPayload;
+    directus_webhooks: DirectusWebhooks;
+    ingredients: IngredientsPayload;
+    recipes: RecipesPayload;
+    recipes_ingredients: RecipesIngredients;
+}

@@ -27,6 +27,6 @@ export interface Schema {
 {{- /* "schema/interface/field" defines a schema interface field. */ -}}
 {{- /* It must be executed with Collection context. */ -}}
 {{- define "schema/interface/field" }}
-    {{ $.Name }}: {{ $.TypeName }}
+    {{ $.Name }}: {{ $.TypeName }};
 {{- end }}
 {{- /* "schema/interface/field" END */ -}}
