@@ -170,6 +170,21 @@ func (suite *Suite) Test() {
 				suite.Assert().NoDirExists(dir, "dir does not exist")
 			},
 		},
+		{
+			name: "GenerateWithImportFileExtension",
+			test: func() {
+				dir := filepath.Join(tempDir, "schema_import_extension")
+				cmd := NewDstCmd()
+				cmd.SetArgs([]string{
+					"generate",
+					"--dir", dir,
+					"--import-file-ext", ".js",
+					"--format", "false",
+				})
+				suite.Require().NoError(cmd.Execute(), "execute")
+				suite.Assert().DirExists(dir, "dir exists")
+			},
+		},
 	} {
 		suite.Run(tt.name, tt.test)
 	}
