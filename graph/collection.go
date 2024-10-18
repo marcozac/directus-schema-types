@@ -77,12 +77,13 @@ const (
 
 // newCollection creates a new [Collection] with the given name and whether
 // it is a singleton.
-func newCollection(name string, isSingleton bool) *collection {
+func newCollection(name string, isSingleton bool, opts *options) *collection {
 	c := &collection{
 		name:        name,
 		isSingleton: isSingleton,
 		fields:      util.NewSortedMap[string, Field](1),
 		relations:   util.NewSortedMap[string, Relation](1),
+		opts:        opts,
 	}
 	return c
 }
@@ -93,6 +94,8 @@ type collection struct {
 	pk          PrimaryKey
 	fields      *util.SortedMap[string, Field]    // keep stable order
 	relations   *util.SortedMap[string, Relation] // keep stable order
+
+	opts *options
 }
 
 func (c *collection) Name() string {
@@ -178,7 +181,7 @@ func (c *collection) Imports(l CollectionImports) []Import {
 	imports := make([]Import, m.Len())
 	for i, k := range m.Keys() {
 		imports[i] = Import{
-			Path:    k,
+			Path:    fmt.Sprintf("%s%s", k, c.opts.ImportFileExtension),
 			Symbols: slices.Compact(m.GetX(k)), // remove duplicates
 		}
 	}

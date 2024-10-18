@@ -1,5 +1,5 @@
-import { DirectusAccess, DirectusAccessPrimaryKey } from './directus_access';
-import { DirectusPermissions, DirectusPermissionsPrimaryKey } from './directus_permissions';
+import { DirectusAccess, DirectusAccessPrimaryKey } from './directus_access.js';
+import { DirectusPermissions, DirectusPermissionsPrimaryKey } from './directus_permissions.js';
 export type DirectusPoliciesPrimaryKey = string;
 export type DirectusPoliciesPrimaryKeyField = 'id';
 export interface DirectusPolicies {

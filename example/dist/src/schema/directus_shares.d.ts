@@ -1,6 +1,6 @@
-import { DirectusCollections, DirectusCollectionsPrimaryKey } from './directus_collections';
-import { DirectusRoles, DirectusRolesPrimaryKey } from './directus_roles';
-import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users';
+import { DirectusCollections, DirectusCollectionsPrimaryKey } from './directus_collections.js';
+import { DirectusRoles, DirectusRolesPrimaryKey } from './directus_roles.js';
+import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users.js';
 export type DirectusSharesPrimaryKey = string;
 export type DirectusSharesPrimaryKeyField = 'id';
 export interface DirectusShares {

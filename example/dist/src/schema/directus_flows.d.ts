@@ -1,5 +1,5 @@
-import { DirectusOperations, DirectusOperationsPrimaryKey } from './directus_operations';
-import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users';
+import { DirectusOperations, DirectusOperationsPrimaryKey } from './directus_operations.js';
+import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users.js';
 export type DirectusFlowsPrimaryKey = string;
 export type DirectusFlowsPrimaryKeyField = 'id';
 export interface DirectusFlows {

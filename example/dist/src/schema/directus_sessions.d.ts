@@ -1,5 +1,5 @@
-import { DirectusShares, DirectusSharesPrimaryKey } from './directus_shares';
-import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users';
+import { DirectusShares, DirectusSharesPrimaryKey } from './directus_shares.js';
+import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users.js';
 export type DirectusSessionsPrimaryKey = string;
 export type DirectusSessionsPrimaryKeyField = 'token';
 export interface DirectusSessions {

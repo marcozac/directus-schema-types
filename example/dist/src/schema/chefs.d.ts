@@ -1,4 +1,4 @@
-import { Recipes, RecipesPrimaryKey } from './recipes';
+import { Recipes, RecipesPrimaryKey } from './recipes.js';
 export type ChefsPrimaryKey = number;
 export type ChefsPrimaryKeyField = 'id';
 export interface Chefs {

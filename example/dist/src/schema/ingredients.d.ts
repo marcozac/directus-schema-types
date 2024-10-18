@@ -1,6 +1,6 @@
-import { InventoryItem } from '../external';
-import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users';
-import { RecipesIngredients, RecipesIngredientsPrimaryKey } from './recipes_ingredients';
+import { InventoryItem } from '../external.js';
+import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users.js';
+import { RecipesIngredients, RecipesIngredientsPrimaryKey } from './recipes_ingredients.js';
 export type IngredientsPrimaryKey = number;
 export type IngredientsPrimaryKeyField = 'id';
 export type IngredientsLabelColorType = 'blue' | 'red';

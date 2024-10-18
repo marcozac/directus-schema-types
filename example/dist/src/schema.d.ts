@@ -1,4 +1,4 @@
-import { InventoryItem } from '../external';
+import { InventoryItem } from '../external.js';
 export type ChefsPrimaryKey = number;
 export type ChefsPrimaryKeyField = 'id';
 export interface Chefs {

@@ -1,6 +1,6 @@
-import { DirectusFiles, DirectusFilesPrimaryKey } from './directus_files';
-import { DirectusFolders, DirectusFoldersPrimaryKey } from './directus_folders';
-import { DirectusRoles, DirectusRolesPrimaryKey } from './directus_roles';
+import { DirectusFiles, DirectusFilesPrimaryKey } from './directus_files.js';
+import { DirectusFolders, DirectusFoldersPrimaryKey } from './directus_folders.js';
+import { DirectusRoles, DirectusRolesPrimaryKey } from './directus_roles.js';
 export type DirectusSettingsPrimaryKey = number;
 export type DirectusSettingsPrimaryKeyField = 'id';
 export interface DirectusSettings {

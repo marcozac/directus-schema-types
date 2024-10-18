@@ -1,4 +1,4 @@
-import { DirectusPolicies, DirectusPoliciesPrimaryKey } from './directus_policies';
+import { DirectusPolicies, DirectusPoliciesPrimaryKey } from './directus_policies.js';
 export type DirectusPermissionsPrimaryKey = number;
 export type DirectusPermissionsPrimaryKeyField = 'id';
 export interface DirectusPermissions {

@@ -1,6 +1,6 @@
-import { Chefs, ChefsPrimaryKey } from './chefs';
-import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users';
-import { RecipesIngredients, RecipesIngredientsPrimaryKey } from './recipes_ingredients';
+import { Chefs, ChefsPrimaryKey } from './chefs.js';
+import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users.js';
+import { RecipesIngredients, RecipesIngredientsPrimaryKey } from './recipes_ingredients.js';
 export type RecipesPrimaryKey = number;
 export type RecipesPrimaryKeyField = 'id';
 export interface Recipes {

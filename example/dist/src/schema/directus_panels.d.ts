@@ -1,5 +1,5 @@
-import { DirectusDashboards, DirectusDashboardsPrimaryKey } from './directus_dashboards';
-import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users';
+import { DirectusDashboards, DirectusDashboardsPrimaryKey } from './directus_dashboards.js';
+import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users.js';
 export type DirectusPanelsPrimaryKey = string;
 export type DirectusPanelsPrimaryKeyField = 'id';
 export interface DirectusPanels {

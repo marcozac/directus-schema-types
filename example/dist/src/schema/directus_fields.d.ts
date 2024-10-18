@@ -1,4 +1,4 @@
-import { DirectusCollections, DirectusCollectionsPrimaryKey } from './directus_collections';
+import { DirectusCollections, DirectusCollectionsPrimaryKey } from './directus_collections.js';
 export type DirectusFieldsPrimaryKey = number;
 export type DirectusFieldsPrimaryKeyField = 'id';
 export interface DirectusFields {

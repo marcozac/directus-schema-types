@@ -1,5 +1,5 @@
-import { DirectusActivity, DirectusActivityPrimaryKey } from './directus_activity';
-import { DirectusVersions, DirectusVersionsPrimaryKey } from './directus_versions';
+import { DirectusActivity, DirectusActivityPrimaryKey } from './directus_activity.js';
+import { DirectusVersions, DirectusVersionsPrimaryKey } from './directus_versions.js';
 export type DirectusRevisionsPrimaryKey = number;
 export type DirectusRevisionsPrimaryKeyField = 'id';
 export interface DirectusRevisions {

@@ -1,6 +1,6 @@
 {{- block "schema.ts" $ -}}
 {{- template "header/base" }}
-{{ template "import/collections" $.Collections }}
+{{ template "import/collections" $ }}
 {{ template "schema" $.Collections }}
 {{- end }}
 {{- /* "schema.ts" END */ -}}
