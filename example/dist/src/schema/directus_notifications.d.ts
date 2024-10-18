@@ -1,4 +1,4 @@
-import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users';
+import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users.js';
 export type DirectusNotificationsPrimaryKey = number;
 export type DirectusNotificationsPrimaryKeyField = 'id';
 export interface DirectusNotifications {

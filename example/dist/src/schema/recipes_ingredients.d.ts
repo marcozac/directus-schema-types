@@ -1,5 +1,5 @@
-import { Ingredients, IngredientsPrimaryKey } from './ingredients';
-import { Recipes, RecipesPrimaryKey } from './recipes';
+import { Ingredients, IngredientsPrimaryKey } from './ingredients.js';
+import { Recipes, RecipesPrimaryKey } from './recipes.js';
 export type RecipesIngredientsPrimaryKey = number;
 export type RecipesIngredientsPrimaryKeyField = 'id';
 export interface RecipesIngredients {

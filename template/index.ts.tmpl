@@ -7,10 +7,10 @@
 
 {{- define "index" }}
 {{- range $.Collections }}
-export * from {{ printf "./%s" .Name | quote }};
+export * from {{ printf "./%s%s" .Name $.ImportFileExtension | quote }};
 {{- end }}
 
-export * from './schema';
-export * from './relations';
+export * from './schema{{ $.ImportFileExtension }}';
+export * from './relations{{ $.ImportFileExtension }}';
 {{- end }}
 {{- /* "index" END */ -}}

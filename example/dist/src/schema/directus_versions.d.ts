@@ -1,5 +1,5 @@
-import { DirectusCollections, DirectusCollectionsPrimaryKey } from './directus_collections';
-import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users';
+import { DirectusCollections, DirectusCollectionsPrimaryKey } from './directus_collections.js';
+import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users.js';
 export type DirectusVersionsPrimaryKey = string;
 export type DirectusVersionsPrimaryKeyField = 'id';
 export interface DirectusVersions {

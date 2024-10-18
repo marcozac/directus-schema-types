@@ -1,5 +1,5 @@
-import { DirectusFolders, DirectusFoldersPrimaryKey } from './directus_folders';
-import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users';
+import { DirectusFolders, DirectusFoldersPrimaryKey } from './directus_folders.js';
+import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users.js';
 export type DirectusFilesPrimaryKey = string;
 export type DirectusFilesPrimaryKeyField = 'id';
 export interface DirectusFiles {

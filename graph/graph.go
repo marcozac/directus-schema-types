@@ -36,7 +36,7 @@ func (g *Graph) ParseSchema(s *directus.Schema) (err error) {
 			// skip alias collections. e.g. groups
 			continue
 		}
-		nc := newCollection(c.Collection, c.Meta.Singleton)
+		nc := newCollection(c.Collection, c.Meta.Singleton, g.options)
 		m[c.Collection] = nc
 		defer func(nc *collection) {
 			if err == nil { // only add collection if no error occurred
@@ -153,6 +153,11 @@ func NewFromSchema(s *directus.Schema, opts ...Option) (*Graph, error) {
 }
 
 type options struct {
+	// ImportFileExtension is an optional file extension to add to the
+	// path. For example, it may be required when 'moduleResolution' is
+	// set to 'node16' in the TypeScript configuration.
+	ImportFileExtension string
+
 	overrides OverrideMap
 }
 
@@ -208,5 +213,13 @@ func (m OverrideMap) GetField(collection, field string) *FieldOverrideRaw {
 func WithOverrides(m OverrideMap) Option {
 	return func(o *options) {
 		o.overrides = m
+	}
+}
+
+// WithImportFileExtension returns an option that sets the import file extension
+// for the graph.
+func WithImportFileExtension(ext string) Option {
+	return func(o *options) {
+		o.ImportFileExtension = ext
 	}
 }
