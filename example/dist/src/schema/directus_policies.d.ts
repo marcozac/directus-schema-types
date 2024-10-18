@@ -1,5 +1,5 @@
-import { DirectusAccess, DirectusAccessPrimaryKey } from './directus_access';
-import { DirectusPermissions, DirectusPermissionsPrimaryKey } from './directus_permissions';
+import { DirectusAccess, DirectusAccessPrimaryKey } from './directus_access.js';
+import { DirectusPermissions, DirectusPermissionsPrimaryKey } from './directus_permissions.js';
 export type DirectusPoliciesPrimaryKey = string;
 export type DirectusPoliciesPrimaryKeyField = 'id';
 export interface DirectusPolicies {
@@ -38,9 +38,9 @@ export interface DirectusPolicies {
     name: string;
 }
 export interface DirectusPoliciesRelations {
-    permissions?: (DirectusPermissionsPrimaryKey | DirectusPermissions)[];
-    roles?: (DirectusAccessPrimaryKey | DirectusAccess)[];
-    users?: (DirectusAccessPrimaryKey | DirectusAccess)[];
+    permissions?: DirectusPermissionsPrimaryKey[] | DirectusPermissions[];
+    roles?: DirectusAccessPrimaryKey[] | DirectusAccess[];
+    users?: DirectusAccessPrimaryKey[] | DirectusAccess[];
 }
 export interface DirectusPoliciesRelatedCollections {
     permissions: 'directus_permissions';

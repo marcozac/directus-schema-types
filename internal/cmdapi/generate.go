@@ -15,13 +15,14 @@ import (
 
 func NewGenerateCmd(viper *viper.Viper) *cobra.Command {
 	const (
-		file           = "gen_out_file"
-		dir            = "gen_out_dir"
-		fromSnap       = "gen_from_snapshot"
-		format         = "gen_format"
-		clean          = "gen_clean"
-		overrides      = "gen_overrides"
-		overrides_file = "gen_overrides_file"
+		file            = "gen_out_file"
+		dir             = "gen_out_dir"
+		fromSnap        = "gen_from_snapshot"
+		format          = "gen_format"
+		clean           = "gen_clean"
+		overrides       = "gen_overrides"
+		overrides_file  = "gen_overrides_file"
+		import_file_ext = "gen_import_file_ext"
 	)
 
 	cmd := &cobra.Command{
@@ -63,6 +64,9 @@ output.`,
 			default:
 				opts = append(opts, dst.WithWriter(cmd.OutOrStdout()))
 			}
+			graphOpts := []graph.Option{
+				graph.WithImportFileExtension(viper.GetString(import_file_ext)),
+			}
 			if viper.IsSet(overrides) || viper.IsSet(overrides_file) {
 				var data []byte
 				if viper.IsSet(overrides_file) {
@@ -77,8 +81,9 @@ output.`,
 				if err := json.Unmarshal(data, &om); err != nil {
 					return fmt.Errorf("overrides: %w", err)
 				}
-				opts = append(opts, dst.WithGraphOptions(graph.WithOverrides(om)))
+				graphOpts = append(graphOpts, graph.WithOverrides(om))
 			}
+			opts = append(opts, dst.WithGraphOptions(graphOpts...)) // add graph options
 			generator := dst.NewGenerator()
 			if err := generator.GenerateSchema(schema, opts...); err != nil {
 				return fmt.Errorf("generate: %w", err)
@@ -109,6 +114,9 @@ output.`,
 
 	cmd.PersistentFlags().String("overrides-file", "", "a file containing a JSON object with the type overrides")
 	_ = viper.BindPFlag(overrides_file, cmd.PersistentFlags().Lookup("overrides-file"))
+
+	cmd.PersistentFlags().String("import-file-ext", "", "file extension to add to the import path")
+	_ = viper.BindPFlag(import_file_ext, cmd.PersistentFlags().Lookup("import-file-ext"))
 
 	return cmd
 }

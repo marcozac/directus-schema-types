@@ -14,20 +14,21 @@ import { {{ joinSlice .Symbols }} } from {{ quote .Path }};
 
 
 {{- /* "import/collections" defines the imports from the collections schema. */ -}}
-{{- /* It must be executed with a []Collection context. */ -}}
+{{- /* It must be executed with a Graph context. */ -}}
 {{- define "import/collections" }}
-{{- range $ }}
-import { {{ .TypeName }} } from {{ printf "./%s" .Name | quote }};
+{{- range $.Collections }}
+import { {{ .TypeName }} } from {{ printf "./%s%s" .Name $.ImportFileExtension | quote }};
 {{- end }}
 {{- end }}
 {{- /* "import/collections" END */ -}}
 
 
 {{- /* "import/relations" defines the imports of all the collection relations. */ -}}
-{{- /* It must be executed with a []Collection context. */ -}}
+{{- /* It must be executed with a Graph context. */ -}}
 {{- define "import/relations" }}
-{{- range $ }}
-import { {{ join .Relations.TypeName .RelatedCollections.TypeName }} } from {{ printf "./%s" .Name | quote }};
+{{- range $.Collections }}
+import { {{ join .Relations.TypeName .RelatedCollections.TypeName }} } from
+	{{- printf "./%s%s" .Name $.ImportFileExtension | quote }};
 {{- end }}
 {{- end }}
 {{- /* "import/relations" END */ -}}

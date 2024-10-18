@@ -1,4 +1,4 @@
-import { DirectusFlows, DirectusFlowsPrimaryKey } from './directus_flows';
+import { DirectusFlows, DirectusFlowsPrimaryKey } from './directus_flows.js';
 export type DirectusWebhooksPrimaryKey = number;
 export type DirectusWebhooksPrimaryKeyField = 'id';
 export interface DirectusWebhooks {

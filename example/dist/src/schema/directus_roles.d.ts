@@ -1,5 +1,5 @@
-import { DirectusAccess, DirectusAccessPrimaryKey } from './directus_access';
-import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users';
+import { DirectusAccess, DirectusAccessPrimaryKey } from './directus_access.js';
+import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users.js';
 export type DirectusRolesPrimaryKey = string;
 export type DirectusRolesPrimaryKeyField = 'id';
 export interface DirectusRoles {
@@ -26,10 +26,10 @@ export interface DirectusRoles {
     parent?: string | null;
 }
 export interface DirectusRolesRelations {
-    children?: (DirectusRolesPrimaryKey | DirectusRoles)[];
+    children?: DirectusRolesPrimaryKey[] | DirectusRoles[];
     parent?: DirectusRolesPrimaryKey | DirectusRoles;
-    policies?: (DirectusAccessPrimaryKey | DirectusAccess)[];
-    users?: (DirectusUsersPrimaryKey | DirectusUsers)[];
+    policies?: DirectusAccessPrimaryKey[] | DirectusAccess[];
+    users?: DirectusUsersPrimaryKey[] | DirectusUsers[];
 }
 export interface DirectusRolesRelatedCollections {
     children: 'directus_roles';

@@ -1,6 +1,6 @@
-import { Chefs, ChefsPrimaryKey } from './chefs';
-import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users';
-import { RecipesIngredients, RecipesIngredientsPrimaryKey } from './recipes_ingredients';
+import { Chefs, ChefsPrimaryKey } from './chefs.js';
+import { DirectusUsers, DirectusUsersPrimaryKey } from './directus_users.js';
+import { RecipesIngredients, RecipesIngredientsPrimaryKey } from './recipes_ingredients.js';
 export type RecipesPrimaryKey = number;
 export type RecipesPrimaryKeyField = 'id';
 export interface Recipes {
@@ -31,8 +31,8 @@ export interface RecipesRelations {
      * The related field of {@link Chefs} is marked as unique.
      * The resulting array will contain only one element.
      */
-    chefs_signature_dish?: (ChefsPrimaryKey | Chefs)[];
-    ingredients: (RecipesIngredientsPrimaryKey | RecipesIngredients)[];
+    chefs_signature_dish?: ChefsPrimaryKey[] | Chefs[];
+    ingredients: RecipesIngredientsPrimaryKey[] | RecipesIngredients[];
     readonly user_created?: DirectusUsersPrimaryKey | DirectusUsers;
     readonly user_updated?: DirectusUsersPrimaryKey | DirectusUsers;
 }

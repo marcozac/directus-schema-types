@@ -57,39 +57,41 @@ func generate() error {
 			out,
 			dst.WithFormatOutput(true),
 			dst.WithClean(true),
-			dst.WithGraphOptions(graph.WithOverrides(
-				graph.OverrideMap{
-					"ingredients": {
-						"status": {
-							Kind: graph.FieldOverrideKindEnum,
-							Def: map[string]string{
-								"Available":    "available",
-								"NotAvailable": "not_available",
-								"Restock":      "restock",
+			dst.WithGraphOptions(
+				graph.WithImportFileExtension(".js"),
+				graph.WithOverrides(
+					graph.OverrideMap{
+						"ingredients": {
+							"status": {
+								Kind: graph.FieldOverrideKindEnum,
+								Def: map[string]string{
+									"Available":    "available",
+									"NotAvailable": "not_available",
+									"Restock":      "restock",
+								},
 							},
-						},
-						"external_inventory_id": {
-							Kind:       graph.FieldOverrideExternal,
-							Def:        "InventoryItem",
-							ImportPath: "../external",
-							ParserFrom: "externalId",
-							ParserTo:   "new InventoryItem",
-						},
-						"label_color": {
-							Kind: graph.FieldOverrideKindAssertable,
-							Def:  `'blue' | 'red'`,
-						},
-						"shelf_position": {
-							Kind: graph.FieldOverrideKindEnum,
-							Def: map[string]string{
-								"Shelf1": "1",
-								"Shelf2": "2",
-								"Shelf3": "3",
+							"external_inventory_id": {
+								Kind:       graph.FieldOverrideExternal,
+								Def:        "InventoryItem",
+								ImportPath: "../external",
+								ParserFrom: "externalId",
+								ParserTo:   "new InventoryItem",
+							},
+							"label_color": {
+								Kind: graph.FieldOverrideKindAssertable,
+								Def:  `'blue' | 'red'`,
+							},
+							"shelf_position": {
+								Kind: graph.FieldOverrideKindEnum,
+								Def: map[string]string{
+									"Shelf1": "1",
+									"Shelf2": "2",
+									"Shelf3": "3",
+								},
 							},
 						},
 					},
-				},
-			)),
+				)),
 		)
 		if err != nil {
 			return fmt.Errorf("generate: %w", err)
@@ -130,6 +132,7 @@ func setup(ctx context.Context) (*resources, error) {
 				PackageJson: &node.PackageJsonSpec{
 					Name:        "example",
 					Version:     "0.1.0",
+					Type:        "module",
 					Private:     boolPtr(true),
 					Description: "Example package",
 					Scripts: map[string]string{
@@ -142,6 +145,8 @@ func setup(ctx context.Context) (*resources, error) {
 				},
 				TSConfig: &node.TSConfigSpec{
 					CompilerOptions: map[string]any{
+						"module":              "Node16",
+						"moduleResolution":    "Node16",
 						"declaration":         true,
 						"emitDeclarationOnly": true,
 						"outDir":              "dist",
